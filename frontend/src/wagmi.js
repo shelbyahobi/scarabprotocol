@@ -10,7 +10,7 @@ const { chains, publicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
     appName: '$ROLL Dung Beetle',
-    projectId: 'YOUR_PROJECT_ID', // User needs to get one from WalletConnect or use default for dev
+    projectId: '3a8170812b534d0ff9d794f35a9cc25e', // WalletConnect Demo ID
     chains
 });
 

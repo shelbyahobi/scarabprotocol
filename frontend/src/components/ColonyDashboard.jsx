@@ -87,7 +87,7 @@ export default function ColonyDashboard() {
     if (!hasAccess) {
         return (
             <section className="py-24 bg-[#0a0a0a] border-t border-beetle-gold/20 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 pointer-events-none"></div>
+                <div className="absolute inset-0 bg-black opacity-5 pointer-events-none"></div>
                 <div className="container mx-auto px-4 text-center relative z-10">
                     <motion.div
                         initial="hidden" animate="visible" variants={containerVariants}

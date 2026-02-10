@@ -46,7 +46,6 @@ const WalletRow = ({ label, address, delay }) => {
 export default function Transparency() {
     return (
         <section className="py-20 bg-black/50 backdrop-blur-sm border-t border-white/5 relative overflow-hidden">
-
             {/* Decorative Background */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-beetle-green/5 rounded-full blur-[100px] animate-pulse"></div>
 
