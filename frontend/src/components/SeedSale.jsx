@@ -88,7 +88,7 @@ export default function SeedSale() {
     const pendingRoll = (userBnB * 5000000).toLocaleString(); // 5M per BNB
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div id="seed-sale" className="max-w-6xl mx-auto">
             {/* Header: Urgency */}
             <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter">

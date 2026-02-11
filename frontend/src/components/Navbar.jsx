@@ -42,7 +42,10 @@ export default function Navbar({ onOpenBlueprint }) {
 
                     <ConnectButton showBalance={false} chainStatus="icon" accountStatus="avatar" />
 
-                    <button className="bg-beetle-electric/10 text-beetle-electric border border-beetle-electric/50 px-6 py-2 rounded-lg font-bold hover:bg-beetle-electric hover:text-black transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] flex items-center gap-2">
+                    <button
+                        onClick={() => document.getElementById('seed-sale')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="bg-beetle-electric/10 text-beetle-electric border border-beetle-electric/50 px-6 py-2 rounded-lg font-bold hover:bg-beetle-electric hover:text-black transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] flex items-center gap-2"
+                    >
                         <Rocket size={18} />
                         LAUNCH APP
                     </button>
