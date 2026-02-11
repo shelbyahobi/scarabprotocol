@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractRead } from 'wagmi';
 import { motion } from 'framer-motion';
+import { Lock, ShieldCheck, Zap } from 'lucide-react';
 
 // ABI for balanceOf
 const ERC20_ABI = [
@@ -61,130 +62,113 @@ export default function ColonyDashboard() {
         }
     }, [tokenBalance, seedDeposit]);
 
-    // Visual Variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.8 } }
-    };
+    const products = [
+        {
+            name: "Tactical Solar Kit",
+            priceFiat: "$1,200",
+            priceRoll: "12,000 ROLL",
+            discount: "50% OFF",
+            image: "☀️", // Placeholder emoji, replace with generated images later
+            tier: "Guardian"
+        },
+        {
+            name: "Starlink Roam Hub",
+            priceFiat: "$600",
+            priceRoll: "6,000 ROLL",
+            discount: "FREE DATA",
+            image: "📡",
+            tier: "Elder"
+        },
+        {
+            name: "Water Filtration Unit",
+            priceFiat: "$350",
+            priceRoll: "3,500 ROLL",
+            discount: "30% OFF",
+            image: "💧",
+            tier: "Scout"
+        }
+    ];
 
-    if (!isConnected) {
-        return (
-            <section className="py-24 bg-[#1a1a1a] border-t border-[#333]">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold text-beetle-gold mb-6">The Colony Vault</h2>
-                    <div className="max-w-md mx-auto p-8 rounded-2xl bg-black/60 border border-[#333] shadow-2xl">
-                        <div className="text-4xl mb-4">🔒</div>
-                        <p className="text-gray-400 mb-6">Connect your wallet to verify your <strong>$ROLL</strong> Access Level.</p>
-                        {/* Connect Button is in Navbar, but we guide them */}
-                        <div className="text-sm text-beetle-blue animate-pulse">Waiting for connection...</div>
-                    </div>
-                </div>
-            </section>
-        );
-    }
-
-    // STATE A: Access Denied
-    if (!hasAccess) {
-        return (
-            <section className="py-24 bg-[#0a0a0a] border-t border-beetle-gold/20 relative overflow-hidden">
-                <div className="absolute inset-0 bg-black opacity-5 pointer-events-none"></div>
-                <div className="container mx-auto px-4 text-center relative z-10">
-                    <motion.div
-                        initial="hidden" animate="visible" variants={containerVariants}
-                        className="max-w-2xl mx-auto"
-                    >
-                        <h2 className="text-4xl font-black text-white mb-2">ACCESS <span className="text-red-500">DENIED</span></h2>
-                        <p className="text-xl text-beetle-gold mb-8 font-mono">The Colony Vault is locked.</p>
-
-                        <div className="p-10 rounded-3xl bg-gradient-to-br from-gray-900 to-black border border-red-500/30 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
-                            <div className="text-6xl mb-6">🚫</div>
-                            <h3 className="text-2xl font-bold text-white mb-4">You must hold $ROLL to enter.</h3>
-                            <p className="text-gray-400 mb-8 max-w-md mx-auto">
-                                This area contains exclusive discounts, beta access, and voting rights reserved for the Colony.
-                            </p>
-
-                            <div className="flex gap-4 justify-center">
-                                <button className="px-8 py-3 bg-beetle-gold text-black font-black rounded-lg hover:bg-white hover:scale-105 transition-all">
-                                    BUY $ROLL
-                                </button>
-                                <button className="px-8 py-3 bg-[#111] text-gray-300 font-bold border border-gray-700 rounded-lg hover:border-white transition-all">
-                                    Learn More
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
-        );
-    }
-
-    // STATE B: Dashboard (Holder)
     return (
-        <section className="py-24 bg-[#0c0c0c] border-t border-beetle-blue/20">
-            <div className="container mx-auto px-4">
+        <section className="py-24 relative overflow-hidden">
+
+            {/* Background Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-beetle-blue/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div className="container mx-auto px-4 relative z-10">
 
                 {/* Header */}
-                <div className="flex justify-between items-end mb-12 border-b border-white/10 pb-6">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-6">
                     <div>
-                        <h2 className="text-3xl font-black text-white">Marketplace <span className="text-beetle-blue">Dashboard</span></h2>
-                        <p className="text-beetle-gold font-mono text-sm mt-2">Status: VERIFIED MEMBER</p>
+                        <h2 className="text-4xl font-black text-white tracking-tighter">
+                            Colony <span className="text-beetle-electric">Marketplace</span>
+                        </h2>
+                        <p className="text-gray-400 mt-2 flex items-center gap-2">
+                            <Zap size={16} className="text-beetle-gold" />
+                            Exchange $ROLL for real-world survival utility.
+                        </p>
                     </div>
                     <div className="text-right hidden md:block">
-                        <div className="text-xs text-gray-500 uppercase">Your Balance</div>
-                        <div className="text-2xl font-bold text-white">{balance.toString() / 10 ** 18} ROLL</div>
+                        <div className="text-xs text-gray-500 uppercase tracking-widest">Your Status</div>
+                        <div className={`text-xl font-bold ${hasAccess ? 'text-beetle-electric' : 'text-gray-500'}`}>
+                            {hasAccess ? 'VERIFIED MEMBER' : 'UNVERIFIED'}
+                        </div>
                     </div>
                 </div>
 
-                {/* Product Grid */}
-                <div className="grid md:grid-cols-3 gap-8">
-                    {/* Card 1 */}
-                    <div className="group bg-[#151515] rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-gold/50 transition-all">
-                        <div className="h-48 bg-gray-800 relative">
-                            {/* Placeholder for Merch Image */}
-                            <div className="absolute inset-0 flex items-center justify-center text-4xl">👕</div>
-                            <div className="absolute top-4 right-4 bg-beetle-gold text-black text-xs font-black px-2 py-1 rounded">20% OFF</div>
-                        </div>
-                        <div className="p-6">
-                            <h3 className="text-xl font-bold text-white mb-2">Colony Hoodie</h3>
-                            <p className="text-gray-400 text-sm mb-4">Limited Edition Embroidered Merch.</p>
-                            <div className="flex justify-between items-center">
-                                <div className="text-gray-600 line-through text-sm">$60.00</div>
-                                <div className="text-beetle-blue font-bold text-xl">$48.00</div>
+                {/* Main Content Area - Stacked for Blur Effect */}
+                <div className="relative">
+
+                    {/* The "blurred" layer (The Marketplace itself) */}
+                    <div className={`grid md:grid-cols-3 gap-8 transition-all duration-500 ${!hasAccess ? 'blur-xl opacity-30 pointer-events-none scale-95' : ''}`}>
+                        {products.map((product, index) => (
+                            <div key={index} className="group bg-[#0a1a0f]/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-electric/50 transition-all hover:-translate-y-2">
+                                <div className="h-64 bg-black/40 relative flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-500">
+                                    {product.image}
+                                    <div className="absolute top-4 right-4 bg-beetle-gold text-black text-xs font-black px-3 py-1 rounded-full">
+                                        {product.discount}
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="text-xs text-beetle-electric font-mono mb-2 uppercase tracking-widest">{product.tier} Tier</div>
+                                    <h3 className="text-2xl font-bold text-white mb-4">{product.name}</h3>
+
+                                    <div className="flex justify-between items-end mb-6">
+                                        <div>
+                                            <div className="text-gray-500 line-through text-sm">{product.priceFiat}</div>
+                                            <div className="text-white font-black text-xl">{product.priceRoll}</div>
+                                        </div>
+                                    </div>
+
+                                    <button className="w-full bg-white/5 hover:bg-beetle-electric hover:text-black text-white border border-white/10 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                                        Buy Now
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
 
-                    {/* Card 2 */}
-                    <div className="group bg-[#151515] rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-gold/50 transition-all">
-                        <div className="h-48 bg-gray-800 relative">
-                            <div className="absolute inset-0 flex items-center justify-center text-4xl">🖼️</div>
-                            <div className="absolute top-4 right-4 bg-beetle-gold text-black text-xs font-black px-2 py-1 rounded">EARLY ACCESS</div>
+                    {/* The "Access Denied" Overlay */}
+                    {!hasAccess && (
+                        <div className="absolute inset-0 z-20 flex items-center justify-center">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="bg-black/80 backdrop-blur-xl border border-beetle-gold/30 p-10 rounded-3xl text-center max-w-lg shadow-[0_0_50px_rgba(212,175,55,0.2)]"
+                            >
+                                <Lock size={48} className="text-beetle-gold mx-auto mb-6" />
+                                <h3 className="text-3xl font-black text-white mb-2">MEMBERS ONLY</h3>
+                                <p className="text-gray-400 mb-8">
+                                    This marketplace is gated for the defined Colony. <br />
+                                    <strong>Connect Wallet</strong> and hold <strong>$ROLL</strong> to reveal prices.
+                                </p>
+                                <button className="bg-beetle-gold text-black font-black py-3 px-8 rounded-xl hover:scale-105 transition-transform">
+                                    CONNECT WALLET
+                                </button>
+                            </motion.div>
                         </div>
-                        <div className="p-6">
-                            <h3 className="text-xl font-bold text-white mb-2">Beetle NFT Gen 1</h3>
-                            <p className="text-gray-400 text-sm mb-4">Original artwork. Stake for yield.</p>
-                            <div className="flex justify-between items-center">
-                                <div className="text-gray-600 line-through text-sm">0.5 BNB</div>
-                                <div className="text-beetle-blue font-bold text-xl">0.4 BNB</div>
-                            </div>
-                        </div>
-                    </div>
+                    )}
 
-                    {/* Card 3 */}
-                    <div className="group bg-[#151515] rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-gold/50 transition-all">
-                        <div className="h-48 bg-gray-800 relative">
-                            <div className="absolute inset-0 flex items-center justify-center text-4xl">💊</div>
-                            <div className="absolute top-4 right-4 bg-purple-500 text-white text-xs font-black px-2 py-1 rounded">BETA</div>
-                        </div>
-                        <div className="p-6">
-                            <h3 className="text-xl font-bold text-white mb-2">Beta Trading Bot</h3>
-                            <p className="text-gray-400 text-sm mb-4">Automated buy/sell protection.</p>
-                            <div className="flex justify-between items-center">
-                                <div className="text-gray-600 line-through text-sm">$100/mo</div>
-                                <div className="text-beetle-blue font-bold text-xl">FREE</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

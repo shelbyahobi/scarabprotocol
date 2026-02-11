@@ -1,102 +1,71 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-
-const WalletRow = ({ label, address, delay }) => {
-    const [copied, setCopied] = useState(false);
-
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(address);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay }}
-            className="flex flex-col md:flex-row justify-between items-center bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/10 transition-colors"
-        >
-            <div className="flex flex-col mb-2 md:mb-0">
-                <span className="text-beetle-gold font-bold text-sm uppercase tracking-wider">{label}</span>
-                <span className="text-xs text-gray-500">Verified & Trackable</span>
-            </div>
-            <div className="flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg border border-white/5 font-mono text-sm text-gray-300 break-all">
-                {address.slice(0, 6)}...{address.slice(-4)}
-                <button
-                    onClick={copyToClipboard}
-                    className="ml-2 text-beetle-accent hover:text-white transition-colors text-xs uppercase"
-                >
-                    {copied ? 'Copied' : 'Copy'}
-                </button>
-                <a
-                    href={`https://testnet.bscscan.com/address/${address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gray-500 hover:text-white transition-colors"
-                >
-                    Scan ↗
-                </a>
-            </div>
-        </motion.div>
-    );
-};
+import { ShieldCheck, Clock, CheckCircle, Lock, Users, Zap } from 'lucide-react';
 
 export default function Transparency() {
     return (
-        <section className="py-20 bg-black/50 backdrop-blur-sm border-t border-white/5 relative overflow-hidden">
-            {/* Decorative Background */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-beetle-green/5 rounded-full blur-[100px] animate-pulse"></div>
+        <section className="py-24 bg-black/40 border-t border-white/5 relative overflow-hidden">
 
             <div className="container mx-auto px-4 relative z-10">
 
-                {/* Header */}
-                <div className="text-center max-w-4xl mx-auto mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-                        Built to Last. <span className="text-beetle-gold">Rolled to Perfection.</span>
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tighter">
+                        Immutable <span className="text-beetle-gold">Security</span>
                     </h2>
-                    <p className="text-gray-400 text-lg leading-relaxed">
-                        Most tokens are built on hype; $ROLL is built on labor. Nature’s hardest worker, the Dung Beetle, doesn't wait for luck—it takes what others discard and rolls it into a masterpiece.
-                        We’ve replaced empty promises with hard-coded stability, ensuring the community has a fortress, not a tent.
+                    <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+                        We don't trust. We verify. The ROLL Protocol is hardened by cryptographic guarantees.
                     </p>
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-beetle-gold/10 rounded-full blur-3xl"></div>
-
-                    <h3 className="text-2xl font-bold text-white mb-6">Community & Docs</h3>
-
-                    <div className="space-y-4">
-                        <a href="#" className="block group">
-                            <div className="flex justify-between items-center p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-beetle-gold/50 transition-all">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-2xl">📢</span>
-                                    <span className="text-white font-bold group-hover:text-beetle-gold transition-colors">Telegram Channel</span>
-                                </div>
-                                <span className="text-gray-500 group-hover:translate-x-1 transition-transform">→</span>
-                            </div>
-                        </a>
-
-                        <a href="#" className="block group">
-                            <div className="flex justify-between items-center p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-beetle-gold/50 transition-all">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-2xl">📄</span>
-                                    <span className="text-white font-bold group-hover:text-beetle-gold transition-colors">Technical Blueprint</span>
-                                </div>
-                                <span className="text-gray-500 group-hover:translate-x-1 transition-transform">→</span>
-                            </div>
-                        </a>
-
-                        <a href="#" className="block group">
-                            <div className="flex justify-between items-center p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-beetle-gold/50 transition-all">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-2xl">🛍️</span>
-                                    <span className="text-white font-bold group-hover:text-beetle-gold transition-colors">Future Shop Preview</span>
-                                </div>
-                                <span className="text-gray-500 group-hover:translate-x-1 transition-transform">→</span>
-                            </div>
-                        </a>
-                    </div>
                 </div>
+
+                <div className="grid md:grid-cols-3 gap-8">
+
+                    {/* Feature 1 */}
+                    <div className="bg-[#0a1a0f]/40 border border-white/5 p-8 rounded-3xl hover:border-beetle-gold/30 transition-all group">
+                        <div className="w-14 h-14 bg-beetle-gold/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <Clock size={32} className="text-beetle-gold" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-3">48-Hour Timelock</h3>
+                        <p className="text-gray-400 leading-relaxed">
+                            Administrative actions are delayed by 2 days. You will always know what's changing before it happens.
+                        </p>
+                    </div>
+
+                    {/* Feature 2 */}
+                    <div className="bg-[#0a1a0f]/40 border border-white/5 p-8 rounded-3xl hover:border-beetle-electric/30 transition-all group">
+                        <div className="w-14 h-14 bg-beetle-electric/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <Lock size={32} className="text-beetle-electric" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-3">Liquidity Locked</h3>
+                        <p className="text-gray-400 leading-relaxed">
+                            100% of initial liquidity is locked for 1 Year via a decentralized locker. No rug pulls, only rolling.
+                        </p>
+                    </div>
+
+                    {/* Feature 3 */}
+                    <div className="bg-[#0a1a0f]/40 border border-white/5 p-8 rounded-3xl hover:border-green-500/30 transition-all group">
+                        <div className="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <ShieldCheck size={32} className="text-green-500" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-3">Reentrancy Guard</h3>
+                        <p className="text-gray-400 leading-relaxed">
+                            Standard OpenZeppelin security modules prevent drainage exploits and complex attack vectors.
+                        </p>
+                    </div>
+
+                </div>
+
+                {/* Bottom Stats / Links */}
+                <div className="mt-20 flex flex-wrap justify-center gap-4">
+                    <a href="#" className="flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl hover:bg-white/10 border border-white/5 transition-all">
+                        <Users size={20} className="text-gray-400" />
+                        <span className="text-white font-bold">Community Owndership</span>
+                    </a>
+                    <a href="https://testnet.bscscan.com/address/0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f" target="_blank" className="flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl hover:bg-white/10 border border-white/5 transition-all">
+                        <CheckCircle size={20} className="text-beetle-gold" />
+                        <span className="text-white font-bold">Verified Contract</span>
+                    </a>
+                </div>
+
             </div>
         </section>
-    )
+    );
 }
