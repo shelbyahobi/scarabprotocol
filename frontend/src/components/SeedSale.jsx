@@ -111,7 +111,7 @@ export default function SeedSale() {
     const isAmountValid = parseFloat(amount) >= MIN_CONTRIBUTION;
 
     return (
-        <div id="seed-sale" className="max-w-6xl mx-auto">
+        <div id="seed-sale" className="w-full"> {/* Removed container max-w to fit new grid layout better */}
             {/* Header: Urgency */}
             <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter">
@@ -127,10 +127,10 @@ export default function SeedSale() {
                 </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="flex flex-col gap-8"> {/* Changed from Grid to Flex Col as it's now inside a sidebar-ish layout or main content area */}
 
                 {/* Round 1 (Live) */}
-                <div className="col-span-1 lg:col-span-2 bg-gradient-to-br from-beetle-green/20 to-black border border-beetle-gold/50 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)]">
+                <div className="w-full bg-gradient-to-br from-beetle-green/20 to-black border border-beetle-gold/50 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)]">
                     <div className="absolute top-0 right-0 bg-beetle-gold text-black font-bold px-4 py-2 rounded-bl-xl z-20">
                         ROUND 1: LIVE
                     </div>
@@ -200,51 +200,10 @@ export default function SeedSale() {
                                     Anti-Bot Protection Active: Min Contribution {MIN_CONTRIBUTION} BNB.
                                 </span>
                             </div>
-
-                            {/* Manual Refund Logic (Normally hidden until fail, but showing for transparency/testing) */}
-                            {isConnected && raised < 500 && ( // Showing if under hardcap for now as placeholder for "Failed" state
-                                <button
-                                    onClick={() => writeRefund?.()}
-                                    disabled={!writeRefund || isRefundLoading}
-                                    className="text-xs text-red-500 underline hover:text-red-400 self-center mt-2"
-                                >
-                                    (Emergency / Fail) Claim Refund
-                                </button>
-                            )}
                         </div>
                     </div>
 
-                    {/* PINK-SALE STYLE: MY POSITION CARD */}
-                    {isConnected && (
-                        <div className="bg-[#0a1a0f] border border-beetle-gold/30 rounded-xl p-6 shadow-inner relative overflow-hidden">
-                            {/* Loading Indicator */}
-                            {isFetching && (
-                                <div className="absolute top-2 right-2">
-                                    <RefreshCw size={12} className="text-beetle-gold animate-spin" />
-                                </div>
-                            )}
-
-                            <div className="flex items-center gap-2 mb-4">
-                                <CheckCircle className="text-beetle-electric w-5 h-5" />
-                                <h4 className="text-white font-bold uppercase tracking-widest text-sm">Your Position</h4>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-black/40 p-3 rounded-lg border border-white/5">
-                                    <div className="text-xs text-gray-500 mb-1">Total Contributed</div>
-                                    <div className="text-white font-mono font-bold text-lg">{userBnB > 0 ? userBnB.toFixed(4) : "0.00"} BNB</div>
-                                </div>
-                                <div className="bg-black/40 p-3 rounded-lg border border-white/5">
-                                    <div className="text-xs text-gray-500 mb-1">Reserved Allocation</div>
-                                    <div className="text-beetle-electric font-mono font-bold text-lg">{reservedRoll} ROLL</div>
-                                </div>
-                            </div>
-
-                            <button onClick={() => refetchDeposit()} className="mt-4 text-[10px] text-gray-600 hover:text-white underline">
-                                Check Again
-                            </button>
-                        </div>
-                    )}
+                    {/* My Position Moved to Global Dashboard Header */}
                 </div>
 
                 {/* Future Rounds (Locked) */}
