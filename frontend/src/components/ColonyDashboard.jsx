@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useContractReads } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf } from 'lucide-react';
 
@@ -26,26 +26,25 @@ const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
 export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();
     const [tier, setTier] = useState('Guest'); // Guest, Scout, Guardian, Elder
-    const [balance, setBalance] = useState(0n);
     const [selectedProduct, setSelectedProduct] = useState(null); // For Modal
     const [activeTab, setActiveTab] = useState('market'); // 'market' or 'vision'
 
-    // Check Token Balance
-    const { data: tokenBalance } = useContractRead({
-        address: TOKEN_ADDRESS,
-        abi: ERC20_ABI,
-        functionName: 'balanceOf',
-        args: [address],
-        enabled: isConnected && !!address,
-        watch: true,
-    });
-
-    // Check Seed Sale Deposit (For Early Access)
-    const { data: seedDeposit } = useContractRead({
-        address: SEED_SALE_ADDRESS,
-        abi: SEED_SALE_ABI,
-        functionName: 'deposits',
-        args: [address],
+    // Batch Read for Efficiency & Reliability
+    const { data: contractData, isError, isLoading } = useContractReads({
+        contracts: [
+            {
+                address: TOKEN_ADDRESS,
+                abi: ERC20_ABI,
+                functionName: 'balanceOf',
+                args: [address],
+            },
+            {
+                address: SEED_SALE_ADDRESS,
+                abi: SEED_SALE_ABI,
+                functionName: 'deposits',
+                args: [address],
+            }
+        ],
         enabled: isConnected && !!address,
         watch: true,
     });
@@ -56,31 +55,35 @@ export default function ColonyDashboard() {
             return;
         }
 
-        const bal = tokenBalance ? BigInt(tokenBalance) : 0n;
-        const deposit = seedDeposit ? BigInt(seedDeposit) : 0n;
+        if (contractData) {
+            const tokenBalance = contractData[0]?.result ? BigInt(contractData[0].result) : 0n;
+            const seedDeposit = contractData[1]?.result ? BigInt(contractData[1].result) : 0n;
 
-        setBalance(bal);
+            // DEBUG LOGS
+            console.log("Connected Address:", address);
+            console.log("Token Balance:", tokenBalance.toString());
+            console.log("Seed Deposit:", seedDeposit.toString());
 
-        // Tier Logic
-        const decimals = 10n ** 18n;
+            // Tier Logic
+            const decimals = 10n ** 18n;
 
-        // If user contributed ANY amount to seed sale, they are at least a Scout
-        if (deposit > 0n) {
-            setTier('Scout'); // Seed contributors get immediate access
+            // Priority 1: High Token Balance
+            if (tokenBalance >= 5000000n * decimals) {
+                setTier('Elder');
+            } else if (tokenBalance >= 1000000n * decimals) {
+                setTier('Guardian');
+            }
+            // Priority 2: Seed Contributor (Any Amount) or Token Holder
+            else if (seedDeposit > 0n || tokenBalance > 0n) {
+                setTier('Scout');
+            }
+            // Default: Guest
+            else {
+                setTier('Guest');
+            }
         }
 
-        // Token Balance Overrides (if higher tier)
-        if (bal >= 5000000n * decimals) {
-            setTier('Elder');
-        } else if (bal >= 1000000n * decimals) {
-            setTier('Guardian');
-        } else if (bal > 0n && tier === 'Guest') { // Use bal if no seed deposit
-            setTier('Scout');
-        } else if (deposit === 0n && bal === 0n) {
-            setTier('Guest');
-        }
-
-    }, [tokenBalance, seedDeposit, isConnected, address]);
+    }, [contractData, isConnected, address]);
 
     const products = [
         {
