@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Ticker from './components/Ticker';
+import Hero from './components/Hero';
+import SeedSale from './components/SeedSale';
+import Transparency from './components/Transparency';
+import BlueprintModal from './components/BlueprintModal';
+import ColonyDashboard from './components/ColonyDashboard';
+import Roadmap from './components/Roadmap';
 
 function App() {
     const [showBlueprint, setShowBlueprint] = useState(false);
