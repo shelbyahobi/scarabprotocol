@@ -59,10 +59,11 @@ export default function ColonyDashboard() {
             const tokenBalance = contractData[0]?.result ? BigInt(contractData[0].result) : 0n;
             const seedDeposit = contractData[1]?.result ? BigInt(contractData[1].result) : 0n;
 
-            // DEBUG LOGS
+            // DEBUG LOGS (Safe Access)
             console.log("Connected Address:", address);
             console.log("Token Balance:", tokenBalance.toString());
             console.log("Seed Deposit:", seedDeposit.toString());
+            console.log("Raw Contract Data:", contractData);
 
             // Tier Logic
             const decimals = 10n ** 18n;
@@ -204,9 +205,14 @@ export default function ColonyDashboard() {
                                             {product.discount}
                                         </div>
                                         {isLocked && (
-                                            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center flex-col gap-2">
-                                                <Lock className="text-white/70 w-10 h-10 mb-2" />
-                                                <span className="text-white font-bold bg-black/50 px-3 py-1 rounded text-sm">Members Only</span>
+                                            <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center flex-col gap-4 border border-beetle-gold/20 z-20">
+                                                <Lock className="text-beetle-gold w-12 h-12 mb-2 animate-pulse" />
+                                                <div className="text-center">
+                                                    <span className="text-white font-black bg-black/80 border border-white/10 px-4 py-2 rounded-full text-sm uppercase tracking-widest">
+                                                        Colony Access Required
+                                                    </span>
+                                                    <p className="text-xs text-gray-500 mt-2">Join Seed Sale to Unlock</p>
+                                                </div>
                                             </div>
                                         )}
                                     </div>

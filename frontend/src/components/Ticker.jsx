@@ -14,11 +14,11 @@ export default function Ticker() {
                     <span className="text-gray-600">|</span>
                     <span>RWA RESERVE: <span className="text-beetle-gold">$ 0.00</span></span>
                     <span className="text-gray-600">|</span>
-                    <span>MARKET CAP: <span className="text-white">$ ---</span></span>
+                    <span>MARKET CAP: <span className="text-white">$ 0.00 (Launch Est)</span></span>
                     <span className="text-gray-600">|</span>
                     <span>LIQUIDITY: <span className="text-beetle-electric">LOCKED (1 YR)</span></span>
                     <span className="text-gray-600">|</span>
-                    <span>HOLDERS: <span className="text-white">---</span></span>
+                    <span>HOLDERS: <span className="text-white">--- (Seed Phase)</span></span>
                     <span className="text-gray-600">|</span>
                     <span className="text-beetle-electric font-bold">ROLL PROTOCOL 2026</span>
                 </div>
