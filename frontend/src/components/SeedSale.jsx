@@ -57,7 +57,7 @@ export default function SeedSale() {
     });
 
     // Read User Deposit
-    const { data: userDeposit } = useContractRead({
+    const { data: userDeposit, refetch } = useContractRead({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
         functionName: 'deposits',
@@ -81,14 +81,20 @@ export default function SeedSale() {
         hash: writeData?.hash,
     });
 
+    // Force Refetch on Success
+    useEffect(() => {
+        if (isSuccess) {
+            refetch(); // Refetch deposit data
+        }
+    }, [isSuccess]);
+
     // Derived State
     const raised = totalRaisedData ? parseFloat(formatEther(totalRaisedData)) : 0;
-    const cap = hardCapData ? parseFloat(formatEther(hardCapData)) : 500; // Default to 500 if not loaded
+    const cap = hardCapData ? parseFloat(formatEther(hardCapData)) : 500; // Default to 500
     const percent = Math.min((raised / cap) * 100, 100);
 
     const userBnB = userDeposit ? parseFloat(formatEther(userDeposit)) : 0;
-    // Calculate pending roll based on user deposit + current amount they are about to buy (for preview)
-    const pendingRoll = (userBnB * TOKENS_PER_BNB).toLocaleString();
+    const reservedRoll = (userBnB * TOKENS_PER_BNB).toLocaleString();
 
     // Validation
     const isAmountValid = parseFloat(amount) >= MIN_CONTRIBUTION;
@@ -191,14 +197,24 @@ export default function SeedSale() {
                         </div>
                     </div>
 
-                    {isConnected && userBnB > 0 && (
-                        <div className="flex items-center justify-between bg-beetle-electric/10 border border-beetle-electric/30 rounded-xl p-4 animate-pulse">
-                            <div>
-                                <div className="text-xs text-beetle-electric uppercase">Total Claimable ROLL</div>
-                                <div className="text-white font-black text-2xl drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">{pendingRoll} ROLL</div>
-                                <div className="text-[10px] text-gray-400">Unlock: 24h after Fill or End Date</div>
+                    {/* PINK-SALE STYLE: MY POSITION CARD */}
+                    {isConnected && (
+                        <div className="bg-[#0a1a0f] border border-beetle-gold/30 rounded-xl p-6 shadow-inner">
+                            <div className="flex items-center gap-2 mb-4">
+                                <CheckCircle className="text-beetle-electric w-5 h-5" />
+                                <h4 className="text-white font-bold uppercase tracking-widest text-sm">Your Position</h4>
                             </div>
-                            <CheckCircle className="text-beetle-electric w-8 h-8" />
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+                                    <div className="text-xs text-gray-500 mb-1">Total Contributed</div>
+                                    <div className="text-white font-mono font-bold text-lg">{userBnB > 0 ? userBnB.toFixed(4) : "0.00"} BNB</div>
+                                </div>
+                                <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+                                    <div className="text-xs text-gray-500 mb-1">Reserved Allocation</div>
+                                    <div className="text-beetle-electric font-mono font-bold text-lg">{reservedRoll} ROLL</div>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
