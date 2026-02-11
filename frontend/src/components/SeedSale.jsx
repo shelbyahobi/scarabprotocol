@@ -14,6 +14,20 @@ export default function SeedSale() {
     const { address, isConnected } = useAccount();
     const [amount, setAmount] = useState('0.1');
 
+    // Read Contract Stats
+    const { data: totalRaisedData } = useContractRead({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'totalRaised',
+        watch: true,
+    });
+
+    const { data: hardCapData } = useContractRead({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'hardCap',
+    });
+
     // Read User Deposit
     const { data: userDeposit } = useContractRead({
         address: SEED_SALE_ADDRESS,
@@ -23,6 +37,26 @@ export default function SeedSale() {
         watch: true,
         enabled: isConnected && !!address
     });
+
+    // Deposit Logic
+    const { config } = usePrepareContractWrite({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'deposit',
+        value: parseEther(amount || '0'),
+        enabled: isConnected && parseFloat(amount || '0') > 0,
+    });
+
+    const { write, data: writeData, isLoading } = useContractWrite(config);
+
+    const { isLoading: isTxLoading, isSuccess } = useWaitForTransaction({
+        hash: writeData?.hash,
+    });
+
+    // Derived State
+    const raised = totalRaisedData ? parseFloat(formatEther(totalRaisedData)) : 0;
+    const cap = hardCapData ? parseFloat(formatEther(hardCapData)) : 500; // Default to 500 if not loaded
+    const percent = Math.min((raised / cap) * 100, 100);
 
     const userBnB = userDeposit ? parseFloat(formatEther(userDeposit)) : 0;
     const pendingRoll = (userBnB * 5000000).toLocaleString(); // 5M per BNB
