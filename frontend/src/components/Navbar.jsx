@@ -1,16 +1,18 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Menu, X, ExternalLink, FileText, Rocket } from 'lucide-react';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function Navbar({ onOpenBlueprint }) {
+export default function Navbar({ onOpenBlueprint, isLanding }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <nav className="fixed top-0 left-0 w-full z-40 bg-[#0a1a0f]/60 backdrop-blur-xl border-b border-white/5 transition-all duration-300 mt-8"> {/* mt-8 to account for ticker */}
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
 
                 {/* Logo Area */}
-                <div className="flex items-center gap-3 group cursor-pointer">
+                <Link to="/" className="flex items-center gap-3 group cursor-pointer">
                     <div className="relative">
                         <div className="absolute inset-0 bg-beetle-electric/50 blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <img
@@ -22,7 +24,7 @@ export default function Navbar({ onOpenBlueprint }) {
                     <div className="text-2xl font-black text-white tracking-tighter group-hover:text-beetle-electric transition-colors">
                         $ROLL
                     </div>
-                </div>
+                </Link>
 
                 {/* Desktop Actions */}
                 <div className="hidden md:flex items-center gap-6">
@@ -40,10 +42,11 @@ export default function Navbar({ onOpenBlueprint }) {
 
                     <div className="h-6 w-px bg-white/10"></div>
 
+                    {/* Only show Connect Button on App pages, or here if we want persistent connection. Standard: Keep it. */}
                     <ConnectButton showBalance={false} chainStatus="icon" accountStatus="avatar" />
 
                     <button
-                        onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => navigate('/app')}
                         className="bg-beetle-electric/10 text-beetle-electric border border-beetle-electric/50 px-6 py-2 rounded-lg font-bold hover:bg-beetle-electric hover:text-black transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] flex items-center gap-2"
                     >
                         <Rocket size={18} />
@@ -66,7 +69,7 @@ export default function Navbar({ onOpenBlueprint }) {
                     <div className="flex flex-col gap-4 mt-4 border-t border-white/10 pt-6">
                         <ConnectButton />
                         <button
-                            onClick={() => { document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); }}
+                            onClick={() => { navigate('/app'); setMobileMenuOpen(false); }}
                             className="bg-beetle-electric text-black font-black py-3 rounded-lg"
                         >
                             LAUNCH APP
