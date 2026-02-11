@@ -11,7 +11,7 @@ const SEED_SALE_ABI = [
 const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f"; // BSC Testnet Deployed
 
 export default function SeedSale() {
-    const { isConnected } = useAccount();
+    const { address, isConnected } = useAccount();
     const [amount, setAmount] = useState('0.1');
 
     // Read User Deposit
