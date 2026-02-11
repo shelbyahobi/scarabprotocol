@@ -8,9 +8,9 @@ const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
 const TOKENS_PER_BNB = 100000;
 
 const SEED_SALE_ABI = [
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "softCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [], "name": "raisedAmount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "saleFinalized", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "claimTokens", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     { "inputs": [], "name": "claimRefund", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
@@ -19,11 +19,13 @@ const SEED_SALE_ABI = [
 export default function MyAllocations() {
     const { address, isConnected } = useAccount();
 
-    // 1. READ USER DEPOSIT (Aggressive Polling)
+    const formattedAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
+
+    // 1. READ USER DEPOSIT (Aggressive Polling) - Using 'contributions'
     const { data: depositData, refetch: refetchDeposit, isFetching } = useContractRead({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
-        functionName: 'deposits',
+        functionName: 'contributions',
         args: [address],
         watch: true,
         cacheTime: 2000,
@@ -39,7 +41,7 @@ export default function MyAllocations() {
     const { data: raisedData } = useContractRead({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
-        functionName: 'raisedAmount',
+        functionName: 'totalRaised',
     });
     const { data: finalizedData } = useContractRead({
         address: SEED_SALE_ADDRESS,
