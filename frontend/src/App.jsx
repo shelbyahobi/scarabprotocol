@@ -53,7 +53,7 @@ function App() {
                         <div className="flex justify-center gap-8 mb-8">
                             <a href="https://x.com/roll_token" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Twitter (X)</a>
                             <a href="https://t.me/rolltoken" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Telegram</a>
-                            <a href="#" className="text-gray-400 hover:text-beetle-gold transition-colors">Etherscan</a>
+                            <a href="https://testnet.bscscan.com/address/0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
                         </div>
                         <p className="text-gray-700 text-sm">&copy; 2026 ROLL Token. Organic Commerce.</p>
                     </div>
