@@ -13,6 +13,24 @@
 <body>
   <div id="root"></div>
 
+  <!-- DEBUG: Error Trap -->
+  <div id="error-trap"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; color:red; z-index:9999; padding:20px; overflow:auto; font-family:monospace; white-space:pre-wrap;">
+  </div>
+  <script>
+    window.addEventListener('error', function (event) {
+      var trap = document.getElementById('error-trap');
+      trap.style.display = 'block';
+      trap.innerText += "ERROR: " + event.message + "\nAT: " + event.filename + ":" + event.lineno + "\n\n";
+      console.error(event.error);
+    });
+    window.addEventListener('unhandledrejection', function (event) {
+      var trap = document.getElementById('error-trap');
+      trap.style.display = 'block';
+      trap.innerText += "UNHANDLED PROMISE: " + (event.reason ? event.reason.message : event.reason) + "\n\n";
+    });
+  </script>
+
   <script>
     window.global = window;
     window.process = { env: {} };
