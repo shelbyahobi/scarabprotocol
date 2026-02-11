@@ -43,7 +43,7 @@ export default function Navbar({ onOpenBlueprint }) {
                     <ConnectButton showBalance={false} chainStatus="icon" accountStatus="avatar" />
 
                     <button
-                        onClick={() => document.getElementById('seed-sale')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })}
                         className="bg-beetle-electric/10 text-beetle-electric border border-beetle-electric/50 px-6 py-2 rounded-lg font-bold hover:bg-beetle-electric hover:text-black transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] flex items-center gap-2"
                     >
                         <Rocket size={18} />
@@ -65,7 +65,12 @@ export default function Navbar({ onOpenBlueprint }) {
                     <button onClick={() => { onOpenBlueprint(); setMobileMenuOpen(false); }} className="text-gray-300 hover:text-beetle-gold text-left">Blueprint</button>
                     <div className="flex flex-col gap-4 mt-4 border-t border-white/10 pt-6">
                         <ConnectButton />
-                        <button className="bg-beetle-electric text-black font-black py-3 rounded-lg">LAUNCH APP</button>
+                        <button
+                            onClick={() => { document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); }}
+                            className="bg-beetle-electric text-black font-black py-3 rounded-lg"
+                        >
+                            LAUNCH APP
+                        </button>
                     </div>
                 </div>
             )}
