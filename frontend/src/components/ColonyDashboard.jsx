@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractRead } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf } from 'lucide-react';
 
 // ABI for balanceOf
 const ERC20_ABI = [
@@ -14,6 +14,11 @@ const ERC20_ABI = [
     },
 ];
 
+// ABI for SeedSale deposits
+const SEED_SALE_ABI = [
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+];
+
 const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
 // Placeholder Address - UPDATE AFTER DEPLOYMENT
 const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -23,12 +28,23 @@ export default function ColonyDashboard() {
     const [tier, setTier] = useState('Guest'); // Guest, Scout, Guardian, Elder
     const [balance, setBalance] = useState(0n);
     const [selectedProduct, setSelectedProduct] = useState(null); // For Modal
+    const [activeTab, setActiveTab] = useState('market'); // 'market' or 'vision'
 
     // Check Token Balance
     const { data: tokenBalance } = useContractRead({
         address: TOKEN_ADDRESS,
         abi: ERC20_ABI,
         functionName: 'balanceOf',
+        args: [address],
+        enabled: isConnected && !!address,
+        watch: true,
+    });
+
+    // Check Seed Sale Deposit (For Early Access)
+    const { data: seedDeposit } = useContractRead({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'deposits',
         args: [address],
         enabled: isConnected && !!address,
         watch: true,
@@ -41,22 +57,30 @@ export default function ColonyDashboard() {
         }
 
         const bal = tokenBalance ? BigInt(tokenBalance) : 0n;
+        const deposit = seedDeposit ? BigInt(seedDeposit) : 0n;
+
         setBalance(bal);
 
-        // Tier Logic (Assuming 18 decimals)
+        // Tier Logic
         const decimals = 10n ** 18n;
-        const balFormatted = bal; // Raw balance
 
-        if (balFormatted >= 5000000n * decimals) {
-            setTier('Elder');
-        } else if (balFormatted >= 1000000n * decimals) {
-            setTier('Guardian');
-        } else if (balFormatted > 0n) {
-            setTier('Scout');
-        } else {
-            setTier('Guest'); // Connected but 0 balance
+        // If user contributed ANY amount to seed sale, they are at least a Scout
+        if (deposit > 0n) {
+            setTier('Scout'); // Seed contributors get immediate access
         }
-    }, [tokenBalance, isConnected, address]);
+
+        // Token Balance Overrides (if higher tier)
+        if (bal >= 5000000n * decimals) {
+            setTier('Elder');
+        } else if (bal >= 1000000n * decimals) {
+            setTier('Guardian');
+        } else if (bal > 0n && tier === 'Guest') { // Use bal if no seed deposit
+            setTier('Scout');
+        } else if (deposit === 0n && bal === 0n) {
+            setTier('Guest');
+        }
+
+    }, [tokenBalance, seedDeposit, isConnected, address]);
 
     const products = [
         {
@@ -94,8 +118,14 @@ export default function ColonyDashboard() {
         }
     ];
 
+    const communities = [
+        { id: 1, name: "Project Alpha (Arizona)", status: "Land Secured", type: "Solar Farm", slots: "10/50 Filled" },
+        { id: 2, name: "Haven Node (Portugal)", status: "Scouting", type: "Permaculture", slots: "Open Soon" },
+        { id: 3, name: "Bunker DAO (Swiss)", status: "Proposal", type: "Secure Storage", slots: "Voting" },
+    ];
+
     const handleBuy = (product) => {
-        if (tier === 'Guest') return; // Should be handled by UI state, but safety check
+        if (tier === 'Guest') return;
         setSelectedProduct(product);
     };
 
@@ -108,17 +138,31 @@ export default function ColonyDashboard() {
             <div className="container mx-auto px-4 relative z-10">
 
                 {/* Header Copy */}
-                <div className="text-center mb-16 max-w-4xl mx-auto">
+                <div className="text-center mb-12 max-w-4xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tighter">
                         The Grid is Fragile. <br />
                         <span className="text-beetle-gold">Your Portfolio Shouldn't Be.</span>
                     </h2>
-                    <p className="text-gray-400 text-lg leading-relaxed">
-                        Welcome to the world's first token-gated off-grid marketplace.
-                        Whether you are preparing your home for the future or building a remote colony,
-                        <strong>$ROLL</strong> is your currency for resilience. We’ve partnered with top manufacturers
-                        to bring our 'Colony Members' prices that the general public cannot access.
+                    <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                        Welcome to the <strong>Colony Command Center</strong>.
+                        Your gateway to off-grid resilience, exclusive hardware, and the future DAO network.
                     </p>
+
+                    {/* Navigation Tabs */}
+                    <div className="flex justify-center gap-4 mb-8">
+                        <button
+                            onClick={() => setActiveTab('market')}
+                            className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'market' ? 'bg-beetle-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                        >
+                            Utility Marketplace
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('vision')}
+                            className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'vision' ? 'bg-beetle-electric text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                        >
+                            DAO Vision & Map
+                        </button>
+                    </div>
                 </div>
 
                 {/* Status Bar */}
@@ -127,77 +171,140 @@ export default function ColonyDashboard() {
                         <div className={`w-3 h-3 rounded-full ${tier === 'Guest' ? 'bg-red-500' : 'bg-green-500 animate-pulse'}`}></div>
                         <span className="text-gray-400 font-mono text-sm uppercase">Colony Status:</span>
                         <span className={`font-bold ${tier === 'Guest' ? 'text-white' : 'text-beetle-electric'}`}>
-                            {tier.toUpperCase()}
+                            {tier.toUpperCase()} {tier !== 'Guest' && '✓'}
                         </span>
                     </div>
                     {tier === 'Guest' && (
                         <div className="hidden md:flex text-xs text-beetle-gold animate-pulse">
-                            Connect Wallet to Unlock Tiers
+                            Seed Contributors get Instant Access
                         </div>
                     )}
                 </div>
 
-                {/* Product Grid */}
-                <div className="grid md:grid-cols-3 gap-8">
-                    {products.map((product) => {
-                        const isLocked = tier === 'Guest';
-                        // Ideally checking tiers: Guest < Scout < Guardian < Elder
-                        // Simple check: if product requires Elder but user is Scout -> Locked
-                        // For MVP: If Guest -> Locked. If Holder -> Unlocked (Logic simplified for now, or strict?)
-                        // User prompt imply: "Seed Holder (Scout)" gets 5%, "Whale (Elder)" gets 25%.
-                        // Let's implement strict tier checking if we can, or just keep it simple:
-                        // Guest = Locked. Everyone else = Unlocked for now (or strictly check minTier?)
-                        // Let's do simple: Guest sees Public Price. Holder sees Member Price.
+                {/* --- TAB: MARKETPLACE --- */}
+                {activeTab === 'market' && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+                        className="grid md:grid-cols-3 gap-8"
+                    >
+                        {products.map((product) => {
+                            const isLocked = tier === 'Guest';
+                            // Simple view logic: Guests see blurred "Locked" state or just "Connect"
+                            // User request: "Glimpse of app". So show the item but lock the button.
 
-                        return (
-                            <div key={product.id} className="group bg-[#0a1a0f]/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-electric/50 transition-all hover:-translate-y-2 relative">
+                            return (
+                                <div key={product.id} className="group bg-[#0a1a0f]/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-electric/50 transition-all hover:-translate-y-2 relative">
 
-                                <div className="h-64 bg-black/40 relative flex items-center justify-center text-6xl">
-                                    {product.image}
-                                    <div className="absolute top-4 right-4 bg-beetle-gold text-black text-xs font-black px-3 py-1 rounded-full z-10">
-                                        {product.discount}
-                                    </div>
-                                    {isLocked && (
-                                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                                            <Lock className="text-white/50 w-12 h-12" />
+                                    <div className="h-64 bg-black/40 relative flex items-center justify-center text-6xl">
+                                        {product.image}
+                                        <div className="absolute top-4 right-4 bg-beetle-gold text-black text-xs font-black px-3 py-1 rounded-full z-10">
+                                            {product.discount}
                                         </div>
-                                    )}
-                                </div>
-
-                                <div className="p-6">
-                                    <div className="text-xs text-beetle-electric font-mono mb-2 uppercase tracking-widest">{product.minTier} Tier</div>
-                                    <h3 className="text-2xl font-bold text-white mb-4">{product.name}</h3>
-
-                                    <div className="space-y-1 mb-6">
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Public Price:</span>
-                                            <span className="text-gray-400 line-through">{product.pricePublic}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-beetle-gold font-bold">Colony Price:</span>
-                                            <span className="text-white font-black text-lg">{product.priceMember}</span>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        onClick={() => !isLocked && handleBuy(product)}
-                                        disabled={isLocked}
-                                        className={`w-full font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${isLocked
-                                            ? 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
-                                            : 'bg-beetle-electric text-black hover:bg-white border border-beetle-electric'
-                                            }`}
-                                    >
-                                        {isLocked ? (
-                                            <>Connect to Unlock</>
-                                        ) : (
-                                            <> <ShoppingCart size={18} /> Reveal Code </>
+                                        {isLocked && (
+                                            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center flex-col gap-2">
+                                                <Lock className="text-white/70 w-10 h-10 mb-2" />
+                                                <span className="text-white font-bold bg-black/50 px-3 py-1 rounded text-sm">Members Only</span>
+                                            </div>
                                         )}
-                                    </button>
+                                    </div>
+
+                                    <div className="p-6">
+                                        <div className="text-xs text-beetle-electric font-mono mb-2 uppercase tracking-widest">{product.minTier} Tier</div>
+                                        <h3 className="text-2xl font-bold text-white mb-4">{product.name}</h3>
+
+                                        <div className="space-y-1 mb-6">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-gray-500">Public Price:</span>
+                                                <span className="text-gray-400 line-through">{product.pricePublic}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-beetle-gold font-bold">Colony Price:</span>
+                                                <span className="text-white font-black text-lg">{product.priceMember}</span>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={() => !isLocked && handleBuy(product)}
+                                            disabled={isLocked}
+                                            className={`w-full font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${isLocked
+                                                ? 'bg-white/5 text-gray-400 cursor-not-allowed border border-white/5'
+                                                : 'bg-beetle-electric text-black hover:bg-white border border-beetle-electric'
+                                                }`}
+                                        >
+                                            {isLocked ? (
+                                                <>Join Seed to Unlock</>
+                                            ) : (
+                                                <> <ShoppingCart size={18} /> Reveal Code </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </motion.div>
+                )}
+
+                {/* --- TAB: DAO VISION --- */}
+                {activeTab === 'vision' && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
+                        className="bg-black/40 border border-white/10 rounded-3xl p-8 md:p-12 text-left"
+                    >
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h3 className="text-3xl font-bold text-white mb-4">Phase 4: <span className="text-beetle-electric">The Physical Network</span></h3>
+                                <p className="text-gray-400 mb-6 leading-relaxed">
+                                    Our ultimate goal is to establish a DAO that owns and operates self-sufficient, off-grid communities.
+                                    $ROLL holders will have governance rights to vote on land acquisitions, resource allocation,
+                                    and even priority access to physical residency.
+                                </p>
+                                <ul className="space-y-4 mb-8">
+                                    <li className="flex items-center gap-3 text-gray-300">
+                                        <ShieldCheck className="text-beetle-gold" /> Legal Entity Formation (Wyoming DAO LLC)
+                                    </li>
+                                    <li className="flex items-center gap-3 text-gray-300">
+                                        <Map className="text-beetle-gold" /> Global Land Scouting & Acquisition
+                                    </li>
+                                    <li className="flex items-center gap-3 text-gray-300">
+                                        <Users className="text-beetle-gold" /> "Refer-a-Worker" Bounty Program
+                                    </li>
+                                    <li className="flex items-center gap-3 text-gray-300">
+                                        <Leaf className="text-beetle-gold" /> Permaculture & Energy Independence
+                                    </li>
+                                </ul>
+
+                                <button className="bg-white/10 text-white px-6 py-3 rounded-xl font-bold border border-white/5 hover:bg-white/20 transition-all flex items-center gap-2">
+                                    Read the Whitepaper <ExternalLink size={16} />
+                                </button>
+                            </div>
+
+                            <div className="bg-[#0a1a0f] rounded-2xl p-6 border border-beetle-electric/20 relative overflow-hidden">
+                                {/* Fake Map Visualization */}
+                                <div className="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-cover opacity-10 bg-center"></div>
+
+                                <h4 className="text-beetle-electric font-mono mb-4 uppercase tracking-widest relative z-10">Active Proposals</h4>
+                                <div className="space-y-3 relative z-10">
+                                    {communities.map(c => (
+                                        <div key={c.id} className="bg-black/80 p-4 rounded-xl border border-white/5 flex justify-between items-center hover:border-beetle-gold/50 cursor-pointer transition-colors">
+                                            <div>
+                                                <div className="text-white font-bold">{c.name}</div>
+                                                <div className="text-xs text-gray-500">{c.type}</div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-beetle-gold text-xs font-bold">{c.status}</div>
+                                                <div className="text-[10px] text-gray-600">{c.slots}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-6 text-center text-xs text-gray-500">
+                                    *Map data is for demonstration of Phase 4 goals. Real-time DAO map coming Q4 2026.
                                 </div>
                             </div>
-                        );
-                    })}
-                </div>
+                        </div>
+                    </motion.div>
+                )}
+
             </div>
 
             {/* Discount Code Modal */}
