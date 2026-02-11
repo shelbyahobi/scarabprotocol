@@ -100,7 +100,7 @@ export default function ColonyDashboard() {
     };
 
     return (
-        <section className="py-24 relative overflow-hidden bg-[#0c0c0c]">
+        <section id="marketplace" className="py-24 relative overflow-hidden bg-[#0c0c0c]">
 
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-beetle-blue/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -183,8 +183,8 @@ export default function ColonyDashboard() {
                                         onClick={() => !isLocked && handleBuy(product)}
                                         disabled={isLocked}
                                         className={`w-full font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${isLocked
-                                                ? 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
-                                                : 'bg-beetle-electric text-black hover:bg-white border border-beetle-electric'
+                                            ? 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
+                                            : 'bg-beetle-electric text-black hover:bg-white border border-beetle-electric'
                                             }`}
                                     >
                                         {isLocked ? (

@@ -39,10 +39,10 @@ export default function Hero({ onOpenBlueprint }) {
                             BUY $ROLL
                         </button>
                         <button
-                            onClick={onOpenBlueprint}
-                            className="bg-black/40 backdrop-blur-md text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:border-beetle-gold/50 hover:text-beetle-gold transition-all"
+                            onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="bg-black/40 backdrop-blur-md text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:border-beetle-gold/50 hover:text-beetle-gold transition-all flex items-center gap-2"
                         >
-                            Explore Marketplace
+                            Enter Colony
                         </button>
                     </div>
 

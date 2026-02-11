@@ -1,18 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
+import { Clock, Lock, CheckCircle } from 'lucide-react';
 
 // Valid ABI for SeedSale (placeholder address)
 const SEED_SALE_ABI = [
     { "inputs": [], "name": "deposit", "outputs": [], "stateMutability": "payable", "type": "function" },
     { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [], "name": "hardCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [], "name": "hardCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f"; // BSC Testnet Deployed
 
 export default function SeedSale() {
     const { address, isConnected } = useAccount();
     const [amount, setAmount] = useState('0.1');
+
+    // Timer Logic
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+    useEffect(() => {
+        // Mock End Date: 7 Days from now (Static for demo urgency)
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 7);
+
+        const interval = setInterval(() => {
+            const now = new Date();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((difference / 1000 / 60) % 60);
+                const seconds = Math.floor((difference / 1000) % 60);
+                setTimeLeft({ days, hours, minutes, seconds });
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     // Read Contract Stats
     const { data: totalRaisedData } = useContractRead({
@@ -62,17 +88,43 @@ export default function SeedSale() {
     const pendingRoll = (userBnB * 5000000).toLocaleString(); // 5M per BNB
 
     return (
-        <div className="max-w-4xl mx-auto bg-beetle-green/30 backdrop-blur-lg border border-beetle-gold/30 rounded-3xl p-8 md:p-12 shadow-2xl">
-            <div className="flex flex-col md:flex-row gap-12">
-                <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="bg-beetle-gold text-black text-xs font-bold px-2 py-1 rounded">LIVE NOW</span>
-                        <h3 className="text-3xl font-bold text-beetle-gold">Seed Round (Stage 1)</h3>
+        <div className="max-w-6xl mx-auto">
+            {/* Header: Urgency */}
+            <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter">
+                    Seed Funding <span className="text-beetle-gold">Access</span>
+                </h2>
+                <div className="flex justify-center gap-4 text-2xl md:text-4xl font-mono text-white font-bold">
+                    <div className="bg-black/50 border border-white/10 px-4 py-2 rounded-xl">
+                        {String(timeLeft.days).padStart(2, '0')}<span className="text-sm text-gray-500 block">DAYS</span>
                     </div>
-                    <p className="text-gray-300 mb-6">
-                        Early community access. Funds raised are locked into Liquidity for 1 Year.
-                        <br /><span className="text-sm text-gray-500">Stage 1 Price: Best Value • Stage 2: +10% Price • Stage 3: Listed</span>
-                    </p>
+                    <div className="bg-black/50 border border-white/10 px-4 py-2 rounded-xl">
+                        {String(timeLeft.hours).padStart(2, '0')}<span className="text-sm text-gray-500 block">HRS</span>
+                    </div>
+                    <div className="bg-black/50 border border-white/10 px-4 py-2 rounded-xl">
+                        {String(timeLeft.minutes).padStart(2, '0')}<span className="text-sm text-gray-500 block">MIN</span>
+                    </div>
+                    <div className="bg-black/50 border border-white/10 px-4 py-2 rounded-xl text-beetle-electric">
+                        {String(timeLeft.seconds).padStart(2, '0')}<span className="text-sm text-gray-500 block">SEC</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+
+                {/* Round 1 (Live) */}
+                <div className="col-span-1 lg:col-span-2 bg-gradient-to-br from-beetle-green/20 to-black border border-beetle-gold/50 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)]">
+                    <div className="absolute top-0 right-0 bg-beetle-gold text-black font-bold px-4 py-2 rounded-bl-xl z-20">
+                        ROUND 1: LIVE
+                    </div>
+
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 bg-beetle-gold rounded-full flex items-center justify-center text-black font-black text-xl">1</div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-white">The "Architect" Round</h3>
+                            <p className="text-beetle-gold">Current Price: 5,000,000 ROLL / BNB</p>
+                        </div>
+                    </div>
 
                     <div className="mb-8">
                         <div className="flex justify-between text-sm mb-2 text-gray-400">
@@ -87,65 +139,75 @@ export default function SeedSale() {
                         </div>
                     </div>
 
-                    {/* --- NEW: User Allocation Display --- */}
-                    {isConnected && userBnB > 0 && (
-                        <div className="bg-white/5 border border-beetle-gold/30 rounded-xl p-4 animate-fade-in">
-                            <h4 className="text-beetle-gold font-bold mb-2 flex items-center gap-2">
-                                <span>🎉</span> Your Reserved Allocation
-                            </h4>
-                            <div className="flex justify-between items-end">
-                                <div>
-                                    <div className="text-xs text-gray-400">Contributed</div>
-                                    <div className="text-white font-mono">{userBnB} BNB</div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-xs text-gray-400">Pending Claim</div>
-                                    <div className="text-2xl font-black text-white text-shadow-glow">{pendingRoll} ROLL</div>
-                                </div>
-                            </div>
-                            <div className="mt-3 text-xs text-gray-500 bg-black/30 p-2 rounded">
-                                *Tokens will be claimable here exactly 24 hours after the HardCap is hit (or Sale Ends).
-                            </div>
+                    <div className="bg-black/40 rounded-2xl p-6 border border-white/5 mb-6">
+                        <label className="block text-sm text-gray-400 mb-2">Contribution (BNB)</label>
+                        <div className="flex gap-2 mb-4">
+                            <input
+                                type="number"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                className="w-full bg-black border border-beetle-gold/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-beetle-gold"
+                                placeholder="0.1"
+                            />
+                            <div className="flex items-center justify-center bg-gray-800 rounded-xl px-4 font-bold text-gray-400">BNB</div>
                         </div>
-                    )}
 
-                </div>
-
-                <div className="flex-1 bg-black/40 rounded-2xl p-6 border border-white/5">
-                    <label className="block text-sm text-gray-400 mb-2">Contribution Amount (BNB)</label>
-                    <div className="flex gap-2 mb-4">
-                        <input
-                            type="number"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            className="w-full bg-black border border-beetle-gold/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-beetle-gold"
-                            placeholder="0.1"
-                        />
-                        <div className="flex items-center justify-center bg-gray-800 rounded-xl px-4 font-bold text-gray-400">
-                            BNB
-                        </div>
+                        {!isConnected ? (
+                            <button className="w-full bg-white/5 text-gray-400 font-bold py-4 rounded-xl border border-white/10 cursor-not-allowed">
+                                Connect Wallet to Join
+                            </button>
+                        ) : (
+                            <button
+                                disabled={!write || isLoading || isTxLoading}
+                                onClick={() => write?.()}
+                                className="w-full bg-beetle-gold text-black font-black text-xl py-4 rounded-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isTxLoading ? 'Confirming...' : 'JOIN ROUND 1'}
+                            </button>
+                        )}
+                        {isSuccess && <div className="mt-2 text-green-400 text-center text-sm">Contribution Confirmed!</div>}
                     </div>
 
-                    {!isConnected ? (
-                        <div className="text-center p-4 bg-yellow-500/20 text-yellow-200 rounded-xl border border-yellow-500/50">
-                            Please Connect Wallet
-                        </div>
-                    ) : (
-                        <button
-                            disabled={!write || isLoading || isTxLoading}
-                            onClick={() => write?.()}
-                            className="w-full bg-beetle-gold text-black font-black text-xl py-4 rounded-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
-                        >
-                            {isTxLoading ? 'Confirming...' : 'DEPOSIT BNB'}
-                        </button>
-                    )}
-
-                    {isSuccess && (
-                        <div className="mt-4 p-3 bg-green-500/20 text-green-400 text-center rounded-lg border border-green-500/50">
-                            Contribution Successful! Rolling...
+                    {isConnected && userBnB > 0 && (
+                        <div className="flex items-center justify-between bg-beetle-electric/10 border border-beetle-electric/30 rounded-xl p-4">
+                            <div>
+                                <div className="text-xs text-beetle-electric uppercase">Your Allocation</div>
+                                <div className="text-white font-black text-xl">{pendingRoll} ROLL</div>
+                            </div>
+                            <CheckCircle className="text-beetle-electric" />
                         </div>
                     )}
                 </div>
+
+                {/* Future Rounds (Locked) */}
+                <div className="space-y-4">
+
+                    {/* Round 2 */}
+                    <div className="bg-black/40 border border-white/5 rounded-2xl p-6 relative opacity-70">
+                        <div className="absolute top-4 right-4 text-gray-500"><Lock size={20} /></div>
+                        <h3 className="text-xl font-bold text-gray-500 mb-1">Round 2: "Builder"</h3>
+                        <p className="text-sm text-gray-600 mb-4">Starts when Round 1 fills.</p>
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-500">Price:</span>
+                            <span className="text-gray-400 line-through">4,500,000 ROLL / BNB</span>
+                        </div>
+                        <div className="mt-2 text-red-500 text-xs font-bold">+10% MORE EXPENSIVE</div>
+                    </div>
+
+                    {/* Round 3 */}
+                    <div className="bg-black/40 border border-white/5 rounded-2xl p-6 relative opacity-70">
+                        <div className="absolute top-4 right-4 text-gray-500"><Lock size={20} /></div>
+                        <h3 className="text-xl font-bold text-gray-500 mb-1">Round 3: "Public"</h3>
+                        <p className="text-sm text-gray-600 mb-4">DEX Listing Price.</p>
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-500">Price:</span>
+                            <span className="text-gray-400 line-through">2,500,000 ROLL / BNB</span>
+                        </div>
+                        <div className="mt-2 text-red-500 text-xs font-bold">+50% MORE EXPENSIVE</div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     )
