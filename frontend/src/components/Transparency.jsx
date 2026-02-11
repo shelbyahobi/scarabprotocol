@@ -7,13 +7,33 @@ export default function Transparency() {
 
             <div className="container mx-auto px-4 relative z-10">
 
+                <div className="grid md:grid-cols-2 gap-12 items-center mb-24 cursor-pointer hover:scale-[1.02] transition-transform duration-500">
+                    <div className="order-2 md:order-1">
+                        <img src="/circular_economy.png" alt="Circular Economy" className="rounded-3xl border border-beetle-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.1)] w-full" />
+                    </div>
+                    <div className="order-1 md:order-2">
+                        <h3 className="text-3xl font-black text-white mb-4">The <span className="text-beetle-electric">Circular Economy</span></h3>
+                        <p className="text-gray-400 text-lg leading-relaxed mb-6">
+                            Every trade feeds the colony. A <span className="text-white font-bold">5% Tax</span> funds the acquisition of high-utility RWA (Real World Assets) like Solar Generators and Water filters.
+                        </p>
+                        <p className="text-gray-400 text-lg leading-relaxed">
+                            These assets are then offered to holders at steep discounts, creating a self-sustaining loop of value that exists <strong>independently of market speculation.</strong>
+                        </p>
+                    </div>
+                </div>
+
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tighter">
                         Immutable <span className="text-beetle-gold">Security</span>
                     </h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+                    <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-12">
                         We don't trust. We verify. The ROLL Protocol is hardened by cryptographic guarantees.
                     </p>
+
+                    <div className="max-w-4xl mx-auto mb-16 cursor-pointer hover:scale-[1.02] transition-transform duration-500">
+                        <img src="/security_shield.png" alt="Security Shield Timeline" className="rounded-3xl border border-beetle-electric/20 shadow-[0_0_50px_rgba(0,240,255,0.1)] w-full" />
+                        <p className="text-center text-gray-500 mt-4 text-sm font-mono">Figure 1: The 48-Hour Governance Timelock Protocol</p>
+                    </div>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
