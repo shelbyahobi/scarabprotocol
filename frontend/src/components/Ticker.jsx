@@ -12,6 +12,8 @@ export default function Ticker() {
                     </span>
                     <span>SUPPLY: <span className="text-white">1,000,000,000</span></span>
                     <span className="text-gray-600">|</span>
+                    <span>RWA RESERVE: <span className="text-beetle-gold">$ 0.00</span></span>
+                    <span className="text-gray-600">|</span>
                     <span>MARKET CAP: <span className="text-white">$ ---</span></span>
                     <span className="text-gray-600">|</span>
                     <span>LIQUIDITY: <span className="text-beetle-electric">LOCKED (1 YR)</span></span>
