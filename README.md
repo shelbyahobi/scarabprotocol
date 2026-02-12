@@ -18,18 +18,44 @@ Our mission is to create a closed-loop economy where the token is used to:
 
 ## 🏗 Architecture
 
-The platform consists of two core pillars:
+The ROLL Protocol consists of a cohesive ecosystem of smart contracts and dApps:
 
-### 1. The Launchpad (DApp)
-A decentralized application for fair token distribution and governance.
-*   **Smart Contract**: `SeedSale.sol` with automated soft-cap protection (refunds).
-*   **Dashboard**: Real-time "Command Center" for tracking allocations and voting power.
-*   **Gating**: `ColonyDashboard.jsx` restricts access to verified token holders (Scouts).
+### System Diagram
+```mermaid
+graph TD
+    User[User Wallet] -->|Buy/Claim| SeedSale[SeedSale.sol]
+    User -->|View Dashboard| DApp[React Frontend]
+    SeedSale -->|Mint/Transfer| Token[ROLLToken.sol]
+    Token -->|Gate Access| Colony[ColonyDashboard.jsx]
+    Token -->|100% Liquidity| Locker[LiquidityLocker.sol]
+```
 
-### 2. The Colony (Utility)
-A tokengated marketplace and governance forum.
-*   **Marketplace**: Users burn or hold $ROLL to access discounts on partner hardware.
-*   **Proposals**: On-chain voting for "Seed Phase 2" capital allocation (Real Estate/Construction).
+### Core Components
+1.  **The Launchpad (DApp)**: React/Vite/Wagmi frontend.
+    *   **Smart Contract**: `SeedSale.sol` (0x4D9c...8c9f) - Manages deposits, soft cap (50 BNB), and refunds.
+    *   **Gating**: `ColonyDashboard.jsx` - Unlocks specific UI elements based on `contributions` mapping.
+2.  **The Token ($ROLL)**: Standard BEP-20 with fixed supply.
+    *   **Address**: `0x...` (Pending Deployment)
+3.  **The Colony (Utility)**: Token-gated access to discounts.
+
+---
+
+## 📊 Tokenomics
+
+A fixed-supply model designed for scarcity and value retention.
+
+| Category | Allocation | Amount | Vesting/Lockup |
+| :--- | :--- | :--- | :--- |
+| **Total Supply** | 100% | 1,000,000,000 ROLL | Fixed |
+| **Seed Sale** | 30% | 300,000,000 ROLL | 10% TGE, then linear 9 mos |
+| **Liquidity** | 20% | 200,000,000 ROLL | **LOCKED 1 YEAR** (On-Chain) |
+| **Eco-Mining** | 30% | 300,000,000 ROLL | Minted via "Proof of Work" (Hardware) |
+| **Marketing** | 10% | 100,000,000 ROLL | 3-month cliff, then 24 mos vesting |
+| **Team** | 10% | 100,000,000 ROLL | **LOCKED 6 MONTHS**, then 36 mos vesting |
+
+### Grant & Emission Mechanics
+*   **Eco-Mining**: Released only when new "BeetleBox" hardware nodes come online (Physical Proof of Work).
+*   **Burn Mechanism**: Unsold Seed Sale tokens are burned to increase scarcity.
 
 ---
 

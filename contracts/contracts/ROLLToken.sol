@@ -27,12 +27,14 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
     // Mappings
     mapping(address => bool) private _isExcludedFromFees;
     mapping(address => bool) private _isExcludedFromLimits;
+    mapping(address => bool) private _blacklist; // Audit Fix: Blacklist Storage
     mapping(address => bool) public ammPairs; // Automated Market Maker Pairs
 
     event TradingEnabled(uint256 blockNumber);
     event LimitsRemoved();
     event ExcludedFromFees(address indexed account, bool isExcluded);
     event ExcludedFromLimits(address indexed account, bool isExcluded);
+    event Blacklisted(address indexed account); // Audit Fix: Event Definition
 
     constructor(
         address _marketingWallet,
@@ -155,6 +157,8 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
         address to,
         uint256 amount
     ) internal override nonReentrant { // Audit Fix: Reentrancy Guard
+        require(!_blacklist[from] && !_blacklist[to], "Blacklisted"); // Audit Fix: Block Blacklisted
+
         if (amount == 0) {
             super._update(from, to, 0);
             return;
