@@ -9,6 +9,9 @@ import BlueprintModal from './components/BlueprintModal';
 import ColonyDashboard from './components/ColonyDashboard';
 import Roadmap from './components/Roadmap';
 import MyAllocations from './components/MyAllocations';
+import Ecoloop from './components/Ecoloop';
+import Tokenomics from './components/Tokenomics';
+import UseOfFunds from './components/UseOfFunds';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
 
@@ -18,33 +21,46 @@ function LandingPage({ onOpenBlueprint }) {
     return (
         <>
             <Navbar onOpenBlueprint={onOpenBlueprint} isLanding={true} />
-            <main className="pt-32">
+            <main className="pt-20">
                 <Hero onOpenBlueprint={onOpenBlueprint} />
 
-                {/* NEW: Seed Mechanics & Whitepaper Preview */}
-                <div className="container mx-auto px-4 py-12">
-                    <div className="grid md:grid-cols-2 gap-12 mb-24">
+                {/* 1. THE VISION (Why) */}
+                <Ecoloop />
 
-                        {/* Mechanics */}
-                        <div className="bg-black/40 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
-                            <div className="flex items-center gap-3 mb-6">
-                                <Shield className="text-beetle-gold" size={28} />
-                                <h3 className="text-2xl font-bold text-white">Seed Sale Mechanics</h3>
-                            </div>
-                            <ul className="space-y-4 text-gray-400">
-                                <li className="flex gap-3">
-                                    <span className="text-beetle-electric font-bold">01.</span>
-                                    <span><strong>Soft Cap Protection:</strong> If the minimum goal isn't met, the smart contract automatically enables 100% refunds.</span>
+                {/* 2. THE DATA (Tokenomics) */}
+                <Tokenomics />
+
+                {/* 3. THE TRUST (Use of Funds) */}
+                <UseOfFunds />
+
+                {/* 4. THE MECHANICS (How to Buy - Teaser) */}
+                <div className="container mx-auto px-4 py-24">
+                    <div className="grid md:grid-cols-2 gap-12 bg-black/40 border border-white/10 rounded-3xl p-12 backdrop-blur-md relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-beetle-gold/10 rounded-full blur-[80px]"></div>
+
+                        <div>
+                            <h3 className="text-3xl font-black text-white mb-6">Seed Sale Mechanics</h3>
+                            <ul className="space-y-6 text-gray-400">
+                                <li className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-beetle-electric/20 flex items-center justify-center text-beetle-electric font-bold">1</div>
+                                    <div>
+                                        <strong className="text-white block">Soft Cap Protection</strong>
+                                        If the minimum goal isn't met, the smart contract automatically enables 100% refunds. Verified by audit.
+                                    </div>
                                 </li>
-                                <li className="flex gap-3">
-                                    <span className="text-beetle-electric font-bold">02.</span>
-                                    <span><strong>Instant Allocation:</strong> Tokens are reserved immediately upon contribution. Claiming opens after the sale finalizes.</span>
-                                </li>
-                                <li className="flex gap-3">
-                                    <span className="text-beetle-electric font-bold">03.</span>
-                                    <span><strong>DAO Governance:</strong> Seed contributors get "Scout" status, voting rights on the first physical land acquisition.</span>
+                                <li className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-beetle-electric/20 flex items-center justify-center text-beetle-electric font-bold">2</div>
+                                    <div>
+                                        <strong className="text-white block">Instant Allocation</strong>
+                                        Tokens are reserved immediately. Connect via the App to see your "Reserved Balance" update in real-time.
+                                    </div>
                                 </li>
                             </ul>
+                            <div className="mt-8">
+                                <Link to="/app" className="inline-flex items-center gap-2 text-beetle-gold font-bold hover:gap-4 transition-all">
+                                    Go to Launchpad <Rocket size={16} />
+                                </Link>
+                            </div>
                         </div>
 
                         {/* Whitepaper Glimpse */}
@@ -59,7 +75,7 @@ function LandingPage({ onOpenBlueprint }) {
                             <p className="text-gray-400 mb-6">
                                 Read the full technical documentation. From the "Dung Beetle" deflator mechanism to the "Ecoloop" physical hardware network.
                             </p>
-                            <div className="flex gap-4">
+                            <div className="flex gap-4 flex-wrap">
                                 <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Tokenomics</span>
                                 <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Roadmap 2026</span>
                                 <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Legal</span>

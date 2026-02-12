@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractReads } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote } from 'lucide-react';
 
 // ABI for balanceOf
 const ERC20_ABI = [
@@ -14,9 +14,9 @@ const ERC20_ABI = [
     },
 ];
 
-// ABI for SeedSale deposits
+// ABI for SeedSale deposits (FIXED: Using 'contributions' to match deployed contract)
 const SEED_SALE_ABI = [
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
 const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
@@ -27,7 +27,8 @@ export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();
     const [tier, setTier] = useState('Guest'); // Guest, Scout, Guardian, Elder
     const [selectedProduct, setSelectedProduct] = useState(null); // For Modal
-    const [activeTab, setActiveTab] = useState('market'); // 'market' or 'vision'
+    const [activeTab, setActiveTab] = useState('market'); // 'market', 'vision', 'governance'
+    const [userContribution, setUserContribution] = useState(0n);
 
     // Batch Read for Efficiency & Reliability
     const { data: contractData, isError, isLoading } = useContractReads({
@@ -41,7 +42,7 @@ export default function ColonyDashboard() {
             {
                 address: SEED_SALE_ADDRESS,
                 abi: SEED_SALE_ABI,
-                functionName: 'deposits',
+                functionName: 'contributions', // FIXED from 'deposits'
                 args: [address],
             }
         ],
@@ -58,12 +59,7 @@ export default function ColonyDashboard() {
         if (contractData) {
             const tokenBalance = contractData[0]?.result ? BigInt(contractData[0].result) : 0n;
             const seedDeposit = contractData[1]?.result ? BigInt(contractData[1].result) : 0n;
-
-            // DEBUG LOGS (Safe Access)
-            console.log("Connected Address:", address);
-            console.log("Token Balance:", tokenBalance.toString());
-            console.log("Seed Deposit:", seedDeposit.toString());
-            console.log("Raw Contract Data:", contractData);
+            setUserContribution(seedDeposit);
 
             // Tier Logic
             const decimals = 10n ** 18n;
@@ -76,7 +72,7 @@ export default function ColonyDashboard() {
             }
             // Priority 2: Seed Contributor (Any Amount) or Token Holder
             else if (seedDeposit > 0n || tokenBalance > 0n) {
-                setTier('Scout');
+                setTier('Scout'); // Seed Buyers get Scout access immediately
             }
             // Default: Guest
             else {
@@ -153,7 +149,7 @@ export default function ColonyDashboard() {
                     </p>
 
                     {/* Navigation Tabs */}
-                    <div className="flex justify-center gap-4 mb-8">
+                    <div className="flex justify-center gap-4 mb-8 flex-wrap">
                         <button
                             onClick={() => setActiveTab('market')}
                             className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'market' ? 'bg-beetle-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
@@ -166,6 +162,14 @@ export default function ColonyDashboard() {
                         >
                             DAO Vision & Map
                         </button>
+                        {tier !== 'Guest' && (
+                            <button
+                                onClick={() => setActiveTab('governance')}
+                                className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'governance' ? 'bg-beetle-green text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                            >
+                                Governance (Beta)
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -181,6 +185,11 @@ export default function ColonyDashboard() {
                     {tier === 'Guest' && (
                         <div className="hidden md:flex text-xs text-beetle-gold animate-pulse">
                             Seed Contributors get Instant Access
+                        </div>
+                    )}
+                    {tier !== 'Guest' && (
+                        <div className="hidden md:flex text-xs text-green-400 font-bold items-center gap-2">
+                            <ShieldCheck size={14} /> Access Unlocked
                         </div>
                     )}
                 </div>
@@ -310,6 +319,32 @@ export default function ColonyDashboard() {
                                     *Map data is for demonstration of Phase 4 goals. Real-time DAO map coming Q4 2026.
                                 </div>
                             </div>
+                        </div>
+                    </motion.div>
+                )}
+
+                {/* --- TAB: GOVERNANCE (NEW) --- */}
+                {activeTab === 'governance' && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
+                        className="bg-black/40 border border-white/10 rounded-3xl p-8 md:p-12 text-center"
+                    >
+                        <Vote className="w-16 h-16 text-beetle-green mx-auto mb-6" />
+                        <h3 className="text-3xl font-bold text-white mb-4">Your Voice Power</h3>
+                        <p className="text-gray-400 mb-8 max-w-lg mx-auto">
+                            As a Seed Contributor, you don't just get tokens. You get a seat at the table.
+                            Your 'Scout' status grants you early voting rights on the first hardware deployment location.
+                        </p>
+
+                        <div className="bg-[#0a1a0f] border border-beetle-green/30 inline-flex flex-col p-6 rounded-2xl mb-8">
+                            <span className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-2">Current Voting Power</span>
+                            <span className="text-4xl font-black text-white">{(Number(userContribution) / 10 ** 18 * 10).toFixed(0)} <span className="text-lg text-beetle-green">VP</span></span>
+                        </div>
+
+                        <div>
+                            <button className="bg-beetle-green/20 text-beetle-green border border-beetle-green/50 px-8 py-3 rounded-xl font-bold hover:bg-beetle-green hover:text-black transition-all">
+                                View Active Proposals (Coming Soon)
+                            </button>
                         </div>
                     </motion.div>
                 )}
