@@ -125,18 +125,18 @@ export default function ColonyDashboard() {
             priceMember: "$600 (Equiv. ROLL)",
             retailPrice: "$1,200",
             discount: "50% OFF",
-            image: "☀️",
+            image: "/solar-kit-prototype.png",
             minTier: "Guardian",
             code: "ROLL-SOLAR-2026",
             link: "https://example-solar-partner.com"
         },
         {
             id: 4,
-            name: "Startlink Auto-Pay",
+            name: "Starlink Auto-Pay",
             priceMember: "Data Rebate",
             retailPrice: "$120/mo",
             discount: "Pay w/ ROLL",
-            image: "📡",
+            image: "/starlink-kit-prototype.png",
             minTier: "Elder",
             code: "ROLL-STARLINK-VIP",
             link: "https://starlink.com"
