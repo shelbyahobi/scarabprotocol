@@ -91,14 +91,13 @@ export default function ColonyDashboard() {
 
     }, [contractData, isConnected, address]);
 
-    // --- MOCK DATA ---
     const hardwareProducts = [
         {
             id: 1,
             name: "BeetleBox v1 (Scarab)",
             price: "2,500 ROLL",
             retailPrice: "$450 USD",
-            image: "/hero.png",
+            image: "/beetlebox-prototype.png",
             features: ["Solar MPPT", "LoRaWAN Gateway", "Bio-Sensor"],
             stock: "Pre-Order Q3",
             minTier: "Scout"
@@ -108,7 +107,7 @@ export default function ColonyDashboard() {
             name: "Hydro-Bit Sensor",
             price: "500 ROLL",
             retailPrice: "$99 USD",
-            image: "/logo_eco.jpg", // Placeholder
+            image: "/hydrobit-prototype.png",
             features: ["Water Flow Meter", "Purity Sensor", "WiFi"],
             stock: "Design Phase",
             minTier: "Scout"
