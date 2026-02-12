@@ -9,7 +9,7 @@ import BlueprintModal from './components/BlueprintModal';
 import ColonyDashboard from './components/ColonyDashboard';
 import Roadmap from './components/Roadmap';
 import MyAllocations from './components/MyAllocations';
-import Ecoloop from './components/Ecoloop';
+import PhysicalUtility from './components/PhysicalUtility';
 import Tokenomics from './components/Tokenomics';
 import UseOfFunds from './components/UseOfFunds';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -25,7 +25,7 @@ function LandingPage({ onOpenBlueprint }) {
                 <Hero onOpenBlueprint={onOpenBlueprint} />
 
                 {/* 1. THE VISION (Why) */}
-                <Ecoloop />
+                <PhysicalUtility />
 
                 {/* 2. THE DATA (Tokenomics) */}
                 <Tokenomics />
