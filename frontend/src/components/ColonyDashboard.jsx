@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractReads } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote, Server, Activity, Plus, AlertCircle } from 'lucide-react';
 
 // ABI for balanceOf
 const ERC20_ABI = [
@@ -14,24 +14,25 @@ const ERC20_ABI = [
     },
 ];
 
-// ABI for SeedSale deposits (FIXED: Using 'contributions' to match deployed contract)
+// ABI for SeedSale contributions
 const SEED_SALE_ABI = [
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
 const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
-// Placeholder Address - UPDATE AFTER DEPLOYMENT
-const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
+const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Update after TGE
 
 export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();
     const [tier, setTier] = useState('Guest'); // Guest, Scout, Guardian, Elder
     const [selectedProduct, setSelectedProduct] = useState(null); // For Modal
-    const [activeTab, setActiveTab] = useState('market'); // 'market', 'vision', 'governance'
+    const [activeTab, setActiveTab] = useState('marketplace'); // 'marketplace', 'hive', 'governance'
     const [userContribution, setUserContribution] = useState(0n);
+    const [treasuryBalance, setTreasuryBalance] = useState("0");
 
     // Batch Read for Efficiency & Reliability
-    const { data: contractData, isError, isLoading } = useContractReads({
+    const { data: contractData } = useContractReads({
         contracts: [
             {
                 address: TOKEN_ADDRESS,
@@ -42,8 +43,13 @@ export default function ColonyDashboard() {
             {
                 address: SEED_SALE_ADDRESS,
                 abi: SEED_SALE_ABI,
-                functionName: 'contributions', // FIXED from 'deposits'
+                functionName: 'contributions',
                 args: [address],
+            },
+            {
+                address: SEED_SALE_ADDRESS,
+                abi: SEED_SALE_ABI,
+                functionName: 'totalRaised',
             }
         ],
         enabled: isConnected && !!address,
@@ -59,20 +65,23 @@ export default function ColonyDashboard() {
         if (contractData) {
             const tokenBalance = contractData[0]?.result ? BigInt(contractData[0].result) : 0n;
             const seedDeposit = contractData[1]?.result ? BigInt(contractData[1].result) : 0n;
+            const totalRaised = contractData[2]?.result ? BigInt(contractData[2].result) : 0n;
+
             setUserContribution(seedDeposit);
+            setTreasuryBalance((Number(totalRaised) / 10 ** 18).toFixed(2));
 
             // Tier Logic
             const decimals = 10n ** 18n;
 
             // Priority 1: High Token Balance
-            if (tokenBalance >= 5000000n * decimals) {
+            if (tokenBalance >= 5000000n * decimals) { // 5M ROLL
                 setTier('Elder');
-            } else if (tokenBalance >= 1000000n * decimals) {
+            } else if (tokenBalance >= 1000000n * decimals) { // 1M ROLL
                 setTier('Guardian');
             }
             // Priority 2: Seed Contributor (Any Amount) or Token Holder
             else if (seedDeposit > 0n || tokenBalance > 0n) {
-                setTier('Scout'); // Seed Buyers get Scout access immediately
+                setTier('Scout');
             }
             // Default: Guest
             else {
@@ -82,12 +91,36 @@ export default function ColonyDashboard() {
 
     }, [contractData, isConnected, address]);
 
-    const products = [
+    // --- MOCK DATA ---
+    const hardwareProducts = [
         {
             id: 1,
-            name: "Tactical Solar Kit",
-            pricePublic: "$1,200",
+            name: "BeetleBox v1 (Scarab)",
+            price: "2,500 ROLL",
+            retailPrice: "$450 USD",
+            image: "/hero.png",
+            features: ["Solar MPPT", "LoRaWAN Gateway", "Bio-Sensor"],
+            stock: "Pre-Order Q3",
+            minTier: "Scout"
+        },
+        {
+            id: 2,
+            name: "Hydro-Bit Sensor",
+            price: "500 ROLL",
+            retailPrice: "$99 USD",
+            image: "/logo_eco.jpg", // Placeholder
+            features: ["Water Flow Meter", "Purity Sensor", "WiFi"],
+            stock: "Design Phase",
+            minTier: "Scout"
+        }
+    ];
+
+    const utilityProducts = [
+        {
+            id: 3,
+            name: "Tactical Solar Kit (60W)",
             priceMember: "$600 (Equiv. ROLL)",
+            retailPrice: "$1,200",
             discount: "50% OFF",
             image: "☀️",
             minTier: "Guardian",
@@ -95,33 +128,16 @@ export default function ColonyDashboard() {
             link: "https://example-solar-partner.com"
         },
         {
-            id: 2,
-            name: "Starlink Roam Hub",
-            pricePublic: "$600",
-            priceMember: "FREE DATA (via Rebate)",
-            discount: "Data Rebate",
+            id: 4,
+            name: "Startlink Auto-Pay",
+            priceMember: "Data Rebate",
+            retailPrice: "$120/mo",
+            discount: "Pay w/ ROLL",
             image: "📡",
             minTier: "Elder",
             code: "ROLL-STARLINK-VIP",
             link: "https://starlink.com"
-        },
-        {
-            id: 3,
-            name: "Water Filtration Unit",
-            pricePublic: "$350",
-            priceMember: "$245 (Equiv. ROLL)",
-            discount: "30% OFF",
-            image: "💧",
-            minTier: "Scout",
-            code: "ROLL-PURE-WATER",
-            link: "https://example-water.com"
         }
-    ];
-
-    const communities = [
-        { id: 1, name: "Project Alpha (Arizona)", status: "Land Secured", type: "Solar Farm", slots: "10/50 Filled" },
-        { id: 2, name: "Haven Node (Portugal)", status: "Scouting", type: "Permaculture", slots: "Open Soon" },
-        { id: 3, name: "Bunker DAO (Swiss)", status: "Proposal", type: "Secure Storage", slots: "Voting" },
     ];
 
     const handleBuy = (product) => {
@@ -130,230 +146,275 @@ export default function ColonyDashboard() {
     };
 
     return (
-        <section id="marketplace" className="py-24 relative overflow-hidden bg-[#0c0c0c]">
+        <section id="colony-dashboard" className="py-24 relative overflow-hidden bg-[#0c0c0c] border-t border-white/5">
 
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-beetle-blue/5 rounded-full blur-[120px] pointer-events-none"></div>
 
             <div className="container mx-auto px-4 relative z-10">
 
-                {/* Header Copy */}
-                <div className="text-center mb-12 max-w-4xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tighter">
-                        The Grid is Fragile. <br />
-                        <span className="text-beetle-gold">Your Portfolio Shouldn't Be.</span>
-                    </h2>
-                    <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                        Welcome to the <strong>Colony Command Center</strong>.
-                        Your gateway to off-grid resilience, exclusive hardware, and the future DAO network.
-                    </p>
+                {/* Dashboard Header */}
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8 border-b border-white/10 pb-8">
+                    <div>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter">
+                            Colony <span className="text-beetle-gold">Command Center</span>
+                        </h2>
+                        <p className="text-gray-400 text-lg">
+                            Manage your assets, hardware, and governance rights.
+                        </p>
+                    </div>
 
-                    {/* Navigation Tabs */}
-                    <div className="flex justify-center gap-4 mb-8 flex-wrap">
-                        <button
-                            onClick={() => setActiveTab('market')}
-                            className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'market' ? 'bg-beetle-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
-                        >
-                            Utility Marketplace
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('vision')}
-                            className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'vision' ? 'bg-beetle-electric text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
-                        >
-                            DAO Vision & Map
-                        </button>
-                        {tier !== 'Guest' && (
-                            <button
-                                onClick={() => setActiveTab('governance')}
-                                className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'governance' ? 'bg-beetle-green text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
-                            >
-                                Governance (Beta)
-                            </button>
-                        )}
+                    {/* Tier Status Badge */}
+                    <div className="bg-[#111] border border-white/10 px-6 py-4 rounded-2xl flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${tier === 'Guest' ? 'bg-red-500/20 text-red-500' : 'bg-beetle-green/20 text-beetle-green'}`}>
+                            <ShieldCheck size={24} />
+                        </div>
+                        <div>
+                            <div className="text-xs text-gray-500 uppercase tracking-widest font-bold">Clearance Level</div>
+                            <div className={`text-xl font-black ${tier === 'Guest' ? 'text-white' : 'text-beetle-electric'}`}>
+                                {tier.toUpperCase()}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Status Bar */}
-                <div className="flex justify-between items-center bg-[#111] border border-white/10 p-4 rounded-xl mb-12">
-                    <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${tier === 'Guest' ? 'bg-red-500' : 'bg-green-500 animate-pulse'}`}></div>
-                        <span className="text-gray-400 font-mono text-sm uppercase">Colony Status:</span>
-                        <span className={`font-bold ${tier === 'Guest' ? 'text-white' : 'text-beetle-electric'}`}>
-                            {tier.toUpperCase()} {tier !== 'Guest' && '✓'}
-                        </span>
-                    </div>
-                    {tier === 'Guest' && (
-                        <div className="hidden md:flex text-xs text-beetle-gold animate-pulse">
-                            Seed Contributors get Instant Access
-                        </div>
-                    )}
-                    {tier !== 'Guest' && (
-                        <div className="hidden md:flex text-xs text-green-400 font-bold items-center gap-2">
-                            <ShieldCheck size={14} /> Access Unlocked
-                        </div>
-                    )}
-                </div>
-
-                {/* --- TAB: MARKETPLACE --- */}
-                {activeTab === 'market' && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                        className="grid md:grid-cols-3 gap-8"
+                {/* Navigation Tabs */}
+                <div className="flex gap-2 mb-12 overflow-x-auto pb-2">
+                    <button
+                        onClick={() => setActiveTab('marketplace')}
+                        className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'marketplace' ? 'bg-beetle-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
                     >
-                        {products.map((product) => {
-                            const isLocked = tier === 'Guest';
-                            // Simple view logic: Guests see blurred "Locked" state or just "Connect"
-                            // User request: "Glimpse of app". So show the item but lock the button.
+                        <ShoppingCart size={18} /> The Armory (Market)
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('hive')}
+                        className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'hive' ? 'bg-beetle-electric text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                    >
+                        <Server size={18} /> The Hive (My Nodes)
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('governance')}
+                        className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'governance' ? 'bg-beetle-green text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                    >
+                        <Vote size={18} /> The Council (DAO)
+                    </button>
+                </div>
 
-                            return (
-                                <div key={product.id} className="group bg-[#0a1a0f]/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden hover:border-beetle-electric/50 transition-all hover:-translate-y-2 relative">
-
-                                    <div className="h-64 bg-black/40 relative flex items-center justify-center text-6xl">
-                                        {product.image}
-                                        <div className="absolute top-4 right-4 bg-beetle-gold text-black text-xs font-black px-3 py-1 rounded-full z-10">
-                                            {product.discount}
+                {/* --- TAB: MARKETPLACE (Consolidated) --- */}
+                {activeTab === 'marketplace' && (
+                    <div className="space-y-16">
+                        {/* Section 1: Hardware (Revenue Generating) */}
+                        <div>
+                            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                                <Zap className="text-beetle-gold" /> Mining Hardware (Generates ROLL)
+                            </h3>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {hardwareProducts.map(product => {
+                                    const isLocked = tier === 'Guest';
+                                    return (
+                                        <div key={product.id} className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden group hover:border-beetle-gold/50 transition-all flex flex-col">
+                                            <div className="aspect-video bg-gray-900 relative overflow-hidden flex items-center justify-center p-6">
+                                                {product.image.startsWith('/') ? (
+                                                    <img src={product.image} alt={product.name} className="h-full object-contain drop-shadow-lg group-hover:scale-105 transition-transform" />
+                                                ) : (
+                                                    <div className="text-6xl">{product.image}</div>
+                                                )}
+                                                {isLocked && (
+                                                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center">
+                                                        <Lock className="text-beetle-gold" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="p-6 flex-1 flex flex-col">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <h4 className="text-lg font-bold text-white">{product.name}</h4>
+                                                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded font-bold">Priority</span>
+                                                </div>
+                                                <div className="flex items-baseline gap-2 mb-4">
+                                                    <span className="text-beetle-gold font-mono font-bold text-xl">{product.price}</span>
+                                                    <span className="text-gray-500 text-sm line-through">{product.retailPrice}</span>
+                                                </div>
+                                                <ul className="space-y-2 mb-6 text-sm text-gray-400 flex-1">
+                                                    {product.features.map((f, i) => <li key={i} className="flex gap-2"><div className="w-1.5 h-1.5 rounded-full bg-beetle-electric mt-1.5" /> {f}</li>)}
+                                                </ul>
+                                                <button
+                                                    disabled
+                                                    className="w-full bg-white/10 text-gray-300 font-bold py-3 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
+                                                >
+                                                    {product.stock}
+                                                </button>
+                                            </div>
                                         </div>
-                                        {isLocked && (
-                                            <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center flex-col gap-4 border border-beetle-gold/20 z-20">
-                                                <Lock className="text-beetle-gold w-12 h-12 mb-2 animate-pulse" />
-                                                <div className="text-center">
-                                                    <span className="text-white font-black bg-black/80 border border-white/10 px-4 py-2 rounded-full text-sm uppercase tracking-widest">
-                                                        Colony Access Required
-                                                    </span>
-                                                    <p className="text-xs text-gray-500 mt-2">Join Seed Sale to Unlock</p>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Section 2: Utility (Spending ROLL) */}
+                        <div>
+                            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                                <Leaf className="text-green-400" /> Survival Gear (Spends ROLL)
+                            </h3>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {utilityProducts.map(product => {
+                                    const isLocked = tier === 'Guest';
+                                    return (
+                                        <div key={product.id} className="bg-[#0a1a0f]/40 border border-white/5 rounded-2xl overflow-hidden hover:border-green-500/30 transition-all">
+                                            <div className="p-6 flex justify-between items-start">
+                                                <div className="text-4xl">{product.image}</div>
+                                                <div className="text-right">
+                                                    <div className="text-xl font-black text-white">{product.priceMember}</div>
+                                                    <div className="text-sm text-gray-500 line-through">{product.retailPrice}</div>
                                                 </div>
                                             </div>
-                                        )}
-                                    </div>
-
-                                    <div className="p-6">
-                                        <div className="text-xs text-beetle-electric font-mono mb-2 uppercase tracking-widest">{product.minTier} Tier</div>
-                                        <h3 className="text-2xl font-bold text-white mb-4">{product.name}</h3>
-
-                                        <div className="space-y-1 mb-6">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-500">Public Price:</span>
-                                                <span className="text-gray-400 line-through">{product.pricePublic}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-beetle-gold font-bold">Colony Price:</span>
-                                                <span className="text-white font-black text-lg">{product.priceMember}</span>
+                                            <div className="px-6 pb-6">
+                                                <h4 className="font-bold text-white mb-1">{product.name}</h4>
+                                                <div className="text-green-400 text-sm font-bold mb-4">{product.discount}</div>
+                                                <button
+                                                    onClick={() => !isLocked && handleBuy(product)}
+                                                    disabled={isLocked}
+                                                    className={`w-full font-bold py-3 rounded-lg transition-all ${isLocked ? 'bg-white/5 text-gray-500' : 'bg-green-600 text-black hover:bg-green-500'}`}
+                                                >
+                                                    {isLocked ? "Unlock Access" : "Claim Deal"}
+                                                </button>
                                             </div>
                                         </div>
-
-                                        <button
-                                            onClick={() => !isLocked && handleBuy(product)}
-                                            disabled={isLocked}
-                                            className={`w-full font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${isLocked
-                                                ? 'bg-white/5 text-gray-400 cursor-not-allowed border border-white/5'
-                                                : 'bg-beetle-electric text-black hover:bg-white border border-beetle-electric'
-                                                }`}
-                                        >
-                                            {isLocked ? (
-                                                <>Join Seed to Unlock</>
-                                            ) : (
-                                                <> <ShoppingCart size={18} /> Reveal Code </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </motion.div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
                 )}
 
-                {/* --- TAB: DAO VISION --- */}
-                {activeTab === 'vision' && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
-                        className="bg-black/40 border border-white/10 rounded-3xl p-8 md:p-12 text-left"
-                    >
-                        <div className="grid md:grid-cols-2 gap-12 items-center">
-                            <div>
-                                <h3 className="text-3xl font-bold text-white mb-4">Phase 4: <span className="text-beetle-electric">The Physical Network</span></h3>
-                                <p className="text-gray-400 mb-6 leading-relaxed">
-                                    Our ultimate goal is to establish a DAO that owns and operates self-sufficient, off-grid communities.
-                                    $ROLL holders will have governance rights to vote on land acquisitions, resource allocation,
-                                    and even priority access to physical residency.
-                                </p>
-                                <ul className="space-y-4 mb-8">
-                                    <li className="flex items-center gap-3 text-gray-300">
-                                        <ShieldCheck className="text-beetle-gold" /> Legal Entity Formation (Wyoming DAO LLC)
-                                    </li>
-                                    <li className="flex items-center gap-3 text-gray-300">
-                                        <Map className="text-beetle-gold" /> Global Land Scouting & Acquisition
-                                    </li>
-                                    <li className="flex items-center gap-3 text-gray-300">
-                                        <Users className="text-beetle-gold" /> "Refer-a-Worker" Bounty Program
-                                    </li>
-                                    <li className="flex items-center gap-3 text-gray-300">
-                                        <Leaf className="text-beetle-gold" /> Permaculture & Energy Independence
-                                    </li>
-                                </ul>
-
-                                <button className="bg-white/10 text-white px-6 py-3 rounded-xl font-bold border border-white/5 hover:bg-white/20 transition-all flex items-center gap-2">
-                                    Read the Whitepaper <ExternalLink size={16} />
+                {/* --- TAB: THE HIVE (Simulated Mining) --- */}
+                {activeTab === 'hive' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid md:grid-cols-12 gap-8">
+                        {/* Simulation Stats */}
+                        <div className="md:col-span-8 bg-black/40 border border-white/10 rounded-3xl p-8">
+                            <div className="flex justify-between items-start mb-8">
+                                <div>
+                                    <h3 className="text-2xl font-bold text-white mb-2">My Nodes</h3>
+                                    <p className="text-gray-400">Manage your connected hardware and monitor Eco-Mining rewards.</p>
+                                </div>
+                                <button className="bg-beetle-electric text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
+                                    <Plus size={18} /> Add Device
                                 </button>
                             </div>
 
-                            <div className="bg-[#0a1a0f] rounded-2xl p-6 border border-beetle-electric/20 relative overflow-hidden">
-                                {/* Fake Map Visualization */}
-                                <div className="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-cover opacity-10 bg-center"></div>
+                            {/* Empty State / Simulator */}
+                            <div className="bg-[#0a1a0f] border border-dashed border-beetle-electric/30 rounded-2xl p-8 text-center">
+                                <div className="w-16 h-16 bg-beetle-electric/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Activity className="text-beetle-electric" size={32} />
+                                </div>
+                                <h4 className="text-xl font-bold text-white mb-2">No Active Miners Found</h4>
+                                <p className="text-gray-500 mb-6">Connect a verified BeetleBox to start earning.</p>
 
-                                <h4 className="text-beetle-electric font-mono mb-4 uppercase tracking-widest relative z-10">Active Proposals</h4>
-                                <div className="space-y-3 relative z-10">
-                                    {communities.map(c => (
-                                        <div key={c.id} className="bg-black/80 p-4 rounded-xl border border-white/5 flex justify-between items-center hover:border-beetle-gold/50 cursor-pointer transition-colors">
-                                            <div>
-                                                <div className="text-white font-bold">{c.name}</div>
-                                                <div className="text-xs text-gray-500">{c.type}</div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-beetle-gold text-xs font-bold">{c.status}</div>
-                                                <div className="text-[10px] text-gray-600">{c.slots}</div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                {/* Simulator */}
+                                <div className="bg-black/50 rounded-xl p-4 max-w-md mx-auto text-left">
+                                    <div className="text-xs text-gray-500 uppercase font-bold mb-3">Projected Earnings (1x Scarab Node)</div>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-gray-300">Daily Output (Est)</span>
+                                        <span className="text-beetle-gold font-mono font-bold">250 ROLL</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-300">Monthly Yield</span>
+                                        <span className="text-beetle-gold font-mono font-bold">7,500 ROLL</span>
+                                    </div>
                                 </div>
-                                <div className="mt-6 text-center text-xs text-gray-500">
-                                    *Map data is for demonstration of Phase 4 goals. Real-time DAO map coming Q4 2026.
-                                </div>
+                            </div>
+                        </div>
+
+                        {/* Network Stats */}
+                        <div className="md:col-span-4 space-y-4">
+                            <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
+                                <div className="text-gray-500 text-sm mb-1">Network Difficulty</div>
+                                <div className="text-2xl font-bold text-white">1.05x</div>
+                            </div>
+                            <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
+                                <div className="text-gray-500 text-sm mb-1">Active Nodes (Testnet)</div>
+                                <div className="text-2xl font-bold text-beetle-electric">12 <span className="text-xs text-gray-500 font-normal">Online</span></div>
                             </div>
                         </div>
                     </motion.div>
                 )}
 
-                {/* --- TAB: GOVERNANCE (NEW) --- */}
+                {/* --- TAB: GOVERNANCE (DAO) --- */}
                 {activeTab === 'governance' && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
-                        className="bg-black/40 border border-white/10 rounded-3xl p-8 md:p-12 text-center"
-                    >
-                        <Vote className="w-16 h-16 text-beetle-green mx-auto mb-6" />
-                        <h3 className="text-3xl font-bold text-white mb-4">Your Voice Power</h3>
-                        <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-                            As a Seed Contributor, you don't just get tokens. You get a seat at the table.
-                            Your 'Scout' status grants you early voting rights on the first hardware deployment location.
-                        </p>
-
-                        <div className="bg-[#0a1a0f] border border-beetle-green/30 inline-flex flex-col p-6 rounded-2xl mb-8">
-                            <span className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-2">Current Voting Power</span>
-                            <span className="text-4xl font-black text-white">{(Number(userContribution) / 10 ** 18 * 10).toFixed(0)} <span className="text-lg text-beetle-green">VP</span></span>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto">
+                        <div className="text-center mb-12">
+                            <h3 className="text-3xl font-bold text-white mb-4">The Council</h3>
+                            <p className="text-gray-400">DAO Governance is currently minimal. Seed Contributors (Scouts) vote on the first physical colony location.</p>
                         </div>
 
-                        <div>
-                            <button className="bg-beetle-green/20 text-beetle-green border border-beetle-green/50 px-8 py-3 rounded-xl font-bold hover:bg-beetle-green hover:text-black transition-all">
-                                View Active Proposals (Coming Soon)
-                            </button>
+                        <div className="grid md:grid-cols-2 gap-8 mb-12">
+                            {/* Treasury Card */}
+                            <div className="bg-black/40 border border-white/10 rounded-3xl p-8">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-3 bg-beetle-gold/10 rounded-xl"><Users className="text-beetle-gold" /></div>
+                                    <h4 className="text-xl font-bold text-white">Community Treasury</h4>
+                                </div>
+                                <div className="text-4xl font-black text-white mb-2">{treasuryBalance} BNB</div>
+                                <div className="text-sm text-gray-500">Collected via Seed Sale. <br /> To be deployed for manufacturing.</div>
+                            </div>
+
+                            {/* Voting Power */}
+                            <div className="bg-black/40 border border-white/10 rounded-3xl p-8">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-3 bg-beetle-green/10 rounded-xl"><Vote className="text-beetle-green" /></div>
+                                    <h4 className="text-xl font-bold text-white">Your Voice</h4>
+                                </div>
+                                <div className="text-4xl font-black text-white mb-2">{(Number(userContribution) / 10 ** 16).toFixed(0)} <span className="text-lg text-gray-600">VP</span></div>
+                                <div className="text-sm text-gray-500">1 BNB Contribution = 100 Voting Power. <br /> Only Scouts+ can vote.</div>
+                            </div>
+                        </div>
+
+                        {/* Active Proposal */}
+                        <div className="bg-[#0a1a0f] border border-white/10 rounded-3xl p-8 hover:border-beetle-gold/30 transition-all cursor-pointer">
+                            <div className="flex justify-between items-start mb-4">
+                                <span className="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-xs font-bold">Proposal #001: Active</span>
+                                <span className="text-gray-500 text-sm">Ends in 2 Days</span>
+                            </div>
+                            <h4 className="text-2xl font-bold text-white mb-4">Colony 1 Location Selection</h4>
+                            <p className="text-gray-400 mb-6">
+                                We have scouted two viable plots for the first "BeetleBox" solar array testbed.
+                                Where should we deploy the Pilot Node?
+                            </p>
+
+                            {/* Visual Vote Bars */}
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between text-sm text-white mb-1">
+                                        <span>Option A: Arizona Desert (High Solar Yield)</span>
+                                        <span>65%</span>
+                                    </div>
+                                    <div className="h-2 bg-black rounded-full overflow-hidden border border-white/10">
+                                        <div className="h-full bg-beetle-gold w-[65%]"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-sm text-white mb-1">
+                                        <span>Option B: Portugal Rural (Permaculture)</span>
+                                        <span>35%</span>
+                                    </div>
+                                    <div className="h-2 bg-black rounded-full overflow-hidden border border-white/10">
+                                        <div className="h-full bg-beetle-green w-[35%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-8 pt-6 border-t border-white/5 flex gap-4">
+                                <button className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-colors">Vote Option A</button>
+                                <button className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-colors">Vote Option B</button>
+                            </div>
                         </div>
                     </motion.div>
                 )}
 
             </div>
 
-            {/* Discount Code Modal */}
+            {/* Modal Reuse from Previous (Discount Code) */}
             <AnimatePresence>
-                {selectedProduct && (
+                {selectedProduct && selectedProduct.code && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedProduct(null)}>
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
@@ -384,7 +445,6 @@ export default function ColonyDashboard() {
                     </div>
                 )}
             </AnimatePresence>
-
         </section>
     );
 }
