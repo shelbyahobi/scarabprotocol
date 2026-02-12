@@ -87,7 +87,7 @@ export default function Hero({ onOpenBlueprint }) {
 
                     <img
                         src="/hero.png"
-                        alt="Dung Beetle Rolling Gold"
+                        alt="BeetleBox Hardware Prototype"
                         className="w-full max-w-lg mx-auto relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-float"
                     />
                 </motion.div>
