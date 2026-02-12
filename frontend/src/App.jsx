@@ -12,6 +12,8 @@ import MyAllocations from './components/MyAllocations';
 import PhysicalUtility from './components/PhysicalUtility';
 import Tokenomics from './components/Tokenomics';
 import UseOfFunds from './components/UseOfFunds';
+import HardwareMarketplace from './components/HardwareMarketplace';
+import EcoMiningExplainer from './components/EcoMiningExplainer';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
 
@@ -26,6 +28,9 @@ function LandingPage({ onOpenBlueprint }) {
 
                 {/* 1. THE VISION (Why) */}
                 <PhysicalUtility />
+
+                {/* 1.5 THE MECHANISM (How Eco-Mining Works) - NEW */}
+                <EcoMiningExplainer />
 
                 {/* 2. THE DATA (Tokenomics) */}
                 <Tokenomics />
@@ -152,7 +157,10 @@ function DAppPage() {
                     </div>
                 </div>
 
-                {/* 2. Colony Dashboard (Gated Content) */}
+                {/* 2. Hardware Marketplace (New) */}
+                <HardwareMarketplace />
+
+                {/* 3. Colony Dashboard (Gated Content) */}
                 <ColonyDashboard />
             </main>
         </div>
