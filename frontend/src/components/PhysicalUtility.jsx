@@ -48,9 +48,9 @@ export default function PhysicalUtility() {
                         <div className="w-14 h-14 bg-beetle-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Hammer className="text-beetle-gold w-8 h-8" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-3">3. Project Funding</h3>
+                        <h3 className="text-xl font-bold text-white mb-3">3. Priority Launchpad</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            Seed Phase 1 funds the Token. Seed Phase 2 funds <strong>Physical Construction</strong>.
+                            New physical projects (Land, Solar) raise their own capital. ROLL holders get <strong>Exclusive Priority Access</strong> to fund these real-world ventures.
                         </p>
                     </div>
 
