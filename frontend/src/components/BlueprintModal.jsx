@@ -42,10 +42,10 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         <section>
                             <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">I. Executive Overview</h3>
                             <p className="text-gray-300 leading-relaxed text-lg">
-                                The <strong>ROLL Protocol ($ROLL)</strong> is a decentralized financial infrastructure designed to bridge the gap between digital asset ownership and physical self-sufficiency. In an era of increasing systemic fragility, $ROLL provides a dual-purpose solution: a high-security cryptographic asset and a direct gateway to the Off-Grid Economy.
+                                The <strong>ROLL Protocol ($ROLL)</strong> is a decentralized financial infrastructure designed to establish a sovereign <strong>Physical Identity</strong>. In an era of increasing systemic fragility, $ROLL provides a dual-purpose solution: a high-security cryptographic asset and a direct gateway to the Off-Grid Economy.
                             </p>
                             <p className="text-gray-300 leading-relaxed mt-4">
-                                Unlike purely speculative "meme" assets, $ROLL utilizes a proprietary <strong>Gated Utility Marketplace</strong> model, ensuring that token velocity is driven by real-world demand for life-sustaining hardware and community-building resources.
+                                Unlike purely speculative tokens, $ROLL utilizes a proprietary <strong>Gated Utility Marketplace</strong> model. It functions as the "Proof of Work" for building real-world resilience—funding hardware, acquiring land, and securing essential resources for the colony.
                             </p>
                         </section>
 
@@ -53,12 +53,12 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         <section>
                             <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">II. The Philosophy of Resilience (The Beetle Metaphor)</h3>
                             <p className="text-gray-300 mb-6">
-                                In the natural world, the Dung Beetle is a master of circular engineering and extreme resilience. It identifies value where others see waste, constructing a perfectly spherical foundation (The Ball) to sustain its colony.
+                                In the natural world, the Beetle is a master of <strong>circular engineering</strong>. It does not wait for handouts; it builds its own world from available resources, rolling them into a perfectly spherical foundation (The Ball) to sustain its colony.
                             </p>
                             <div className="grid md:grid-cols-3 gap-6">
                                 <div className="bg-white/5 p-6 rounded-xl border border-white/5">
                                     <div className="text-beetle-gold font-black text-xl mb-2">The Foundation</div>
-                                    <p className="text-sm text-gray-400">Our "un-ruggable" smart contract logic.</p>
+                                    <p className="text-sm text-gray-400">Our "un-ruggable" smart contract infrastructure.</p>
                                 </div>
                                 <div className="bg-white/5 p-6 rounded-xl border border-white/5">
                                     <div className="text-beetle-gold font-black text-xl mb-2">The Momentum</div>
