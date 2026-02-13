@@ -50,7 +50,7 @@ export default function PhysicalUtility() {
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">3. Priority Launchpad</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            New physical projects (Land, Solar) raise their own capital. ROLL holders get <strong>Exclusive Priority Access</strong> to fund these real-world ventures.
+                            The <strong>Beetle Roll DAO</strong> votes to fund and build physical projects. Holders get <strong>Exclusive Priority Access</strong> and governance rights.
                         </p>
                     </div>
 

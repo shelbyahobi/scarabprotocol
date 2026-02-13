@@ -35,11 +35,19 @@ contract SeedSale is Ownable, ReentrancyGuard, Pausable {
     }
 
     IERC20 public saleToken;
-    uint256 public constant TOKENS_PER_BNB = 5_000_000; // 1 BNB = 5M ROLL (Based on 20 BNB HardCap for 10% Supply)
-    
+    uint256 public constant TOKENS_PER_BNB = 5_000_000; 
+    uint256 public constant REFERRAL_PERCENT = 5; // 5% Reward for referrer
+
     mapping(address => bool) public participation;
+    
+    // Referral Systems
+    mapping(address => uint256) public referralRewards; // BNBEarned
+    mapping(address => uint256) public totalReferrals;  // Count of people referred
+    uint256 public totalReferralRewards; // Total BNB allocated to referrals
 
     event TokensClaimed(address indexed user, uint256 amount);
+    event ReferralRecorded(address indexed referrer, address indexed referee, uint256 commission);
+    event ReferralRewardClaimed(address indexed referrer, uint256 amount);
 
     // ... constructor ...
 
@@ -49,6 +57,14 @@ contract SeedSale is Ownable, ReentrancyGuard, Pausable {
     }
 
     function deposit() external payable nonReentrant whenNotPaused {
+        _processDeposit(address(0));
+    }
+
+    function depositWithReferral(address _referrer) external payable nonReentrant whenNotPaused {
+        _processDeposit(_referrer);
+    }
+
+    function _processDeposit(address _referrer) internal {
         require(block.timestamp >= startTime, "Sale not started");
         require(block.timestamp <= endTime, "Sale ended");
         require(raisedAmount + msg.value <= hardCap, "HardCap exceeded");
@@ -57,6 +73,15 @@ contract SeedSale is Ownable, ReentrancyGuard, Pausable {
         deposits[msg.sender] += msg.value;
         raisedAmount += msg.value;
         participation[msg.sender] = true;
+
+        // Referral Logic
+        if (_referrer != address(0) && _referrer != msg.sender) {
+            uint256 commission = (msg.value * REFERRAL_PERCENT) / 100;
+            referralRewards[_referrer] += commission;
+            totalReferralRewards += commission;
+            totalReferrals[_referrer] += 1;
+            emit ReferralRecorded(_referrer, msg.sender, commission);
+        }
         
         emit Deposited(msg.sender, msg.value);
     }
@@ -97,8 +122,30 @@ contract SeedSale is Ownable, ReentrancyGuard, Pausable {
     function withdrawFunds() external onlyOwner {
         require(saleFinalized, "Sale not finalized");
         
-        (bool sent, ) = payable(owner()).call{value: address(this).balance}("");
+        // Owner can only withdraw the net amount (Total - ReferralRewards)
+        // Referral rewards stay in contract to be claimed by referrers
+        uint256 balance = address(this).balance;
+        require(balance > totalReferralRewards, "No funds to withdraw");
+        
+        uint256 withdrawable = balance - totalReferralRewards;
+
+        (bool sent, ) = payable(owner()).call{value: withdrawable}("");
         require(sent, "Failed to send BNB");
+    }
+
+    function claimReferralRewards() external nonReentrant {
+        require(saleFinalized, "Sale must be finalized"); // Safety: Refund priority
+        require(!failed, "Sale failed");
+        
+        uint256 reward = referralRewards[msg.sender];
+        require(reward > 0, "No rewards");
+        
+        referralRewards[msg.sender] = 0;
+        
+        (bool sent, ) = payable(msg.sender).call{value: reward}("");
+        require(sent, "Failed to send reward");
+        
+        emit ReferralRewardClaimed(msg.sender, reward);
     }
     
     function claimRefund() external nonReentrant {

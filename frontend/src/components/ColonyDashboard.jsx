@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractReads } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
+import GovernanceDashboard from './GovernanceDashboard';
 import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote, Server, Activity, Plus, AlertCircle, MessageCircle, Smartphone, Gavel, CheckCircle2 } from 'lucide-react';
 
 // ABI for balanceOf
@@ -20,8 +21,8 @@ const SEED_SALE_ABI = [
     { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
-const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
-const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Update after TGE
+const SEED_SALE_ADDRESS = "0xfc95cC5185530c2c386f5Cfc5c68157B6E8bF4F5";
+const TOKEN_ADDRESS = "0xC002A2ccb440BbEd410175591F953A050bCa5E04"; // Deployed on Testnet
 
 export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();
@@ -31,9 +32,7 @@ export default function ColonyDashboard() {
     const [userContribution, setUserContribution] = useState(0n);
     const [treasuryBalance, setTreasuryBalance] = useState("0");
 
-    // Governance Mock State
-    const [hasVoted, setHasVoted] = useState(false);
-    const [voteStats, setVoteStats] = useState({ estonia: 42, swiss: 38, cayman: 20 });
+
 
     // Batch Read for Efficiency & Reliability
     const { data: contractData } = useContractReads({
@@ -148,15 +147,7 @@ export default function ColonyDashboard() {
         setSelectedProduct(product);
     };
 
-    const handleVote = (option) => {
-        if (tier === 'Guest' || hasVoted) return;
-        // Simulate Vote
-        setVoteStats(prev => ({
-            ...prev,
-            [option]: prev[option] + 1
-        }));
-        setHasVoted(true);
-    };
+
 
     return (
         <section id="colony-dashboard" className="py-24 relative overflow-hidden bg-[#0c0c0c] border-t border-white/5">
@@ -353,144 +344,8 @@ export default function ColonyDashboard() {
 
                 {/* --- TAB: GOVERNANCE (DAO) --- */}
                 {activeTab === 'governance' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto">
-
-                        {/* Governance Flow Visualization */}
-                        <div className="grid md:grid-cols-3 gap-4 mb-12">
-                            <div className="bg-[#111] border border-white/5 rounded-2xl p-6 text-center relative">
-                                <div className="hidden md:block absolute top-1/2 -right-6 -translate-y-1/2 z-10 text-gray-600">→</div>
-                                <MessageCircle className="mx-auto text-blue-400 mb-4 h-8 w-8" />
-                                <h4 className="font-bold text-white mb-1">1. Debate</h4>
-                                <p className="text-xs text-gray-500">Community discusses proposals on Telegram/Discord.</p>
-                            </div>
-                            <div className="bg-beetle-green/10 border border-beetle-green/30 rounded-2xl p-6 text-center relative">
-                                <div className="hidden md:block absolute top-1/2 -right-6 -translate-y-1/2 z-10 text-gray-600">→</div>
-                                <Smartphone className="mx-auto text-beetle-green mb-4 h-8 w-8" />
-                                <h4 className="font-bold text-white mb-1">2. Vote</h4>
-                                <p className="text-xs text-gray-500">Token holders cast on-chain votes via the App.</p>
-                            </div>
-                            <div className="bg-[#111] border border-white/5 rounded-2xl p-6 text-center">
-                                <Gavel className="mx-auto text-beetle-gold mb-4 h-8 w-8" />
-                                <h4 className="font-bold text-white mb-1">3. Execute</h4>
-                                <p className="text-xs text-gray-500">Admins/DAO act on the result in the real world.</p>
-                            </div>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-8 mb-12">
-                            {/* Treasury Card */}
-                            <div className="bg-black/40 border border-white/10 rounded-3xl p-8">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="p-3 bg-beetle-gold/10 rounded-xl"><Users className="text-beetle-gold" /></div>
-                                    <h4 className="text-xl font-bold text-white">Community Treasury</h4>
-                                </div>
-                                <div className="text-4xl font-black text-white mb-2">{treasuryBalance} BNB</div>
-                                <div className="text-sm text-gray-500">Collected via Seed Sale. <br /> To be deployed for manufacturing.</div>
-                            </div>
-
-                            {/* Voting Power */}
-                            <div className="bg-black/40 border border-white/10 rounded-3xl p-8">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="p-3 bg-beetle-green/10 rounded-xl"><Vote className="text-beetle-green" /></div>
-                                    <h4 className="text-xl font-bold text-white">Your Voice</h4>
-                                </div>
-                                <div className="text-4xl font-black text-white mb-2">{(Number(userContribution) / 10 ** 16).toFixed(0)} <span className="text-lg text-gray-600">VP</span></div>
-                                <div className="text-sm text-gray-500">1 BNB Contribution = 100 Voting Power. <br /> Only Scouts+ can vote.</div>
-                            </div>
-                        </div>
-
-                        {/* Active Proposal */}
-                        <div className="bg-[#0a1a0f] border border-white/10 rounded-3xl p-8 hover:border-beetle-gold/30 transition-all">
-                            <div className="flex justify-between items-start mb-4">
-                                <span className="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-xs font-bold">Proposal #001: Active</span>
-                                <span className="text-gray-500 text-sm">Ends in 5 Days</span>
-                            </div>
-                            <h4 className="text-2xl font-bold text-white mb-4">Legal Jurisdiction Selection</h4>
-                            <p className="text-gray-400 mb-6">
-                                Where should the ROLL DAO Foundation be legally established?
-                                This decision affects liability, ops, and speed of physical deployment.
-                            </p>
-
-                            {/* Visual Vote Bars */}
-                            <div className="space-y-6">
-                                {/* Option A */}
-                                <div onClick={() => handleVote('estonia')} className={`cursor-pointer group ${hasVoted ? 'pointer-events-none' : ''}`}>
-                                    <div className="flex justify-between text-sm text-white mb-2">
-                                        <span className="font-bold flex items-center gap-2">
-                                            A. Estonia (Digital Nation)
-                                            {hasVoted && <CheckCircle2 size={14} className="text-green-500" />}
-                                        </span>
-                                        <span>{voteStats.estonia}%</span>
-                                    </div>
-                                    <div className="h-3 bg-black rounded-full overflow-hidden border border-white/10 relative">
-                                        <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${voteStats.estonia}%` }}
-                                            className="h-full bg-blue-500"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">Pros: Fast Setup, EU Access. Cons: Monthly Admin Costs.</p>
-                                </div>
-
-                                {/* Option B */}
-                                <div onClick={() => handleVote('swiss')} className={`cursor-pointer group ${hasVoted ? 'pointer-events-none' : ''}`}>
-                                    <div className="flex justify-between text-sm text-white mb-2">
-                                        <span className="font-bold flex items-center gap-2">
-                                            B. Switzerland (Crypto Valley)
-                                            {hasVoted && <CheckCircle2 size={14} className="text-green-500" />}
-                                        </span>
-                                        <span>{voteStats.swiss}%</span>
-                                    </div>
-                                    <div className="h-3 bg-black rounded-full overflow-hidden border border-white/10 relative">
-                                        <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${voteStats.swiss}%` }}
-                                            className="h-full bg-red-500"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">Pros: Gold Standard, Privacy. Cons: Very High Cost.</p>
-                                </div>
-
-                                {/* Option C */}
-                                <div onClick={() => handleVote('cayman')} className={`cursor-pointer group ${hasVoted ? 'pointer-events-none' : ''}`}>
-                                    <div className="flex justify-between text-sm text-white mb-2">
-                                        <span className="font-bold flex items-center gap-2">
-                                            C. Cayman Islands (DAO Friendly)
-                                            {hasVoted && <CheckCircle2 size={14} className="text-green-500" />}
-                                        </span>
-                                        <span>{voteStats.cayman}%</span>
-                                    </div>
-                                    <div className="h-3 bg-black rounded-full overflow-hidden border border-white/10 relative">
-                                        <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${voteStats.cayman}%` }}
-                                            className="h-full bg-beetle-gold"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">Pros: Flexible Structure. Cons: Offshore Stigma.</p>
-                                </div>
-                            </div>
-
-                            {!hasVoted && tier === 'Guest' && (
-                                <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
-                                    <div className="text-red-400 font-bold mb-1 flex items-center justify-center gap-2">
-                                        <Lock size={16} /> Voting Locked
-                                    </div>
-                                    <div className="text-xs text-gray-400">You must be a Seed Contributor (Scout) to vote.</div>
-                                </div>
-                            )}
-
-                            {hasVoted && (
-                                <div className="mt-8 pt-6 border-t border-white/5 text-center animate-pulse">
-                                    <span className="text-green-400 font-bold flex items-center justify-center gap-2">
-                                        <CheckCircle2 size={18} /> Vote Cast on Chain
-                                    </span>
-                                    <p className="text-xs text-gray-500 mt-1">Thank you for participating in governance.</p>
-                                </div>
-                            )}
-                        </div>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto">
+                        <GovernanceDashboard />
                     </motion.div>
                 )}
 

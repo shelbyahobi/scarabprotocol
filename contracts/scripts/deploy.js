@@ -35,33 +35,83 @@ async function main() {
 
     // 4. Link Token to Sale
     console.log("\n🔗 Linking Token to SeedSale...");
-    await seedSale.setSaleToken(rollAddress);
+    await (await seedSale.setSaleToken(rollAddress)).wait();
     console.log("✅ Sale Token Set");
 
     // 5. Fund SeedSale (Transfer 30% Supply)
     console.log("\n💰 Funding SeedSale Contract...");
+    // Update: Exclude SeedSale from Limits first
+    await (await rollToken.excludeFromFees(seedSaleAddress, true)).wait();
+    await (await rollToken.excludeFromLimits(seedSaleAddress, true)).wait();
+
     const FUND_AMOUNT = hre.ethers.parseEther("300000000"); // 300M Tokens
-    await rollToken.transfer(seedSaleAddress, FUND_AMOUNT);
+    await (await rollToken.transfer(seedSaleAddress, FUND_AMOUNT)).wait();
     console.log("✅ SeedSale Funded with 300M ROLL");
 
     // 6. Deploy Liquidity Locker
     console.log("\n📄 Deploying LiquidityLocker...");
     const LiquidityLocker = await hre.ethers.getContractFactory("LiquidityLocker");
-    const locker = await LiquidityLocker.deploy(rollAddress);
+    const locker = await LiquidityLocker.deploy();
     await locker.waitForDeployment();
     const lockerAddress = await locker.getAddress();
     console.log(`✅ LiquidityLocker deployed to: ${lockerAddress}`);
+
+    // 7. Deploy DAO (Timelock & Governor)
+    console.log("\n🏛️ Deploying DAO Governance...");
+
+    // Timelock
+    const MIN_DELAY = 172800; // 2 days
+    const proposers = [];
+    const executors = [];
+    const admin = deployer.address;
+
+    const Timelock = await hre.ethers.getContractFactory("Timelock");
+    const timelock = await Timelock.deploy(MIN_DELAY, proposers, executors, admin);
+    await timelock.waitForDeployment();
+    const timelockAddress = await timelock.getAddress();
+    console.log(`✅ Timelock deployed to: ${timelockAddress}`);
+
+    // Governor
+    const BeetleGovernor = await hre.ethers.getContractFactory("BeetleGovernor");
+    const governor = await BeetleGovernor.deploy(rollAddress, timelockAddress);
+    await governor.waitForDeployment();
+    const governorAddress = await governor.getAddress();
+    console.log(`✅ BeetleGovernor deployed to: ${governorAddress}`);
+
+    // Setup Roles
+    console.log("\n👮 Setting up DAO Roles...");
+    const PROPOSER_ROLE = await timelock.PROPOSER_ROLE();
+    const EXECUTOR_ROLE = await timelock.EXECUTOR_ROLE();
+    const CANCELLER_ROLE = await timelock.CANCELLER_ROLE();
+    const TIMELOCK_ADMIN_ROLE = await timelock.DEFAULT_ADMIN_ROLE();
+
+    await (await timelock.grantRole(PROPOSER_ROLE, governorAddress)).wait();
+    await (await timelock.grantRole(EXECUTOR_ROLE, ethers.ZeroAddress)).wait(); // Open execution
+    await (await timelock.grantRole(CANCELLER_ROLE, governorAddress)).wait();
+    console.log("✅ Roles granted");
+
+    // Transfer Ownerships to Timelock (DAO)
+    // Optional: wait for user confirmation or do it now? 
+    // Plan lists "Design DAO Architecture" but doesn't explicitly say transfer ownership NOW, but it's implied for DAO to work.
+    // I will *not* transfer ownership yet to keep it simple for now, or just log it.
+    // Actually, if we don't transfer, the DAO can't do much on the token/sale.
+    // But for verification, we might want to keep control.
+    // Let's leave ownership with deployer for now and just log the DAO setup.
 
     console.log("\n🎉 DEPLOYMENT COMPLETE!");
     console.log("----------------------------------------------------");
     console.log(`ROLLToken:       ${rollAddress}`);
     console.log(`SeedSale:        ${seedSaleAddress}`);
     console.log(`LiquidityLocker: ${lockerAddress}`);
+    console.log(`Timelock:        ${timelockAddress}`);
+    console.log(`BeetleGovernor:  ${governorAddress}`);
     console.log("----------------------------------------------------");
 
     console.log("\n⚠️  NEXT STEP: Verify on BscScan");
     console.log(`npx hardhat verify --network bscTestnet ${rollAddress} "${MARKETING_WALLET}" "${SHOP_FUND_WALLET}"`);
     console.log(`npx hardhat verify --network bscTestnet ${seedSaleAddress} ${SOFT_CAP} ${HARD_CAP} ${START_TIME} ${END_TIME}`);
+    console.log(`npx hardhat verify --network bscTestnet ${timelockAddress} ${MIN_DELAY} [] [] "${admin}"`);
+    console.log(`npx hardhat verify --network bscTestnet ${governorAddress} ${rollAddress} ${timelockAddress}`);
 }
 
 main().catch((error) => {

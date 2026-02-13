@@ -40,7 +40,7 @@ export default function Hero({ onOpenBlueprint }) {
 
                     <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-lg mx-auto md:mx-0 leading-relaxed font-light">
                         Turning organic waste into energy credits.
-                        Backed by the <strong className="text-white">Ecoloop Network</strong> of physical hardware, not just hype.
+                        Fueling the creation of the <strong className="text-white">Ecoloop Network</strong>. Real hardware, not just hype.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-12">
@@ -92,6 +92,6 @@ export default function Hero({ onOpenBlueprint }) {
                     />
                 </motion.div>
             </div>
-        </section>
+        </section >
     )
 }

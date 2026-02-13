@@ -15,7 +15,7 @@ export default function Ecoloop() {
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
                         Web3 meets heavy metal. We turn organic waste into verified energy credits.
-                        Every token is backed by the "BeetleBox" hardware network.
+                        Every token powers the development of the "BeetleBox" hardware network.
                     </p>
                 </div>
 
@@ -74,6 +74,6 @@ export default function Ecoloop() {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

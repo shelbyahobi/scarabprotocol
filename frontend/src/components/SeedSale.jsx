@@ -6,14 +6,18 @@ import { Clock, Lock, CheckCircle, AlertTriangle, RefreshCw } from 'lucide-react
 // Valid ABI for SeedSale
 const SEED_SALE_ABI = [
     { "inputs": [], "name": "deposit", "outputs": [], "stateMutability": "payable", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "_referrer", "type": "address" }], "name": "depositWithReferral", "outputs": [], "stateMutability": "payable", "type": "function" },
     { "inputs": [], "name": "claimRefund", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+    { "inputs": [], "name": "claimReferralRewards", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "hardCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "softCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "referralRewards", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "totalReferrals", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
-const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
+const SEED_SALE_ADDRESS = "0xfc95cC5185530c2c386f5Cfc5c68157B6E8bF4F5";
 const TOKENS_PER_BNB = 100000;
 const MIN_CONTRIBUTION = 0.05;
 
@@ -21,25 +25,15 @@ export default function SeedSale() {
     const { address, isConnected } = useAccount();
     const [amount, setAmount] = useState('0.1');
 
-    // Timer Logic
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const [referrer, setReferrer] = useState(null);
 
     useEffect(() => {
-        const targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 7); // Mock 7 Days
-
-        const interval = setInterval(() => {
-            const now = new Date();
-            const difference = targetDate - now;
-            if (difference > 0) {
-                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-                const minutes = Math.floor((difference / 1000 / 60) % 60);
-                const seconds = Math.floor((difference / 1000) % 60);
-                setTimeLeft({ days, hours, minutes, seconds });
-            }
-        }, 1000);
-        return () => clearInterval(interval);
+        const queryParams = new URLSearchParams(window.location.search);
+        const refParam = queryParams.get("ref");
+        if (refParam && refParam.startsWith("0x")) {
+            setReferrer(refParam);
+            console.log("Referrer set:", refParam);
+        }
     }, []);
 
     // ---------------- READS ---------------- //
@@ -57,6 +51,25 @@ export default function SeedSale() {
         functionName: 'hardCap',
     });
 
+    // Referral Stats
+    const { data: myRewards } = useContractRead({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'referralRewards',
+        args: [address],
+        watch: true,
+        enabled: isConnected
+    });
+
+    const { data: myReferralCount } = useContractRead({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'totalReferrals',
+        args: [address],
+        watch: true,
+        enabled: isConnected
+    });
+
     // AGGRESSIVE POLLING FOR USER DEPOSIT (Every 2s)
     const { data: userDeposit, refetch: refetchDeposit, isFetching } = useContractRead({
         address: SEED_SALE_ADDRESS,
@@ -71,16 +84,29 @@ export default function SeedSale() {
 
     // ---------------- WRITES ---------------- //
 
-    // DEPOSIT
+    // DEPOSIT (Standard or Referral)
+    const depositFunctionName = referrer ? 'depositWithReferral' : 'deposit';
+    const depositArgs = referrer ? [referrer] : [];
+
     const { config: depositConfig } = usePrepareContractWrite({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
-        functionName: 'deposit',
+        functionName: depositFunctionName,
+        args: depositArgs,
         value: parseEther(amount || '0'),
         enabled: isConnected && parseFloat(amount || '0') >= MIN_CONTRIBUTION,
     });
     const { write: writeDeposit, data: depositData, isLoading: isDepositLoading } = useContractWrite(depositConfig);
     const { isSuccess: isDepositSuccess, isLoading: isDepositTxLoading } = useWaitForTransaction({ hash: depositData?.hash });
+
+    // CLAIM REFERRAL REWARDS
+    const { config: claimRefConfig } = usePrepareContractWrite({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'claimReferralRewards',
+        enabled: isConnected && myRewards && myRewards > 0n
+    });
+    const { write: writeClaimRef, isLoading: isClaimRefLoading } = useContractWrite(claimRefConfig);
 
     // REFUND (Not conditional on time for now, just static existing check)
     const { config: refundConfig } = usePrepareContractWrite({
@@ -106,9 +132,18 @@ export default function SeedSale() {
     const cap = hardCapData ? parseFloat(formatEther(hardCapData)) : 500;
     const percent = Math.min((raised / cap) * 100, 100);
 
+    // Referral Display
+    const rewardsEth = myRewards ? parseFloat(formatEther(myRewards)).toFixed(4) : "0.0000";
+    const referralLink = typeof window !== 'undefined' && address ? `${window.location.origin}/app?ref=${address}` : "Connect Wallet";
+
     const userBnB = userDeposit ? parseFloat(formatEther(userDeposit)) : 0;
     const reservedRoll = (userBnB * TOKENS_PER_BNB).toLocaleString();
     const isAmountValid = parseFloat(amount) >= MIN_CONTRIBUTION;
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(referralLink);
+        alert("Referral link copied!");
+    };
 
     return (
         <div id="seed-sale" className="w-full"> {/* Removed container max-w to fit new grid layout better */}
@@ -204,6 +239,57 @@ export default function SeedSale() {
                     </div>
 
                     {/* My Position Moved to Global Dashboard Header */}
+                </div>
+
+                {/* REFERRAL DASHBOARD */}
+                <div className="w-full bg-black/40 border border-beetle-green/30 rounded-3xl p-8 relative overflow-hidden group hover:border-beetle-green/50 transition-all">
+                    <div className="absolute top-0 left-0 bg-beetle-green/20 w-full h-1"></div>
+
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-2xl font-bold text-white flex items-center gap-3">
+                            <RefreshCw className="text-beetle-green animate-spin-slow" />
+                            Community Referral
+                        </h3>
+                        <span className="bg-beetle-green/10 text-beetle-green px-3 py-1 rounded-lg text-sm font-bold">EARN 5% BNB</span>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <p className="text-gray-400 text-sm mb-2">Share your link to earn 5% of every deposit made by your friends. Rewards claimable after sale success.</p>
+
+                            <div className="bg-black border border-white/10 rounded-xl p-3 flex items-center gap-3 mb-4">
+                                <code className="text-beetle-electric w-full truncate text-sm">
+                                    {isConnected ? referralLink : "Connect Wallet to see link"}
+                                </code>
+                                <button
+                                    onClick={copyLink}
+                                    className="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
+                                >
+                                    COPY
+                                </button>
+                            </div>
+
+                            <div className="flex gap-4 text-sm">
+                                <div className="text-gray-400">
+                                    Referrals: <strong className="text-white">{myReferralCount ? myReferralCount.toString() : '0'}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-black/20 rounded-xl p-6 border border-white/5 flex flex-col justify-center items-center text-center">
+                            <span className="text-gray-500 text-xs uppercase tracking-widest mb-1">Unclaimed Rewards</span>
+                            <div className="text-3xl font-black text-beetle-gold mb-4">{rewardsEth} BNB</div>
+
+                            <button
+                                disabled={!myRewards || myRewards <= 0n || isClaimRefLoading}
+                                onClick={() => writeClaimRef?.()}
+                                className="w-full bg-beetle-green/20 text-beetle-green border border-beetle-green/50 hover:bg-beetle-green hover:text-black font-bold py-2 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isClaimRefLoading ? "Claiming..." : "CLAIM REWARDS"}
+                            </button>
+                            <p className="text-[10px] text-gray-600 mt-2">Requires Sale Finalization</p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Future Rounds (Locked) */}

@@ -3,9 +3,11 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol"; // Audit Fix: Medium Severity
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
+contract ROLLToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes {
     // Tax Configuration
     uint256 public constant BUY_TAX = 0;
     uint256 public constant SELL_TAX = 500; // 5% (basis points: 500/10000)
@@ -27,19 +29,31 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
     // Mappings
     mapping(address => bool) private _isExcludedFromFees;
     mapping(address => bool) private _isExcludedFromLimits;
-    mapping(address => bool) private _blacklist; // Audit Fix: Blacklist Storage
+    mapping(address => bool) private _blacklist; 
     mapping(address => bool) public ammPairs; // Automated Market Maker Pairs
 
     event TradingEnabled(uint256 blockNumber);
     event LimitsRemoved();
     event ExcludedFromFees(address indexed account, bool isExcluded);
     event ExcludedFromLimits(address indexed account, bool isExcluded);
-    event Blacklisted(address indexed account); // Audit Fix: Event Definition
+    event Blacklisted(address indexed account); 
+
+    // Audit Fix: Timelock Blacklist
+    mapping(address => BlacklistRequest) public blacklistRequests;
+    uint256 public constant BLACKLIST_DELAY = 2 days;
+
+    struct BlacklistRequest {
+        address target;
+        uint256 requestTime;
+        bool executed;
+    }
+
+    event BlacklistRequested(address indexed account, uint256 requestTime);
 
     constructor(
         address _marketingWallet,
         address _shopFundWallet
-    ) ERC20("Dung Beetle", "ROLL") Ownable(msg.sender) {
+    ) ERC20("Dung Beetle", "ROLL") ERC20Permit("Dung Beetle") Ownable(msg.sender) {
         marketingWallet = _marketingWallet;
         shopFundWallet = _shopFundWallet;
 
@@ -71,18 +85,6 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
         launchBlock = block.number;
         emit TradingEnabled(block.number);
     }
-
-    // Audit Fix: Timelock Blacklist
-    mapping(address => BlacklistRequest) public blacklistRequests;
-    uint256 public constant BLACKLIST_DELAY = 2 days;
-
-    struct BlacklistRequest {
-        address target;
-        uint256 requestTime;
-        bool executed;
-    }
-
-    event BlacklistRequested(address indexed account, uint256 requestTime);
 
     function requestBlacklist(address account) external onlyOwner {
         require(account != address(0), "Invalid address");
@@ -123,10 +125,6 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
         emit LimitsRemoved();
     }
 
-    function setAMMPair(address pair, bool value) external onlyOwner {
-        ammPairs[pair] = value;
-    }
-
     function excludeFromFees(address account, bool excluded) public onlyOwner {
         _isExcludedFromFees[account] = excluded;
         emit ExcludedFromFees(account, excluded);
@@ -156,8 +154,8 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
         address from,
         address to,
         uint256 amount
-    ) internal override nonReentrant { // Audit Fix: Reentrancy Guard
-        require(!_blacklist[from] && !_blacklist[to], "Blacklisted"); // Audit Fix: Block Blacklisted
+    ) internal override(ERC20, ERC20Votes) nonReentrant {
+        require(!_blacklist[from] && !_blacklist[to], "Blacklisted");
 
         if (amount == 0) {
             super._update(from, to, 0);
@@ -171,7 +169,7 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
             }
             
             if (from != owner() && to != owner() && to != address(0) && to != address(0xdead) && !_isExcludedFromFees[to] && !_isExcludedFromFees[from]) {
-                 // audit fix: Check Max Transaction
+                 // Check Max Transaction
                  require(amount <= maxTxAmount, "Exceeds max transaction amount");
                  
                  // Check Max Wallet
@@ -217,5 +215,14 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard {
         }
 
         super._update(from, to, amount);
+    }
+
+    function nonces(address owner)
+        public
+        view
+        override(ERC20Permit, Nonces)
+        returns (uint256)
+    {
+        return super.nonces(owner);
     }
 }
