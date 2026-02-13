@@ -14,7 +14,8 @@ const SEED_SALE_ABI = [
     { "inputs": [], "name": "softCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "referralRewards", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "totalReferrals", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "totalReferrals", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [], "name": "endTime", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
 const SEED_SALE_ADDRESS = "0xfc95cC5185530c2c386f5Cfc5c68157B6E8bF4F5";
@@ -26,6 +27,7 @@ export default function SeedSale() {
     const [amount, setAmount] = useState('0.1');
 
     const [referrer, setReferrer] = useState(null);
+    const [timeLeft, setTimeLeft] = useState({ days: 0, seconds: 0 });
 
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
@@ -35,6 +37,36 @@ export default function SeedSale() {
             console.log("Referrer set:", refParam);
         }
     }, []);
+
+    // ---------------- READS ---------------- //
+
+    const { data: endTimeData } = useContractRead({
+        address: SEED_SALE_ADDRESS,
+        abi: SEED_SALE_ABI,
+        functionName: 'endTime',
+    });
+
+    // Timer Logic
+    useEffect(() => {
+        if (!endTimeData) return;
+
+        const interval = setInterval(() => {
+            const now = Math.floor(Date.now() / 1000);
+            const end = Number(endTimeData);
+            const diff = end - now;
+
+            if (diff <= 0) {
+                setTimeLeft({ days: 0, seconds: 0 });
+                clearInterval(interval);
+            } else {
+                const days = Math.floor(diff / 86400);
+                const seconds = diff % 60;
+                setTimeLeft({ days, seconds });
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [endTimeData]);
 
     // ---------------- READS ---------------- //
 
