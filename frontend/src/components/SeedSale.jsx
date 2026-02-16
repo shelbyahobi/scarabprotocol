@@ -243,6 +243,22 @@ export default function SeedSale() {
                             Est. Receive: <span className="text-beetle-gold font-bold">{(parseFloat(amount || '0') * TOKENS_PER_BNB).toLocaleString()} ROLL</span>
                         </div>
 
+                        {/* Referrer Verification Badge */}
+                        {referrer && (
+                            <div className="mb-4 bg-beetle-green/10 border border-beetle-green/30 rounded-lg p-3 flex justify-between items-center animate-pulse">
+                                <span className="text-sm text-beetle-green flex items-center gap-2">
+                                    <CheckCircle size={16} />
+                                    Referrer: <span className="font-mono font-bold text-white">{referrer.slice(0, 6)}...{referrer.slice(-4)}</span>
+                                </span>
+                                <button
+                                    onClick={() => setReferrer(null)}
+                                    className="text-xs text-gray-400 hover:text-white underline"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        )}
+
                         {!isConnected ? (
                             <button className="w-full bg-white/5 text-gray-400 font-bold py-4 rounded-xl border border-white/10 cursor-not-allowed">
                                 Connect Wallet to Join
