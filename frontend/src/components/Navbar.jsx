@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, ExternalLink, FileText, Rocket } from 'lucide-react';
+import { Menu, X, ExternalLink, FileText, Rocket, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -36,6 +36,9 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
                         <button onClick={onOpenBlueprint} className="flex items-center gap-2 hover:text-beetle-gold transition-colors">
                             <FileText size={14} /> Blueprint
                         </button>
+                        <Link to="/strategy" className="flex items-center gap-2 hover:text-beetle-gold transition-colors">
+                            <TrendingUp size={14} /> Strategy
+                        </Link>
                     </div>
 
                     <div className="h-6 w-px bg-white/10"></div>

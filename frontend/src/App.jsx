@@ -23,6 +23,7 @@ import Tokenomics from './components/Tokenomics';
 import UseOfFunds from './components/UseOfFunds';
 import EcoMiningExplainer from './components/EcoMiningExplainer';
 import StrategyPage from './components/StrategyPage';
+import StrategyPreview from './components/StrategyPreview';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
 
 const queryClient = new QueryClient();
@@ -47,6 +48,9 @@ function LandingPage({ onOpenBlueprint }) {
 
                 {/* 3. THE TRUST (Use of Funds) */}
                 <UseOfFunds />
+
+                {/* 3.5 THE STRATEGY (Phases) - NEW */}
+                <StrategyPreview />
 
                 {/* 4. THE MECHANICS (How to Buy - Teaser) */}
                 <div className="container mx-auto px-4 py-24">
