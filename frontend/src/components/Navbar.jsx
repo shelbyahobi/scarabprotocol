@@ -30,7 +30,7 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
                         <a href="https://t.me/ScarabCommunity" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
                             <ExternalLink size={14} /> Telegram
                         </a>
-                        <a href="https://x.com/roll_token" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
+                        <a href="https://x.com/scarab_protocol" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
                             <ExternalLink size={14} /> Twitter
                         </a>
                         <button onClick={onOpenBlueprint} className="flex items-center gap-2 hover:text-beetle-gold transition-colors">
@@ -62,7 +62,7 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
             {mobileMenuOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-beetle-gold/20 p-6 flex flex-col gap-6 backdrop-blur-xl">
                     <a href="https://t.me/ScarabCommunity" className="text-gray-300 hover:text-beetle-electric">Telegram</a>
-                    <a href="https://x.com/roll_token" className="text-gray-300 hover:text-beetle-electric">Twitter</a>
+                    <a href="https://x.com/scarab_protocol" className="text-gray-300 hover:text-beetle-electric">Twitter</a>
                     <button onClick={() => { onOpenBlueprint(); setMobileMenuOpen(false); }} className="text-gray-300 hover:text-beetle-gold text-left">Blueprint</button>
                     <div className="flex flex-col gap-4 mt-4 border-t border-white/10 pt-6">
                         <ConnectButton />
