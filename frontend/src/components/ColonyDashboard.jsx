@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useReadContracts } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
 import GovernanceDashboard from './GovernanceDashboard';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote, Server, Activity, Plus, AlertCircle, MessageCircle, Smartphone, Gavel, CheckCircle2 } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus } from 'lucide-react';
 import { formatEther } from 'viem';
 import { CONFIG } from '../config';
 
