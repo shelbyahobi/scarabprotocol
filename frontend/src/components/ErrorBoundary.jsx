@@ -29,10 +29,12 @@ class ErrorBoundary extends React.Component {
                             The application encountered an unexpected error. This is likely a temporary connectivity issue.
                         </p>
 
-                        {/* Dev-only detail */}
-                        {process.env.NODE_ENV === 'development' && this.state.error && (
+                        {/* Debugging: Show error in production for now */}
+                        {this.state.error && (
                             <div className="bg-black/50 p-4 rounded-lg text-left text-xs text-red-300 font-mono mb-6 overflow-auto max-h-40">
                                 {this.state.error.toString()}
+                                <br />
+                                {this.state.errorInfo?.componentStack}
                             </div>
                         )}
 
