@@ -6,7 +6,7 @@ export const CONFIG = {
     CHAIN_ID: parseInt(import.meta.env.VITE_CHAIN_ID || '97'),
 
     // RPC URLs
-    RPC_URL_TESTNET: import.meta.env.VITE_RPC_URL || 'https://bsc-testnet-rpc.publicnode.com',
+    RPC_URL_TESTNET: import.meta.env.VITE_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545',
     RPC_URL_MAINNET: import.meta.env.VITE_RPC_URL_MAINNET || 'https://bsc-rpc.publicnode.com',
 
     // Contract Addresses (Fallbacks to the ones known from previous chats)

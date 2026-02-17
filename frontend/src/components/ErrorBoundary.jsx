@@ -38,12 +38,27 @@ class ErrorBoundary extends React.Component {
                             </div>
                         )}
 
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 w-full"
-                        >
-                            <RefreshCw size={18} /> Reload Application
-                        </button>
+                        <div className="flex gap-4 justify-center">
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="bg-beetle-gold/20 hover:bg-beetle-gold/30 text-beetle-gold border border-beetle-gold/50 px-6 py-2 rounded-lg font-bold transition-all flex items-center gap-2"
+                            >
+                                <RefreshCw size={18} /> Reload Application
+                            </button>
+
+                            {/* If it's a wallet error, offer to disconnect/clear cache (simulated by ignoring for now as we can't easily clear wagmi state from here without complex logic) */}
+                            {(this.state.error?.toString().includes('MetaMask') || this.state.error?.toString().includes('Connector')) && (
+                                <button
+                                    onClick={() => {
+                                        localStorage.clear(); // Nuclear option to clear persistent bad states
+                                        window.location.reload();
+                                    }}
+                                    className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-2 rounded-lg font-bold transition-all"
+                                >
+                                    Reset Wallet Cache
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             );
