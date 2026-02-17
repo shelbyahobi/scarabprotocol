@@ -26,21 +26,32 @@ export default function Hero({ onOpenBlueprint }) {
                     transition={{ duration: 0.8 }}
                     className="flex-1 text-center md:text-left"
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span className="text-xs font-bold text-gray-300 tracking-wide uppercase">Seed Round Live • Phase 1</span>
+                    {/* Eyebrow */}
+                    <div className="mb-6 flex items-center justify-center md:justify-start gap-2">
+                        <div className="h-px w-8 bg-gradient-to-r from-transparent to-beetle-gold" />
+                        <span className="text-xs uppercase tracking-[0.3em] text-beetle-gold/80">
+                            Ancient Symbol • Modern Protocol
+                        </span>
+                        <div className="h-px w-8 bg-gradient-to-l from-transparent to-beetle-gold" />
                     </div>
 
+                    {/* Main headline */}
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[0.9] tracking-tighter">
-                        THE CURRENCY OF <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-beetle-gold via-yellow-200 to-beetle-gold animate-gradient-x">
-                            PHYSICAL RESILIENCE
+                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-beetle-gold via-yellow-200 to-beetle-gold">
+                            SCARAB
+                        </span>
+                        <span className="block text-white/90 text-4xl md:text-6xl font-light mt-2">
+                            Regeneration Reimagined
                         </span>
                     </h1>
 
-                    <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-lg mx-auto md:mx-0 leading-relaxed font-light">
-                        Turning organic waste into energy credits.
-                        Fueling the creation of the <strong className="text-white">Ecoloop Network</strong>. Real hardware, not just hype.
+                    {/* Subheadline */}
+                    <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                        The ancient scarab beetle transformed waste into sustenance.
+                        Today, SCARAB transforms digital assets into physical infrastructure.
+                        <span className="block mt-3 text-white font-semibold">
+                            Real hardware. Community governed. Built to endure.
+                        </span>
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-12">
@@ -60,12 +71,12 @@ export default function Hero({ onOpenBlueprint }) {
                     {/* Trust Signals (New) */}
                     <div className="flex flex-wrap justify-center md:justify-start gap-6 opacity-80">
                         <div className="flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-black/40">
-                            <Shield className="text-beetle-green w-4 h-4" />
-                            <span className="font-bold text-white text-xs">Audited Contract</span>
+                            <Shield className="text-amber-400 w-4 h-4" />
+                            <span className="font-bold text-white text-xs">Self-Audited</span>
                         </div>
                         <div className="flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-black/40">
                             <CheckCircle className="text-beetle-electric w-4 h-4" />
-                            <span className="font-bold text-white text-xs">KYC Verified Team</span>
+                            <span className="font-bold text-white text-xs">Open Source</span>
                         </div>
                         <div className="flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-black/40">
                             <Lock className="text-beetle-gold w-4 h-4" />
