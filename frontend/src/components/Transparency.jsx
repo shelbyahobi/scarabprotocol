@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Shield, Search, Lock, FileCode, CheckCircle, ExternalLink } from 'lucide-react';
+import { Shield, Search, Lock, FileCode, CheckCircle, ExternalLink, Clock } from 'lucide-react';
 import { CONFIG } from '../config';
 
 export default function Transparency() {
