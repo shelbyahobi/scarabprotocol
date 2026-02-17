@@ -10,7 +10,7 @@ const { chains, publicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
     appName: '$ROLL Dung Beetle',
-    projectId: '3a8170812b534d0ff9d794f35a9cc25e', // WalletConnect Demo ID
+    projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '3a8170812b534d0ff9d794f35a9cc25e', // Use Env Var!
     chains
 });
 
