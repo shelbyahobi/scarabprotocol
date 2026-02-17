@@ -13,23 +13,21 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
 
                 {/* Logo Area */}
                 <Link to="/" className="flex items-center gap-3 group cursor-pointer">
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-beetle-electric/50 blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <img
-                            src="/logo_eco.jpg"
-                            alt="ROLL"
-                            className="w-10 h-10 rounded-full border border-beetle-gold/50 relative z-10"
-                        />
-                    </div>
-                    <div className="text-2xl font-black text-white tracking-tighter group-hover:text-beetle-electric transition-colors">
-                        $ROLL
+                    <div className="flex items-center gap-2">
+                        {/* Logo Placeholder - User can replace with scarab.png later */}
+                        <div className="w-10 h-10 bg-beetle-gold rounded-full flex items-center justify-center font-black text-black">
+                            S
+                        </div>
+                        <span className="text-xl font-black tracking-tighter text-white">
+                            $SCARAB
+                        </span>
                     </div>
                 </Link>
 
                 {/* Desktop Actions */}
                 <div className="hidden md:flex items-center gap-6">
                     <div className="flex gap-6 text-sm font-bold text-gray-400">
-                        <a href="https://t.me/ROLLToken" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
+                        <a href="https://t.me/ScarabCommunity" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
                             <ExternalLink size={14} /> Telegram
                         </a>
                         <a href="https://x.com/roll_token" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
@@ -63,7 +61,7 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
             {/* Mobile Menu */}
             {mobileMenuOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-beetle-gold/20 p-6 flex flex-col gap-6 backdrop-blur-xl">
-                    <a href="https://t.me/ROLLToken" className="text-gray-300 hover:text-beetle-electric">Telegram</a>
+                    <a href="https://t.me/ScarabCommunity" className="text-gray-300 hover:text-beetle-electric">Telegram</a>
                     <a href="https://x.com/roll_token" className="text-gray-300 hover:text-beetle-electric">Twitter</a>
                     <button onClick={() => { onOpenBlueprint(); setMobileMenuOpen(false); }} className="text-gray-300 hover:text-beetle-gold text-left">Blueprint</button>
                     <div className="flex flex-col gap-4 mt-4 border-t border-white/10 pt-6">

@@ -88,7 +88,7 @@ function LandingPage({ onOpenBlueprint }) {
                                 <h3 className="text-2xl font-bold text-white">The Blueprint</h3>
                             </div>
                             <p className="text-gray-400 mb-6">
-                                Read the full technical documentation. From the "Dung Beetle" deflator mechanism to the "Ecoloop" physical hardware network.
+                                Read the full technical documentation. From the "Sacred Scarab" deflator mechanism to the "Ecoloop" physical hardware network.
                             </p>
                             <div className="flex gap-4 flex-wrap">
                                 <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Tokenomics</span>
@@ -178,17 +178,17 @@ function Footer() {
     return (
         <footer className="py-12 border-t border-white/5 bg-black/50 backdrop-blur-sm">
             <div className="container mx-auto px-4 text-center">
-                <h3 className="text-3xl font-black text-beetle-gold mb-4 tracking-tighter">$ROLL</h3>
+                <h3 className="text-3xl font-black text-beetle-gold mb-4 tracking-tighter">$SCARAB</h3>
                 <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-                    Bridging meme culture with real-world organic commerce.
+                    Bridging ancient wisdom with real-world organic commerce.
                     Run by the community, for the community.
                 </p>
                 <div className="flex justify-center gap-8 mb-8">
-                    <a href="https://x.com/roll_token" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Twitter (X)</a>
-                    <a href="https://t.me/rolltoken" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Telegram</a>
+                    <a href="https://x.com/SCARAB_Protocol" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Twitter (X)</a>
+                    <a href="https://t.me/ScarabCommunity" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Telegram</a>
                     <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
                 </div>
-                <p className="text-gray-700 text-sm">&copy; 2026 ROLL Token. Organic Commerce.</p>
+                <p className="text-gray-700 text-sm">&copy; 2026 Scarab Protocol. Organic Commerce.</p>
             </div>
         </footer>
     );

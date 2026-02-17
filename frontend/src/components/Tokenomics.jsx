@@ -34,7 +34,7 @@ export default function Tokenomics() {
                         Token<span className="text-beetle-electric">omics</span>
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        Designed for scarcity and utility. 1,000,000,000 ROLL fixed supply, fueling the Ecoloop Network.
+                        Designed for scarcity and utility. 1,000,000,000 SCARAB fixed supply, fueling the Ecoloop Network.
                     </p>
                 </div>
 

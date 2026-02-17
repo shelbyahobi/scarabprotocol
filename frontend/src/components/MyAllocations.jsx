@@ -145,7 +145,7 @@ export default function MyAllocations() {
                 <div className="col-span-1">
                     <div className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Reserved Tokens</div>
                     <div className="text-2xl font-mono text-beetle-gold font-bold flex items-center gap-2">
-                        {reservedRoll} <span className="text-sm text-gray-600">ROLL</span>
+                        {reservedRoll} <span className="text-sm text-gray-600">SCARAB</span>
                     </div>
                 </div>
 

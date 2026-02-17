@@ -22,7 +22,7 @@ export default function StrategyPage() {
                     <h1 className="text-4xl md:text-5xl font-black mb-2 tracking-tighter bg-gradient-to-br from-[#D4A843] via-white to-[#3DDB5A] bg-clip-text text-transparent">
                         3-Phase Seed Sale Strategy
                     </h1>
-                    <p className="text-gray-500 uppercase tracking-[3px] text-sm">ROLL Token · BSC · Approved Parameters</p>
+                    <p className="text-gray-500 uppercase tracking-[3px] text-sm">SCARAB Token · BSC · Approved Parameters</p>
                 </div>
 
                 <div className="text-center text-xs text-gray-500 font-mono mb-10 p-2 bg-white/5 rounded-lg inline-block mx-auto w-full">
@@ -92,10 +92,10 @@ export default function StrategyPage() {
                         <div className="text-xl font-black text-[#D4A843] mb-5 group-hover:scale-105 transition-transform origin-left">Founding Believers</div>
 
                         <div className="space-y-3">
-                            <Stat label="ROLL per BNB" value="8,000,000" color="#D4A843" />
+                            <Stat label="SCARAB per BNB" value="8,000,000" color="#D4A843" />
                             <Stat label="Soft Cap" value="5 BNB (~€2,600)" />
                             <Stat label="Hard Cap" value="6.25 BNB (~€3,250)" />
-                            <Stat label="Allocation" value="50M ROLL (5%)" />
+                            <Stat label="Allocation" value="50M SCARAB (5%)" />
                             <Stat label="Max Wallet" value="1 BNB" />
                             <Stat label="Referral" value="7%" />
                             <Stat label="Duration" value="21 days" />
@@ -111,10 +111,10 @@ export default function StrategyPage() {
                         <div className="text-xl font-black text-[#3DDB5A] mb-5 group-hover:scale-105 transition-transform origin-left">Community Builders</div>
 
                         <div className="space-y-3">
-                            <Stat label="ROLL per BNB" value="6,000,000" color="#3DDB5A" />
+                            <Stat label="SCARAB per BNB" value="6,000,000" color="#3DDB5A" />
                             <Stat label="Soft Cap" value="10 BNB (~€5,200)" />
                             <Stat label="Hard Cap" value="16.67 BNB (~€8,667)" />
-                            <Stat label="Allocation" value="100M ROLL (10%)" />
+                            <Stat label="Allocation" value="100M SCARAB (10%)" />
                             <Stat label="Max Wallet" value="3 BNB" />
                             <Stat label="Referral" value="5%" />
                             <Stat label="Duration" value="30 days" />
@@ -130,10 +130,10 @@ export default function StrategyPage() {
                         <div className="text-xl font-black text-[#4D9FFF] mb-5 group-hover:scale-105 transition-transform origin-left">Final Boarding</div>
 
                         <div className="space-y-3">
-                            <Stat label="ROLL per BNB" value="4,500,000" color="#4D9FFF" />
+                            <Stat label="SCARAB per BNB" value="4,500,000" color="#4D9FFF" />
                             <Stat label="Soft Cap" value="15 BNB (~€7,800)" />
                             <Stat label="Hard Cap" value="33.33 BNB (~€17,333)" />
-                            <Stat label="Allocation" value="150M ROLL (15%)" />
+                            <Stat label="Allocation" value="150M SCARAB (15%)" />
                             <Stat label="Max Wallet" value="5 BNB" />
                             <Stat label="Referral" value="3%" />
                             <Stat label="Duration" value="30 days" />

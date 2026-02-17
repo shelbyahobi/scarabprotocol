@@ -8,12 +8,13 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
-contract BeetleGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+contract ScarabGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+    
     constructor(IVotes _token, TimelockController _timelock)
-        Governor("BeetleGovernor")
-        GovernorSettings(28800, /* 1 day */ 86400, /* 3 days */ 100000e18) /* 100k ROLL */
+        Governor("ScarabGovernor")
+        GovernorSettings(1 days, 1 weeks, 100e18) // Voting Delay, Period, Threshold
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4)
+        GovernorVotesQuorumFraction(4) // 4% Quorum
         GovernorTimelockControl(_timelock)
     {}
 

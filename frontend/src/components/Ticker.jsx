@@ -20,7 +20,7 @@ export default function Ticker() {
                     <span className="text-gray-600">|</span>
                     <span>HOLDERS: <span className="text-white">--- (Seed Phase)</span></span>
                     <span className="text-gray-600">|</span>
-                    <span className="text-beetle-electric font-bold">ROLL PROTOCOL 2026</span>
+                    <span className="text-beetle-electric font-bold">SCARAB PROTOCOL 2026</span>
                 </div>
             </div>
         </div>

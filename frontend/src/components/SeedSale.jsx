@@ -296,7 +296,7 @@ export default function SeedSale() {
                                 <p className="text-2xl font-black text-white">{userBnB.toFixed(4)} BNB</p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-400 mb-1">Reserved ROLL</p>
+                                <p className="text-xs text-gray-400 mb-1">Reserved SCARAB</p>
                                 <p className="text-2xl font-black text-beetle-gold">
                                     {(userBnB * TOKENS_PER_BNB).toLocaleString()}
                                 </p>
@@ -315,7 +315,7 @@ export default function SeedSale() {
                         <div className="w-12 h-12 bg-beetle-gold rounded-full flex items-center justify-center text-black font-black text-xl">1</div>
                         <div>
                             <h3 className="text-2xl font-bold text-white">The "Architect" Round</h3>
-                            <p className="text-beetle-gold">Price: 8,000,000 ROLL / BNB</p>
+                            <p className="text-beetle-gold">Price: 8,000,000 SCARAB / BNB</p>
                         </div>
                     </div>
 
@@ -358,7 +358,7 @@ export default function SeedSale() {
 
                         {/* Estimated Output Preview */}
                         <div className="mb-4 text-right text-sm text-gray-400">
-                            Est. Receive: <span className="text-beetle-gold font-bold">{(parseFloat(amount || '0') * TOKENS_PER_BNB).toLocaleString()} ROLL</span>
+                            Est. Receive: <span className="text-beetle-gold font-bold">{(parseFloat(amount || '0') * TOKENS_PER_BNB).toLocaleString()} SCARAB</span>
                         </div>
 
                         {/* Referrer Verification Badge */}
@@ -401,7 +401,7 @@ export default function SeedSale() {
                                         disabled={isClaimTokensPending}
                                         className="w-full bg-beetle-green text-black font-bold py-3 rounded-xl hover:bg-beetle-green/90 transition-all"
                                     >
-                                        {isClaimTokensPending ? "Processing..." : `Claim ${(userBnB * TOKENS_PER_BNB).toLocaleString()} ROLL`}
+                                        {isClaimTokensPending ? "Processing..." : `Claim ${(userBnB * TOKENS_PER_BNB).toLocaleString()} SCARAB`}
                                     </button>
                                 )}
 
@@ -545,11 +545,11 @@ export default function SeedSale() {
                     </div>
                     <div className="flex justify-between text-sm mt-4">
                         <span className="text-gray-600">Price</span>
-                        <span className="text-gray-500">6,000,000 ROLL / BNB</span>
+                        <span className="text-gray-500">6,000,000 SCARAB / BNB</span>
                     </div>
                     <div className="mt-2 flex items-center gap-1.5">
                         <div className="text-xs text-amber-500/70 font-medium bg-amber-900/10 px-2 py-1 rounded">
-                            ⚡ Phase 1 buyers get 33% more ROLL vs Round 2
+                            ⚡ Phase 1 buyers get 33% more SCARAB vs Round 2
                         </div>
                     </div>
                     <div className="mt-3 w-full bg-gray-900 rounded-lg py-2 text-center text-xs text-gray-600 border border-white/5">

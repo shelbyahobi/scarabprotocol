@@ -15,7 +15,7 @@ export default function PhysicalUtility() {
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-beetle-green to-beetle-electric">A Survival Toolkit.</span>
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        $ROLL is your passport to physical independence.
+                        $SCARAB is your passport to physical independence.
                         We use blockchain to fund, build, and discount the tools you need for the new world.
                     </p>
                 </div>
@@ -28,7 +28,7 @@ export default function PhysicalUtility() {
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">1. Real Discounts</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            Hold $ROLL to unlock <strong>30-50% OFF</strong> verified off-grid gear (Solar, Water, Starlink).
+                            Hold $SCARAB to unlock <strong>30-50% OFF</strong> verified off-grid gear (Solar, Water, Starlink).
                         </p>
                     </div>
 

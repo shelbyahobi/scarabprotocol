@@ -4,7 +4,7 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { CONFIG } from './config';
 
 export const wagmiConfig = getDefaultConfig({
-    appName: '$ROLL Dung Beetle',
+    appName: '$SCARAB Protocol',
     projectId: CONFIG.PROJECT_ID,
     chains: [bsc, bscTestnet],
     transports: {

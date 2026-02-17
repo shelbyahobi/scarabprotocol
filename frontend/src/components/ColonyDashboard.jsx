@@ -79,9 +79,9 @@ export default function ColonyDashboard() {
             const decimals = 10n ** 18n;
 
             // Priority 1: High Token Balance
-            if (tokenBalance >= 5000000n * decimals) { // 5M ROLL
+            if (tokenBalance >= 5000000n * decimals) { // 5M SCARAB
                 setTier('Elder');
-            } else if (tokenBalance >= 1000000n * decimals) { // 1M ROLL
+            } else if (tokenBalance >= 1000000n * decimals) { // 1M SCARAB
                 setTier('Guardian');
             }
             // Priority 2: Seed Contributor (Any Amount) or Token Holder
@@ -100,7 +100,7 @@ export default function ColonyDashboard() {
         {
             id: 1,
             name: "BeetleBox v1 (Scarab)",
-            price: "2,500 ROLL",
+            price: "2,500 SCARAB",
             retailPrice: "$450 USD",
             image: "/beetlebox-prototype.png",
             features: ["Solar MPPT", "LoRaWAN Gateway", "Bio-Sensor"],
@@ -110,7 +110,7 @@ export default function ColonyDashboard() {
         {
             id: 2,
             name: "Hydro-Bit Sensor",
-            price: "500 ROLL",
+            price: "500 SCARAB",
             retailPrice: "$99 USD",
             image: "/hydrobit-prototype.png",
             features: ["Water Flow Meter", "Purity Sensor", "WiFi"],
@@ -123,12 +123,12 @@ export default function ColonyDashboard() {
         {
             id: 3,
             name: "Tactical Solar Kit (60W)",
-            priceMember: "$600 (Equiv. ROLL)",
+            priceMember: "$600 (Equiv. SCARAB)",
             retailPrice: "$1,200",
             discount: "50% OFF",
             image: "/solar-kit-prototype.png",
             minTier: "Guardian",
-            code: "ROLL-SOLAR-2026",
+            code: "SCARAB-SOLAR-2026",
             link: "https://example-solar-partner.com"
         },
         {

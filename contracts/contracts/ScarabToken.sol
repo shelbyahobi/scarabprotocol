@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-contract ROLLToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes {
+contract ScarabToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes {
     // Tax Configuration
     uint256 public constant BUY_TAX = 0;
     uint256 public constant SELL_TAX = 500; // 5% (basis points: 500/10000)
