@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useContractReads } from 'wagmi';
+import { useAccount, useReadContracts } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
 import GovernanceDashboard from './GovernanceDashboard';
 import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote, Server, Activity, Plus, AlertCircle, MessageCircle, Smartphone, Gavel, CheckCircle2 } from 'lucide-react';
+import { formatEther } from 'viem';
 
 // ABI for balanceOf
 const ERC20_ABI = [
@@ -21,8 +22,8 @@ const SEED_SALE_ABI = [
     { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
-const SEED_SALE_ADDRESS = "0xfc95cC5185530c2c386f5Cfc5c68157B6E8bF4F5";
-const TOKEN_ADDRESS = "0xC002A2ccb440BbEd410175591F953A050bCa5E04"; // Deployed on Testnet
+const SEED_SALE_ADDRESS = import.meta.env.VITE_SEED_SALE_ADDRESS;
+const TOKEN_ADDRESS = import.meta.env.VITE_ROLL_TOKEN_ADDRESS;
 
 export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();
@@ -32,10 +33,8 @@ export default function ColonyDashboard() {
     const [userContribution, setUserContribution] = useState(0n);
     const [treasuryBalance, setTreasuryBalance] = useState("0");
 
-
-
     // Batch Read for Efficiency & Reliability
-    const { data: contractData } = useContractReads({
+    const { data: contractData } = useReadContracts({
         contracts: [
             {
                 address: TOKEN_ADDRESS,
@@ -55,8 +54,10 @@ export default function ColonyDashboard() {
                 functionName: 'totalRaised',
             }
         ],
-        enabled: isConnected && !!address,
-        watch: true,
+        query: {
+            enabled: isConnected && !!address,
+            refetchInterval: 5000,
+        }
     });
 
     useEffect(() => {
@@ -65,13 +66,13 @@ export default function ColonyDashboard() {
             return;
         }
 
-        if (contractData) {
-            const tokenBalance = contractData[0]?.result ? BigInt(contractData[0].result) : 0n;
+        if (contractData && contractData[0]?.status === 'success') {
+            const tokenBalance = contractData[0].result ? BigInt(contractData[0].result) : 0n;
             const seedDeposit = contractData[1]?.result ? BigInt(contractData[1].result) : 0n;
             const totalRaised = contractData[2]?.result ? BigInt(contractData[2].result) : 0n;
 
             setUserContribution(seedDeposit);
-            setTreasuryBalance((Number(totalRaised) / 10 ** 18).toFixed(2));
+            setTreasuryBalance(parseFloat(formatEther(totalRaised)).toFixed(2));
 
             // Tier Logic
             const decimals = 10n ** 18n;
@@ -146,8 +147,6 @@ export default function ColonyDashboard() {
         if (tier === 'Guest') return;
         setSelectedProduct(product);
     };
-
-
 
     return (
         <section id="colony-dashboard" className="py-24 relative overflow-hidden bg-[#0c0c0c] border-t border-white/5">

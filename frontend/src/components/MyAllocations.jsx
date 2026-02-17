@@ -1,11 +1,11 @@
-import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatEther } from 'viem';
 import { ShieldCheck, AlertTriangle, Clock, CheckCircle, RefreshCw, Wallet } from 'lucide-react';
 import { useEffect } from 'react';
 
 // Re-use ABI/Address constants (In a real app, move these to a config file)
-const SEED_SALE_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f";
-const TOKENS_PER_BNB = 100000;
+const SEED_SALE_ADDRESS = import.meta.env.VITE_SEED_SALE_ADDRESS;
+const TOKENS_PER_BNB = 8000000;
 
 const SEED_SALE_ABI = [
     { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
@@ -22,48 +22,40 @@ export default function MyAllocations() {
     const formattedAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
 
     // 1. READ USER DEPOSIT (Aggressive Polling) - Using 'contributions'
-    const { data: depositData, refetch: refetchDeposit, isFetching } = useContractRead({
+    const { data: depositData, refetch: refetchDeposit, isFetching } = useReadContract({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
         functionName: 'contributions',
         args: [address],
-        watch: true,
-        cacheTime: 2000,
-        enabled: isConnected && !!address
+        query: {
+            enabled: isConnected && !!address,
+            refetchInterval: 2000,
+        }
     });
 
     // 2. READ SALE STATUS
-    const { data: softCapData } = useContractRead({
+    const { data: softCapData } = useReadContract({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
         functionName: 'softCap',
     });
-    const { data: raisedData } = useContractRead({
+    const { data: raisedData } = useReadContract({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
         functionName: 'totalRaised',
     });
-    const { data: finalizedData } = useContractRead({
+    const { data: finalizedData } = useReadContract({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
         functionName: 'saleFinalized',
     });
 
     // 3. ACTIONS via Write
-    const { config: claimConfig } = usePrepareContractWrite({
-        address: SEED_SALE_ADDRESS,
-        abi: SEED_SALE_ABI,
-        functionName: 'claimTokens',
-        enabled: !!finalizedData
-    });
-    const { write: claimWrite, isLoading: isClaimLoading } = useContractWrite(claimConfig);
+    const { writeContract: claimWrite, data: claimHash, isPending: isClaimLoading } = useWriteContract();
+    const { isLoading: isClaimConfirming, isSuccess: isClaimSuccess } = useWaitForTransactionReceipt({ hash: claimHash });
 
-    const { config: refundConfig } = usePrepareContractWrite({
-        address: SEED_SALE_ADDRESS,
-        abi: SEED_SALE_ABI,
-        functionName: 'claimRefund',
-    });
-    const { write: refundWrite, isLoading: isRefundLoading } = useContractWrite(refundConfig);
+    const { writeContract: refundWrite, data: refundHash, isPending: isRefundLoading } = useWriteContract();
+    const { isLoading: isRefundConfirming, isSuccess: isRefundSuccess } = useWaitForTransactionReceipt({ hash: refundHash });
 
 
     // PARSE DATA
@@ -104,6 +96,22 @@ export default function MyAllocations() {
             statusIcon = <Clock size={16} />;
         }
     }
+
+    const handleClaim = () => {
+        claimWrite({
+            address: SEED_SALE_ADDRESS,
+            abi: SEED_SALE_ABI,
+            functionName: 'claimTokens'
+        });
+    };
+
+    const handleRefund = () => {
+        refundWrite({
+            address: SEED_SALE_ADDRESS,
+            abi: SEED_SALE_ABI,
+            functionName: 'claimRefund'
+        });
+    };
 
     if (!isConnected) return null; // Or show a simplified banner
 
@@ -154,7 +162,7 @@ export default function MyAllocations() {
                     {/* Claim Button */}
                     <button
                         disabled={!isFinalized || userBnB === 0 || isClaimLoading}
-                        onClick={() => claimWrite?.()}
+                        onClick={handleClaim}
                         className={`w-full py-2 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2
                             ${isFinalized && userBnB > 0
                                 ? 'bg-beetle-gold text-black hover:bg-white'
@@ -167,11 +175,11 @@ export default function MyAllocations() {
                     {/* Refund Button (Only visible if likely failed or manually triggered) */}
                     {isSoftCapMet === false && raised > 0 && ( /* show only if relevant */
                         <button
-                            onClick={() => refundWrite?.()}
-                            disabled={isSoftCapMet} // Disable if soft cap met
+                            onClick={handleRefund}
+                            disabled={isSoftCapMet || isRefundLoading} // Disable if soft cap met
                             className="text-[10px] text-gray-500 hover:text-red-500 underline text-center"
                         >
-                            Check for Refund
+                            {isRefundLoading ? "Refunding..." : "Check for Refund"}
                         </button>
                     )}
                 </div>

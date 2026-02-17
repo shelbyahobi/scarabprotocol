@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import { Vote, Users, FileText, CheckCircle, XCircle, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const ROLL_TOKEN_ADDRESS = "0xC002A2ccb440BbEd410175591F953A050bCa5E04";
-const GOVERNOR_ADDRESS = "0xC15Ba632581DA4d347Ebb2235Ce44F4AB80e8dA9";
+const ROLL_TOKEN_ADDRESS = import.meta.env.VITE_ROLL_TOKEN_ADDRESS;
+const GOVERNOR_ADDRESS = import.meta.env.VITE_GOVERNOR_ADDRESS;
 
 const ROLL_ABI = [
     { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "getVotes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
@@ -24,27 +24,31 @@ const GovernanceDashboard = () => {
     const [proposalDescription, setProposalDescription] = useState('');
 
     // Read Voting Power
-    const { data: votingPower } = useContractRead({
+    const { data: votingPower } = useReadContract({
         address: ROLL_TOKEN_ADDRESS,
         abi: ROLL_ABI,
         functionName: 'getVotes',
         args: [address],
-        watch: true,
-        enabled: isConnected
+        query: {
+            enabled: isConnected
+        }
     });
 
     // Delegate Config
-    const { config: delegateConfig } = usePrepareContractWrite({
-        address: ROLL_TOKEN_ADDRESS,
-        abi: ROLL_ABI,
-        functionName: 'delegate',
-        args: [delegatee],
-        enabled: isConnected && delegatee.startsWith('0x')
-    });
-    const { write: delegate, isLoading: isDelegating } = useContractWrite(delegateConfig);
+    const { writeContract: delegate, isPending: isDelegating } = useWriteContract();
 
     // Initial simple mockup for Proposal List (would need event indexing for real history)
     const [activeTab, setActiveTab] = useState('vote');
+
+    const handleDelegate = () => {
+        if (!delegatee.startsWith('0x')) return;
+        delegate({
+            address: ROLL_TOKEN_ADDRESS,
+            abi: ROLL_ABI,
+            functionName: 'delegate',
+            args: [delegatee]
+        });
+    }
 
     return (
         <section className="py-20 bg-black text-white relative overflow-hidden" id="governance">
@@ -96,8 +100,8 @@ const GovernanceDashboard = () => {
                                     onChange={(e) => setDelegatee(e.target.value)}
                                 />
                                 <button
-                                    onClick={() => delegate?.()}
-                                    disabled={!delegate || isDelegating}
+                                    onClick={handleDelegate}
+                                    disabled={!delegate || isDelegating || !delegatee}
                                     className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 text-white px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2"
                                 >
                                     {isDelegating ? "Delegating..." : "Delegate"}

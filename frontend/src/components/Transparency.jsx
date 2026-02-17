@@ -79,7 +79,7 @@ export default function Transparency() {
                         <Users size={20} className="text-gray-400" />
                         <span className="text-white font-bold">Community Owndership</span>
                     </a>
-                    <a href="https://testnet.bscscan.com/address/0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f" target="_blank" className="flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl hover:bg-white/10 border border-white/5 transition-all">
+                    <a href={`https://testnet.bscscan.com/address/${import.meta.env.VITE_ROLL_TOKEN_ADDRESS}`} target="_blank" className="flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl hover:bg-white/10 border border-white/5 transition-all">
                         <CheckCircle size={20} className="text-beetle-gold" />
                         <span className="text-white font-bold">Verified Contract</span>
                     </a>

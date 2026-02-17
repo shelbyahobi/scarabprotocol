@@ -8,42 +8,59 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract SeedSale is Ownable, ReentrancyGuard, Pausable {
     
-    uint256 public softCap; // Minimum BNB to proceed
-    uint256 public hardCap; // Maximum BNB to raise
+    uint256 public immutable softCap; 
+    uint256 public immutable hardCap;
     
-    mapping(address => uint256) public deposits; // Renamed from contributions
-    uint256 public raisedAmount; // Renamed from totalRaised
+    mapping(address => uint256) public deposits; 
+    uint256 public raisedAmount; 
     
     bool public saleActive = true;
     bool public saleFinalized = false;
     bool public failed = false;
 
-    uint256 public startTime; // New variable
-    uint256 public endTime; // New variable
+    uint256 public immutable startTime; 
+    uint256 public immutable endTime; 
 
-    event Deposited(address indexed user, uint256 amount); // Renamed from Contributed
+    // Configurable Phase Parameters (Immutable)
+    uint256 public immutable TOKENS_PER_BNB; 
+    uint256 public immutable REFERRAL_PERCENT; 
+    uint256 public immutable MAX_CONTRIBUTION;
+
+    event Deposited(address indexed user, uint256 amount); 
     event SaleFinalized(uint256 totalBnBRaised);
     event SaleFailed();
-    event RefundClaimed(address indexed user, uint256 amount); // Renamed from Refunded
+    event RefundClaimed(address indexed user, uint256 amount); 
 
-    constructor(uint256 _softCap, uint256 _hardCap, uint256 _startTime, uint256 _endTime) Ownable(msg.sender) {
+    constructor(
+        uint256 _softCap, 
+        uint256 _hardCap, 
+        uint256 _startTime, 
+        uint256 _endTime,
+        uint256 _tokensPerBnb,
+        uint256 _referralPercent,
+        uint256 _maxContribution
+    ) Ownable(msg.sender) {
         require(_startTime < _endTime, "Start time must be before end time");
+        require(_tokensPerBnb > 0, "Rate cannot be 0");
+        
         softCap = _softCap;
         hardCap = _hardCap;
         startTime = _startTime;
         endTime = _endTime;
+        
+        TOKENS_PER_BNB = _tokensPerBnb;
+        REFERRAL_PERCENT = _referralPercent;
+        MAX_CONTRIBUTION = _maxContribution;
     }
 
     IERC20 public saleToken;
-    uint256 public constant TOKENS_PER_BNB = 5_000_000; 
-    uint256 public constant REFERRAL_PERCENT = 5; // 5% Reward for referrer
-
+    
     mapping(address => bool) public participation;
     
     // Referral Systems
-    mapping(address => uint256) public referralRewards; // BNBEarned
-    mapping(address => uint256) public totalReferrals;  // Count of people referred
-    uint256 public totalReferralRewards; // Total BNB allocated to referrals
+    mapping(address => uint256) public referralRewards; 
+    mapping(address => uint256) public totalReferrals;  
+    uint256 public totalReferralRewards;
 
     event TokensClaimed(address indexed user, uint256 amount);
     event ReferralRecorded(address indexed referrer, address indexed referee, uint256 commission);
@@ -70,6 +87,9 @@ contract SeedSale is Ownable, ReentrancyGuard, Pausable {
         require(raisedAmount + msg.value <= hardCap, "HardCap exceeded");
         require(msg.value > 0, "Cannot deposit 0"); 
         
+        // Max Contribution Check
+        require(deposits[msg.sender] + msg.value <= MAX_CONTRIBUTION, "Exceeds Max Contribution");
+
         deposits[msg.sender] += msg.value;
         raisedAmount += msg.value;
         participation[msg.sender] = true;

@@ -1,5 +1,12 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { WagmiProvider } from 'wagmi';
+import { RainbowKitProvider, darkTheme, ConnectButton } from '@rainbow-me/rainbowkit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import '@rainbow-me/rainbowkit/styles.css';
+
+import { wagmiConfig } from './wagmi';
+
 import Navbar from './components/Navbar';
 import Ticker from './components/Ticker';
 import Hero from './components/Hero';
@@ -13,8 +20,10 @@ import PhysicalUtility from './components/PhysicalUtility';
 import Tokenomics from './components/Tokenomics';
 import UseOfFunds from './components/UseOfFunds';
 import EcoMiningExplainer from './components/EcoMiningExplainer';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import StrategyPage from './components/StrategyPage';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
+
+const queryClient = new QueryClient();
 
 // --- PAGE COMPONENTS ---
 
@@ -175,7 +184,7 @@ function Footer() {
                 <div className="flex justify-center gap-8 mb-8">
                     <a href="https://x.com/roll_token" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Twitter (X)</a>
                     <a href="https://t.me/rolltoken" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Telegram</a>
-                    <a href="https://testnet.bscscan.com/address/0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
+                    <a href={`https://testnet.bscscan.com/address/${import.meta.env.VITE_ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
                 </div>
                 <p className="text-gray-700 text-sm">&copy; 2026 ROLL Token. Organic Commerce.</p>
             </div>
@@ -187,24 +196,37 @@ function App() {
     const [showBlueprint, setShowBlueprint] = useState(false);
 
     return (
-        <Router>
-            <div className="min-h-screen bg-black text-white font-sans selection:bg-beetle-gold selection:text-black relative overflow-hidden flex flex-col">
-                <BlueprintModal isOpen={showBlueprint} onClose={() => setShowBlueprint(false)} />
+        <WagmiProvider config={wagmiConfig}>
+            <QueryClientProvider client={queryClient}>
+                <RainbowKitProvider theme={darkTheme({
+                    accentColor: '#D4AF37', // Beetle Gold
+                    accentColorForeground: 'black',
+                    borderRadius: 'large',
+                    fontStack: 'system',
+                    overlayBlur: 'small',
+                })}>
+                    <Router>
+                        <div className="min-h-screen bg-black text-white font-sans selection:bg-beetle-gold selection:text-black relative overflow-hidden flex flex-col">
+                            <BlueprintModal isOpen={showBlueprint} onClose={() => setShowBlueprint(false)} />
 
-                {/* Global Background */}
-                <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#050a05] via-[#0a1a0f] to-black pointer-events-none"></div>
-                <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-beetle-green/20 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
+                            {/* Global Background */}
+                            <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#050a05] via-[#0a1a0f] to-black pointer-events-none"></div>
+                            <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-beetle-green/20 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
 
-                {/* Content */}
-                <div className="relative z-10">
-                    <Routes>
-                        <Route path="/" element={<LandingPage onOpenBlueprint={() => setShowBlueprint(true)} />} />
-                        <Route path="/app" element={<DAppPage />} />
-                        <Route path="*" element={<Navigate to="/" />} />
-                    </Routes>
-                </div>
-            </div>
-        </Router>
+                            {/* Content */}
+                            <div className="relative z-10">
+                                <Routes>
+                                    <Route path="/" element={<LandingPage onOpenBlueprint={() => setShowBlueprint(true)} />} />
+                                    <Route path="/strategy" element={<StrategyPage />} />
+                                    <Route path="/app" element={<DAppPage />} />
+                                    <Route path="*" element={<Navigate to="/" />} />
+                                </Routes>
+                            </div>
+                        </div>
+                    </Router>
+                </RainbowKitProvider>
+            </QueryClientProvider>
+        </WagmiProvider>
     )
 }
 

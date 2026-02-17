@@ -1,23 +1,16 @@
-import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { configureChains, createConfig } from 'wagmi';
+import { createConfig, http } from 'wagmi';
 import { bsc, bscTestnet } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
-const { chains, publicClient } = configureChains(
-    [bsc, bscTestnet],
-    [publicProvider()]
-);
-
-const { connectors } = getDefaultWallets({
+export const wagmiConfig = getDefaultConfig({
     appName: '$ROLL Dung Beetle',
-    projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '3a8170812b534d0ff9d794f35a9cc25e', // Use Env Var!
-    chains
+    projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+    chains: [bsc, bscTestnet],
+    transports: {
+        [bsc.id]: http(import.meta.env.VITE_RPC_URL_MAINNET || 'https://bsc-dataseed.binance.org'),
+        [bscTestnet.id]: http(import.meta.env.VITE_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545'),
+    },
+    // ssr: false, // Uncomment if moving to Next.js
 });
 
-export const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors,
-    publicClient
-});
-
-export { chains };
+export const chains = [bsc, bscTestnet];

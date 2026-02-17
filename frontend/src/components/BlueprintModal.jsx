@@ -215,8 +215,9 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         <div className="mb-4">
                             <span className="text-gray-500 text-sm uppercase tracking-widest mr-2">Verified Contract:</span>
                             <code className="text-beetle-gold bg-beetle-gold/10 px-2 py-1 rounded text-sm cursor-pointer hover:bg-beetle-gold/20 transition-colors"
-                                onClick={() => navigator.clipboard.writeText("0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f")}>
+                                onClick={() => navigator.clipboard.writeText(import.meta.env.VITE_ROLL_TOKEN_ADDRESS)}>
                                 0x4D9c...8c9f 📋
+                                {import.meta.env.VITE_ROLL_TOKEN_ADDRESS} 📋
                             </code>
                         </div>
                         <a
