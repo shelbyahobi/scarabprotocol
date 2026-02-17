@@ -1,7 +1,23 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { X, ExternalLink, Scroll, Copy, Database, Layers, RefreshCw } from 'lucide-react';
+import { CONFIG } from '../config';
+import { useState } from 'react';
 
 export default function BlueprintModal({ isOpen, onClose }) {
     if (!isOpen) return null;
+
+    const [copied, setCopied] = useState(false);
+    const contractAddress = CONFIG.ROLL_TOKEN_ADDRESS;
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(contractAddress);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    };
 
     return (
         <AnimatePresence>
@@ -140,6 +156,14 @@ export default function BlueprintModal({ isOpen, onClose }) {
                                         <ul className="text-gray-400 text-sm mt-1 list-disc list-inside">
                                             <li><strong>Ownership Transition:</strong> Moved to Gnosis Safe Multi-Sig or Renounced upon launch.</li>
                                             <li><strong>Liquidity Integrity:</strong> 100% of initial liquidity is locked for a minimum of 1 year.</li>
+                                            <li>
+                                                <div className="flex items-center gap-2">
+                                                    <strong>Contract Address:</strong>
+                                                    <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">
+                                                        <ExternalLink size={20} />
+                                                    </a>
+                                                </div>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

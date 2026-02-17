@@ -2,9 +2,10 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { formatEther } from 'viem';
 import { ShieldCheck, AlertTriangle, Clock, CheckCircle, RefreshCw, Wallet } from 'lucide-react';
 import { useEffect } from 'react';
+import { CONFIG } from '../config';
 
 // Re-use ABI/Address constants (In a real app, move these to a config file)
-const SEED_SALE_ADDRESS = import.meta.env.VITE_SEED_SALE_ADDRESS;
+const SEED_SALE_ADDRESS = CONFIG.SEED_SALE_ADDRESS;
 const TOKENS_PER_BNB = 8000000;
 
 const SEED_SALE_ABI = [

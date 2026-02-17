@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import GovernanceDashboard from './GovernanceDashboard';
 import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Map, Users, Leaf, Vote, Server, Activity, Plus, AlertCircle, MessageCircle, Smartphone, Gavel, CheckCircle2 } from 'lucide-react';
 import { formatEther } from 'viem';
+import { CONFIG } from '../config';
 
 // ABI for balanceOf
 const ERC20_ABI = [
@@ -22,8 +23,8 @@ const SEED_SALE_ABI = [
     { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
-const SEED_SALE_ADDRESS = import.meta.env.VITE_SEED_SALE_ADDRESS;
-const TOKEN_ADDRESS = import.meta.env.VITE_ROLL_TOKEN_ADDRESS;
+const SEED_SALE_ADDRESS = CONFIG.SEED_SALE_ADDRESS;
+const TOKEN_ADDRESS = CONFIG.ROLL_TOKEN_ADDRESS;
 
 export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();

@@ -3,9 +3,10 @@ import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import { Vote, Users, FileText, CheckCircle, XCircle, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { CONFIG } from '../config';
 
-const ROLL_TOKEN_ADDRESS = import.meta.env.VITE_ROLL_TOKEN_ADDRESS;
-const GOVERNOR_ADDRESS = import.meta.env.VITE_GOVERNOR_ADDRESS;
+const ROLL_TOKEN_ADDRESS = CONFIG.ROLL_TOKEN_ADDRESS;
+const GOVERNOR_ADDRESS = CONFIG.GOVERNOR_ADDRESS;
 
 const ROLL_ABI = [
     { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "getVotes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },

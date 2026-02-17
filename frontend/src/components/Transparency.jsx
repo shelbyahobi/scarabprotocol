@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { ShieldCheck, Clock, CheckCircle, Lock, Users, Zap } from 'lucide-react';
+import { Shield, Search, Lock, FileCode, CheckCircle, ExternalLink } from 'lucide-react';
+import { CONFIG } from '../config';
 
 export default function Transparency() {
     return (
@@ -63,7 +64,7 @@ export default function Transparency() {
                     {/* Feature 3 */}
                     <div className="bg-[#0a1a0f]/40 border border-white/5 p-8 rounded-3xl hover:border-green-500/30 transition-all group">
                         <div className="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <ShieldCheck size={32} className="text-green-500" />
+                            <Shield size={32} className="text-green-500" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">Reentrancy Guard</h3>
                         <p className="text-gray-400 leading-relaxed">
@@ -79,7 +80,7 @@ export default function Transparency() {
                         <Users size={20} className="text-gray-400" />
                         <span className="text-white font-bold">Community Owndership</span>
                     </a>
-                    <a href={`https://testnet.bscscan.com/address/${import.meta.env.VITE_ROLL_TOKEN_ADDRESS}`} target="_blank" className="flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl hover:bg-white/10 border border-white/5 transition-all">
+                    <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl hover:bg-white/10 border border-white/5 transition-all">
                         <CheckCircle size={20} className="text-beetle-gold" />
                         <span className="text-white font-bold">Verified Contract</span>
                     </a>

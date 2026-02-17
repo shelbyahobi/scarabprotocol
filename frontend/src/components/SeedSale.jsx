@@ -3,6 +3,8 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { parseEther, formatEther, isAddress } from 'viem';
 import { Clock, Lock, CheckCircle, AlertTriangle, RefreshCw, ExternalLink, ShieldCheck, Wallet } from 'lucide-react';
 
+import { CONFIG } from '../config';
+
 const SEED_SALE_ABI = [
     { "inputs": [], "name": "deposit", "outputs": [], "stateMutability": "payable", "type": "function" },
     { "inputs": [{ "internalType": "address", "name": "_referrer", "type": "address" }], "name": "depositWithReferral", "outputs": [], "stateMutability": "payable", "type": "function" },
@@ -22,7 +24,7 @@ const SEED_SALE_ABI = [
     { "inputs": [], "name": "failed", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }
 ];
 
-const SEED_SALE_ADDRESS = import.meta.env.VITE_SEED_SALE_ADDRESS;
+const SEED_SALE_ADDRESS = CONFIG.SEED_SALE_ADDRESS;
 const TOKENS_PER_BNB = 8000000; // Architect Round
 const MIN_CONTRIBUTION = 0.01;
 const MAX_CONTRIBUTION = 1.0;
@@ -55,7 +57,7 @@ export default function SeedSale() {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     const [copySuccess, setCopySuccess] = useState(false);
 
-    const EXPECTED_CHAIN_ID = parseInt(import.meta.env.VITE_CHAIN_ID || '97');
+    const EXPECTED_CHAIN_ID = CONFIG.CHAIN_ID;
     const isWrongNetwork = isConnected && chainId !== EXPECTED_CHAIN_ID;
 
     // --- WRITES (Separate instances) ---
