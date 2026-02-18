@@ -98,7 +98,7 @@ export default function Hero({ onOpenBlueprint }) {
 
                     <img
                         src="/hero.png"
-                        alt="BeetleBox Hardware Prototype"
+                        alt="Scarab Node Prototype"
                         className="w-full max-w-lg mx-auto relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-float"
                     />
                 </motion.div>

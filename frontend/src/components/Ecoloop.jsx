@@ -15,7 +15,7 @@ export default function Ecoloop() {
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
                         Web3 meets heavy metal. We turn organic waste into verified energy credits.
-                        Every token powers the development of the "BeetleBox" hardware network.
+                        Every token powers the development of the "Scarab" hardware network.
                     </p>
                 </div>
 
@@ -38,7 +38,7 @@ export default function Ecoloop() {
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">2. Processing</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            The <strong>BeetleBox</strong> hardware processes waste into fertilizer and biogas. Real-world "Mining".
+                            The <strong>Embedded Node</strong> hardware processes waste into fertilizer and biogas. Real-world "Mining".
                         </p>
                     </div>
 

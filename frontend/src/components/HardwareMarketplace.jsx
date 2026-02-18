@@ -10,7 +10,7 @@ export default function HardwareMarketplace() {
     const products = [
         {
             id: 1,
-            name: "BeetleBox v1 (Scarab)",
+            name: "Scarab Node v1",
             price: "2,500 ROLL",
             retailPrice: "$450 USD",
             image: "/hero.png",
@@ -108,7 +108,7 @@ export default function HardwareMarketplace() {
                         <Server size={48} className="text-gray-600 mx-auto mb-4" />
                         <h4 className="text-xl font-bold text-white mb-2">No Active Nodes</h4>
                         <p className="text-gray-500 max-w-md mx-auto mb-6">
-                            You haven't connected any BeetleBox hardware yet.
+                            You haven't connected any Scarab Node hardware yet.
                             Acquire a node from the Marketplace to start generating Proof of Physical Work.
                         </p>
                         <button onClick={() => setActiveTab('marketplace')} className="text-beetle-gold font-bold hover:underline">

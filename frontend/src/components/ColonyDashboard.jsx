@@ -99,7 +99,7 @@ export default function ColonyDashboard() {
     const hardwareProducts = [
         {
             id: 1,
-            name: "BeetleBox v1 (Scarab)",
+            name: "Scarab Node v1",
             price: "2,500 SCARAB",
             retailPrice: "$450 USD",
             image: "/beetlebox-prototype.png",
@@ -311,7 +311,7 @@ export default function ColonyDashboard() {
                                     <Activity className="text-beetle-electric" size={32} />
                                 </div>
                                 <h4 className="text-xl font-bold text-white mb-2">No Active Miners Found</h4>
-                                <p className="text-gray-500 mb-6">Connect a verified BeetleBox to start earning.</p>
+                                <p className="text-gray-500 mb-6">Connect a verified Scarab Node to start earning.</p>
 
                                 {/* Simulator */}
                                 <div className="bg-black/50 rounded-xl p-4 max-w-md mx-auto text-left">

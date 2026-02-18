@@ -308,13 +308,13 @@ export default function SeedSale() {
                 {/* Round 1 (Live) */}
                 <div className="w-full bg-gradient-to-br from-beetle-green/20 to-black border border-beetle-gold/50 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)]">
                     <div className="absolute top-0 right-0 bg-beetle-gold text-black font-bold px-4 py-2 rounded-bl-xl z-20">
-                        PHASE 1: ARCHITECT ROUND
+                        PHASE 1: INFRASTRUCTURE SEED
                     </div>
 
                     <div className="flex items-center gap-4 mb-6">
                         <div className="w-12 h-12 bg-beetle-gold rounded-full flex items-center justify-center text-black font-black text-xl">1</div>
                         <div>
-                            <h3 className="text-2xl font-bold text-white">The "Architect" Round</h3>
+                            <h3 className="text-2xl font-bold text-white">Infrastructure Seed</h3>
                             <p className="text-beetle-gold">Price: 8,000,000 SCARAB / BNB</p>
                         </div>
                     </div>
@@ -457,14 +457,14 @@ export default function SeedSale() {
                                 <CheckCircle size={13} className="mt-0.5 text-beetle-green" />
                                 <span>
                                     <strong className="text-gray-400">Refund guarantee:</strong> If Phase 1
-                                    does not reach its 5 BNB soft cap, your full contribution is
+                                    does not reach its soft cap, your full contribution is
                                     claimable directly from the contract.
                                 </span>
                             </div>
                             <div className="flex items-start gap-2 text-xs text-gray-500 bg-black/20 p-3 rounded-lg border border-white/5">
                                 <CheckCircle size={13} className="mt-0.5 text-beetle-green" />
                                 <span>
-                                    <strong className="text-gray-400">Funds usage:</strong> 80% of all raised BNB goes directly to PancakeSwap liquidity, locked 12 months.
+                                    <strong className="text-gray-400">Funds usage:</strong> Capital is allocated to R&D for the Embedded Node Firmware and Pilot Hardware.
                                 </span>
                             </div>
                         </div>

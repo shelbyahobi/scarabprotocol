@@ -29,13 +29,13 @@ export default function StrategyPreview() {
                             <span className="text-beetle-gold font-black text-4xl">01</span>
                             <span className="bg-beetle-gold/10 text-beetle-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Live Now</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">The Architect Round</h3>
-                        <p className="text-gray-400 text-sm mb-6 h-10">For the founding members who build the foundation.</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">Infrastructure Seed</h3>
+                        <p className="text-gray-400 text-sm mb-6 h-10">R&D Capital for the Embedded Node Firmware.</p>
 
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                                 <span className="text-gray-500">Price</span>
-                                <span className="text-white font-mono font-bold">8M / BNB</span>
+                                <span className="text-white font-mono font-bold">8M / $100</span>
                             </div>
                             <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                                 <span className="text-gray-500">Allocation</span>
@@ -59,13 +59,13 @@ export default function StrategyPreview() {
                             <span className="text-gray-600 font-black text-4xl group-hover:text-beetle-green transition-colors">02</span>
                             <span className="bg-white/5 text-gray-500 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Coming Soon</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">The Builder Round</h3>
-                        <p className="text-gray-400 text-sm mb-6 h-10">Expanding the colony with strategic partners.</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">Hardware Production</h3>
+                        <p className="text-gray-400 text-sm mb-6 h-10">Manufacturing the first batch of 1,000 nodes.</p>
 
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                                 <span className="text-gray-500">Price</span>
-                                <span className="text-white font-mono font-bold">6M / BNB</span>
+                                <span className="text-white font-mono font-bold">6M / $100</span>
                             </div>
                             <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                                 <span className="text-gray-500">Allocation</span>
@@ -89,13 +89,13 @@ export default function StrategyPreview() {
                             <span className="text-gray-700 font-black text-4xl group-hover:text-beetle-electric transition-colors">03</span>
                             <span className="bg-white/5 text-gray-500 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Final</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">The Community Round</h3>
-                        <p className="text-gray-400 text-sm mb-6 h-10">Public onboarding before DEX listing.</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">Liquidity & Launch</h3>
+                        <p className="text-gray-400 text-sm mb-6 h-10">Global marketing and DEX liquidity injection.</p>
 
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                                 <span className="text-gray-500">Price</span>
-                                <span className="text-white font-mono font-bold">4.5M / BNB</span>
+                                <span className="text-white font-mono font-bold">4.5M / $100</span>
                             </div>
                             <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                                 <span className="text-gray-500">Allocation</span>
