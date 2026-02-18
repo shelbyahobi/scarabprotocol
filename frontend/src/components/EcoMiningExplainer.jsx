@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { motion } from 'framer-motion';
+
 import { Zap, Server, Database, ArrowRight, Recycle, Sun, Wifi, Shield, Lock, Activity } from 'lucide-react';
 
 export default function EcoMiningExplainer() {
