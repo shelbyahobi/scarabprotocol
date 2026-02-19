@@ -298,7 +298,7 @@ export default function ColonyDashboard() {
                             <div className="flex justify-between items-start mb-8">
                                 <div>
                                     <h3 className="text-2xl font-bold text-white mb-2">My Nodes</h3>
-                                    <p className="text-gray-400">Manage your connected hardware and monitor Eco-Mining rewards.</p>
+                                    <p className="text-gray-400">Manage your connected hardware and monitor Production Rewards.</p>
                                 </div>
                                 <button className="bg-beetle-electric text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
                                     <Plus size={18} /> Add Device

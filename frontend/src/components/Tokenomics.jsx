@@ -19,7 +19,7 @@ export default function Tokenomics() {
                         Token<span className="text-beetle-electric">omics</span>
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        1 Billion Fixed Supply. No Minting Function.
+                        1 Billion Fixed Supply. No Inflation Design.
                         <br />
                         <span className="text-beetle-gold">Utility-First Distribution.</span>
                     </p>

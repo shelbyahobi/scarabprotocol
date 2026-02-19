@@ -49,7 +49,7 @@ export default function Ecoloop() {
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">3. Verification</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            Sensors oracle the data to the blockchain. <span className="text-beetle-gold">Physical Proof of Work</span> mints rewards.
+                            Sensors oracle the data to the blockchain. <span className="text-beetle-gold">Physical Proof of Work</span> unlocks rewards.
                         </p>
                     </div>
 

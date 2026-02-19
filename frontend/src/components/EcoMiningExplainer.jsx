@@ -25,7 +25,7 @@ export default function EcoMiningExplainer() {
         {
             icon: <Zap size={32} className="text-white bg-beetle-gold rounded-full p-1 text-black" />,
             title: "4. The Reward",
-            desc: "Smart Contracts mint SCARAB tokens proportional to the verified 'Sustainability Yield'.",
+            desc: "Smart Contracts release SCARAB tokens from the Regeneration Pool proportional to the verified 'Sustainability Yield'.",
             color: "border-white/20 bg-white/5"
         }
     ];

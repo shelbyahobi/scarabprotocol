@@ -86,7 +86,7 @@ export default function TransparencyDashboard() {
                                 <span>80,000 SCARAB</span>
                             </div>
                             <div className="flex justify-between text-sm mb-4 text-white font-bold font-mono">
-                                <span>Actual Minted</span>
+                                <span>Actual Emitted</span>
                                 <span className="text-beetle-green">76,320 SCARAB</span>
                             </div>
                             <div className="w-full bg-gray-800 h-1.5 rounded-full mb-2 overflow-hidden">
