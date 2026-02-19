@@ -16,6 +16,7 @@ import SeedSale from './components/SeedSale';
 import Transparency from './components/Transparency';
 import BlueprintModal from './components/BlueprintModal';
 import ColonyDashboard from './components/ColonyDashboard';
+import AssetClasses from './components/AssetClasses';
 import Roadmap from './components/Roadmap';
 import MyAllocations from './components/MyAllocations';
 import PhysicalUtility from './components/PhysicalUtility';
@@ -30,12 +31,17 @@ const queryClient = new QueryClient();
 
 // --- PAGE COMPONENTS ---
 
+import TransparencyDashboard from './components/TransparencyDashboard';
+
 function LandingPage({ onOpenBlueprint }) {
     return (
         <>
             <Navbar onOpenBlueprint={onOpenBlueprint} isLanding={true} />
             <main className="pt-20">
                 <Hero onOpenBlueprint={onOpenBlueprint} />
+
+                {/* 1.5 TRANSPARENCY DASHBOARD (Layer 2) - NEW */}
+                <TransparencyDashboard />
 
                 {/* 1. THE VISION (Why) */}
                 <PhysicalUtility />

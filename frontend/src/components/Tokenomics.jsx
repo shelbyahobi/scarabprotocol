@@ -2,80 +2,93 @@ import { PieChart, TrendingUp, Users, Shield, Zap } from 'lucide-react';
 
 export default function Tokenomics() {
     // Data for the chart
+    // Data for the chart matching Blueprint
     const data = [
-        { label: "Community / Fair Launch", value: 50, color: "bg-beetle-electric", desc: "Decentralized ownership" },
-        { label: "Eco-Mining Rewards", value: 30, color: "bg-beetle-green", desc: "Physical Proof of Work" },
-        { label: "Marketing & Partnerships", value: 10, color: "bg-beetle-gold", desc: "Global Awareness" },
-        { label: "Team (Vested 24 Mo)", value: 10, color: "bg-gray-600", desc: "Long-term Alignment" },
+        { label: "Seed Sale (R&D)", value: 30, color: "bg-beetle-gold", desc: "Funding Hardware R&D & Mfg" },
+        { label: "Regeneration Pool", value: 30, color: "bg-beetle-green", desc: "Mining Rewards for verified output" },
+        { label: "Liquidity Pool", value: 25, color: "bg-beetle-electric", desc: "Locked for 12 Months" },
+        { label: "Marketing & Scale", value: 10, color: "bg-purple-500", desc: "Global Expansion" },
+        { label: "Team (Vested)", value: 5, color: "bg-gray-600", desc: "24-Month Linear Vesting" },
     ];
 
-    // CSS Conic Gradient for the Pie
-    // 50% = 180deg
-    // 30% = 108deg -> Starts at 180, Ends at 288
-    // 10% = 36deg -> Starts at 288, Ends at 324
-    // 10% = 36deg -> Starts at 324, Ends at 360
-    const pieStyle = {
-        background: `conic-gradient(
-            #00f0ff 0deg 180deg, 
-            #2ecc71 180deg 288deg, 
-            #d4af37 288deg 324deg, 
-            #4b5563 324deg 360deg
-        )`
-    };
-
     return (
-        <section className="py-24 relative overflow-hidden">
-            {/* Background Elements */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-beetle-electric/5 rounded-full blur-[120px] pointer-events-none"></div>
-
+        <section className="py-24 relative overflow-hidden bg-[#050a05]">
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4">
                         Token<span className="text-beetle-electric">omics</span>
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        Designed for scarcity and utility. 1,000,000,000 SCARAB fixed supply, fueling the Ecoloop Network.
+                        1 Billion Fixed Supply. No Minting Function.
+                        <br />
+                        <span className="text-beetle-gold">Utility-First Distribution.</span>
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-                    {/* Visual Chart */}
+                    {/* CHART SECTION */}
                     <div className="relative flex justify-center">
-                        <div className="w-80 h-80 rounded-full relative shadow-[0_0_50px_rgba(0,240,255,0.2)] hover:scale-105 transition-transform duration-500 ease-out" style={pieStyle}>
-                            {/* Inner Circle for Donut Effect */}
+                        {/* CSS Conic Gradient based on new percentages:
+                            30% = 108deg
+                            30% = 108deg
+                            25% = 90deg
+                            10% = 36deg
+                            5%  = 18deg
+                        */}
+                        <div className="w-80 h-80 rounded-full relative shadow-[0_0_50px_rgba(0,240,255,0.1)] hover:scale-105 transition-transform duration-500 ease-out" style={{
+                            background: `conic-gradient(
+                                #D4A843 0deg 108deg,
+                                #3DDB5A 108deg 216deg,
+                                #4D9FFF 216deg 306deg,
+                                #A855F7 306deg 342deg,
+                                #4B5563 342deg 360deg
+                            )`
+                        }}>
                             <div className="absolute inset-4 bg-[#050a05] rounded-full flex flex-col items-center justify-center z-10">
-                                <span className="text-4xl font-black text-white">1B</span>
-                                <span className="text-sm text-gray-500 uppercase tracking-widest font-bold">Total Supply</span>
+                                <span className="text-5xl font-black text-white">1B</span>
+                                <span className="text-sm text-gray-500 uppercase tracking-widest font-bold mt-2">Fixed Supply</span>
                             </div>
-                        </div>
-
-                        {/* Floating Badges */}
-                        <div className="absolute top-0 right-0 animate-bounce delay-100 bg-black/80 border border-white/10 px-4 py-2 rounded-lg backdrop-blur-md">
-                            <span className="text-beetle-electric font-bold">Deflationary</span>
-                        </div>
-                        <div className="absolute bottom-10 left-0 animate-bounce delay-300 bg-black/80 border border-white/10 px-4 py-2 rounded-lg backdrop-blur-md">
-                            <span className="text-beetle-gold font-bold">No Minting</span>
                         </div>
                     </div>
 
-                    {/* Legend / Details */}
-                    <div className="space-y-6">
-                        {data.map((item, index) => (
-                            <div key={index} className="group bg-white/5 hover:bg-white/10 border border-white/5 hover:border-beetle-electric/30 rounded-xl p-4 transition-all cursor-default">
-                                <div className="flex items-center justify-between mb-2">
+                    {/* DETAILS SECTION */}
+                    <div>
+                        <div className="space-y-4 mb-10">
+                            {data.map((item, index) => (
+                                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-white/5 hover:bg-white/5 transition-colors">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-4 h-4 rounded-full ${item.color} shadow-[0_0_10px_currentColor]`}></div>
-                                        <h4 className="font-bold text-white text-lg">{item.label}</h4>
+                                        <div className={`w-3 h-3 rounded-full ${item.color} shadow-[0_0_8px_currentColor]`}></div>
+                                        <div>
+                                            <div className="text-white font-bold">{item.label}</div>
+                                            <div className="text-xs text-gray-500">{item.desc}</div>
+                                        </div>
                                     </div>
-                                    <span className="font-mono font-bold text-gray-300">{item.value}%</span>
+                                    <div className="font-mono text-beetle-gold font-bold">{item.value}%</div>
                                 </div>
-                                <p className="text-sm text-gray-500 pl-7 group-hover:text-gray-300 transition-colors">
-                                    {item.desc}
-                                </p>
+                            ))}
+                        </div>
+
+                        {/* TAX STRUCTURE */}
+                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                            <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                                <Zap className="text-beetle-electric" size={18} /> Transaction Economics
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-black/40 rounded-xl border border-white/5 text-center">
+                                    <div className="text-gray-400 text-xs uppercase tracking-widest mb-1">Buy Tax</div>
+                                    <div className="text-3xl font-black text-beetle-green">0%</div>
+                                    <div className="text-[10px] text-gray-500 mt-1">Frictionless Entry</div>
+                                </div>
+                                <div className="p-4 bg-black/40 rounded-xl border border-white/5 text-center">
+                                    <div className="text-gray-400 text-xs uppercase tracking-widest mb-1">Sell Tax</div>
+                                    <div className="text-3xl font-black text-red-400">5%</div>
+                                    <div className="text-[10px] text-gray-500 mt-1">3% Mktg / 2% Hardware</div>
+                                </div>
                             </div>
-                        ))}
+                        </div>
                     </div>
+
                 </div>
             </div>
         </section>

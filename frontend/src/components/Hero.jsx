@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Rocket, FileText, Shield, Lock, CheckCircle } from 'lucide-react';
+import { Rocket, FileText, Shield, Lock, CheckCircle, Zap, DollarSign } from 'lucide-react';
 
 export default function Hero({ onOpenBlueprint }) {
     return (
@@ -68,19 +68,47 @@ export default function Hero({ onOpenBlueprint }) {
                         </button>
                     </div>
 
-                    {/* Trust Signals (New) */}
-                    <div className="flex flex-wrap justify-center md:justify-start gap-6 opacity-80">
-                        <div className="flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-black/40">
-                            <Shield className="text-amber-400 w-4 h-4" />
-                            <span className="font-bold text-white text-xs">Self-Audited</span>
+                    {/* Layer 1: Transparency Visual (PoPA) */}
+                    <div className="mt-10 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3 text-center md:text-left">
+                            Proof of Productive Asset (PoPA)
                         </div>
-                        <div className="flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-black/40">
-                            <CheckCircle className="text-beetle-electric w-4 h-4" />
-                            <span className="font-bold text-white text-xs">Open Source</span>
-                        </div>
-                        <div className="flex items-center gap-2 border border-white/10 px-3 py-1.5 rounded-lg bg-black/40">
-                            <Lock className="text-beetle-gold w-4 h-4" />
-                            <span className="font-bold text-white text-xs">Liquidity Locked 1YR</span>
+                        <div className="flex flex-col md:flex-row items-center gap-4 text-xs font-mono text-gray-300">
+
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-beetle-gold/20 flex items-center justify-center text-beetle-gold">
+                                    <DollarSign size={14} />
+                                </div>
+                                <span className="opacity-80">Capital</span>
+                            </div>
+
+                            <div className="h-4 w-px md:w-8 md:h-px bg-white/20"></div>
+
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-beetle-electric/20 flex items-center justify-center text-beetle-electric">
+                                    <Zap size={14} />
+                                </div>
+                                <span className="opacity-80">Hardware</span>
+                            </div>
+
+                            <div className="h-4 w-px md:w-8 md:h-px bg-white/20"></div>
+
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-beetle-green/20 flex items-center justify-center text-beetle-green">
+                                    <Shield size={14} />
+                                </div>
+                                <span className="opacity-80">Verified Output</span>
+                            </div>
+
+                            <div className="h-4 w-px md:w-8 md:h-px bg-white/20"></div>
+
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 border border-amber-500/50">
+                                    <Rocket size={14} />
+                                </div>
+                                <span className="text-white font-bold">Token Reward</span>
+                            </div>
+
                         </div>
                     </div>
                 </motion.div>
