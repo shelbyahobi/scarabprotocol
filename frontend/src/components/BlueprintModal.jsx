@@ -39,7 +39,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
                     <div className="sticky top-0 bg-[#0a1a0f]/95 backdrop-blur border-b border-beetle-gold/10 p-6 flex justify-between items-center z-10">
                         <div>
                             <h2 className="text-3xl font-black text-white tracking-tighter">
-                                ROLL <span className="text-beetle-gold">PROTOCOL</span>
+                                SCARAB <span className="text-beetle-gold">PROTOCOL</span>
                             </h2>
                             <p className="text-xs text-beetle-gold/70 font-mono tracking-widest uppercase mt-1">Technical Architecture & Ecosystem Blueprint</p>
                         </div>
@@ -58,40 +58,40 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         <section>
                             <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">I. Executive Overview</h3>
                             <p className="text-gray-300 leading-relaxed text-lg">
-                                The <strong>ROLL Protocol ($ROLL)</strong> is a decentralized financial infrastructure designed to establish a sovereign <strong>Physical Identity</strong>. In an era of increasing systemic fragility, $ROLL provides a dual-purpose solution: a high-security cryptographic asset and a direct gateway to the Off-Grid Economy.
+                                The <strong>SCARAB Protocol</strong> is a decentralized physical infrastructure network (DePIN) designed to regenerate the planet. We finance, deploy, and verify <strong>Productive Real World Assets</strong>—from solar arrays to waste-to-energy systems.
                             </p>
                             <p className="text-gray-300 leading-relaxed mt-4">
-                                Unlike purely speculative tokens, $ROLL utilizes a proprietary <strong>Gated Utility Marketplace</strong> model. It functions as the "Proof of Work" for building real-world resilience—funding hardware, acquiring land, and securing essential resources for the colony.
+                                Unlike speculative tokens, SCARAB utilizes a <strong>Proof of Productive Asset (PoPA)</strong> model. The token is minted/released only when connected hardware cryptographically verifies real-world output (Energy, Water, Commodities).
                             </p>
                         </section>
 
                         {/* II. The Philosophy */}
                         <section>
-                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">II. The Philosophy of Resilience (The Beetle Metaphor)</h3>
+                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">II. The Philosophy: Regeneration Reimagined</h3>
                             <p className="text-gray-300 mb-6">
-                                In the natural world, the Beetle is a master of <strong>circular engineering</strong>. It does not wait for handouts; it builds its own world from available resources, rolling them into a perfectly spherical foundation (The Ball) to sustain its colony.
+                                The ancient Scarab turned waste into life. Modern SCARAB nodes turn waste (biomass) and sun (solar) into value. We utilize <strong>Circular Engineering</strong> to create a self-sustaining economy.
                             </p>
                             <div className="grid md:grid-cols-3 gap-6">
                                 <div className="bg-white/5 p-6 rounded-xl border border-white/5">
-                                    <div className="text-beetle-gold font-black text-xl mb-2">The Foundation</div>
-                                    <p className="text-sm text-gray-400">Our "un-ruggable" smart contract infrastructure.</p>
+                                    <div className="text-beetle-gold font-black text-xl mb-2">The Seed</div>
+                                    <p className="text-sm text-gray-400">Capital is deployed strictly for Hardware R&D and Manufacturing.</p>
                                 </div>
                                 <div className="bg-white/5 p-6 rounded-xl border border-white/5">
-                                    <div className="text-beetle-gold font-black text-xl mb-2">The Momentum</div>
-                                    <p className="text-sm text-gray-400">The community-driven "Roll" toward independence.</p>
+                                    <div className="text-beetle-gold font-black text-xl mb-2">The Hardware</div>
+                                    <p className="text-sm text-gray-400">Embedded Nodes with Secure Elements (ATECC608A) verify output.</p>
                                 </div>
                                 <div className="bg-white/5 p-6 rounded-xl border border-white/5">
                                     <div className="text-beetle-gold font-black text-xl mb-2">The Colony</div>
-                                    <p className="text-sm text-gray-400">The ultimate goal of decentralized, off-grid living hubs.</p>
+                                    <p className="text-sm text-gray-400">A decentralized network of productive assets owned by the community.</p>
                                 </div>
                             </div>
                         </section>
 
                         {/* III. Ecosystem Utility */}
                         <section>
-                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">III. Ecosystem Utility: The Gated Marketplace</h3>
+                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">III. Ecosystem Utility: Asset-Backed Access</h3>
                             <p className="text-gray-300 mb-8">
-                                The $ROLL token functions as a <strong>Tiered Access Key</strong> within our proprietary marketplace. By holding $ROLL, users unlock varying levels of the <strong>Colony Discount Protocol</strong>, reducing the cost of high-value off-grid hardware (Solar, Filtration, Starlink-integrated hubs).
+                                The SCARAB token is not just currency; it is a <strong>Right to Produce</strong>. Holders gain governance over the treasury and exclusive access to hardware at wholesale prices.
                             </p>
 
                             {/* Pro Table */}
@@ -132,7 +132,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         {/* IV. Security */}
                         <section>
                             <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">IV. Security & Transparency Protocol</h3>
-                            <p className="text-gray-300 mb-6">To ensure institutional-grade safety for our community, the ROLL Protocol implements a <strong>Multi-Layer Security Shield</strong>:</p>
+                            <p className="text-gray-300 mb-6">To ensure institutional-grade safety for our community, the SCARAB Protocol implements a <strong>Multi-Layer Security Shield</strong>:</p>
 
                             <div className="space-y-6">
                                 <div className="flex gap-4 items-start">
@@ -172,33 +172,30 @@ export default function BlueprintModal({ isOpen, onClose }) {
 
                         {/* V. Tokenomics */}
                         <section>
-                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">V. Tokenomics: The "Cycle of Growth"</h3>
+                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">V. Tokenomics: Utility-First Distribution</h3>
                             <div className="bg-black/40 border border-white/10 rounded-2xl p-8 text-center">
-                                <p className="text-gray-300 mb-8 max-w-2xl mx-auto">The $ROLL economy is designed to be self-sustaining, with every transaction contributing to the physical expansion of the project.</p>
+                                <p className="text-gray-300 mb-8 max-w-2xl mx-auto">1 Billion Fixed Supply. Asset-backed. No Inflation.</p>
 
-                                <div className="flex flex-wrap justify-center gap-8 md:gap-16">
-                                    <div className="text-center">
-                                        <div className="text-4xl font-black text-red-500 mb-2">5%</div>
-                                        <div className="text-sm font-bold text-white uppercase tracking-wider">Ecosystem Tax</div>
-                                        <div className="text-xs text-gray-500">(Sells Only)</div>
+                                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                                    <div className="p-4 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="text-2xl font-black text-beetle-gold mb-1">30%</div>
+                                        <div className="text-xs font-bold text-white uppercase">R&D / Mfg</div>
                                     </div>
-                                    <div className="w-px bg-white/10 h-16 hidden md:block"></div>
-                                    <div className="text-center">
-                                        <div className="text-4xl font-black text-beetle-blue mb-2">3%</div>
-                                        <div className="text-sm font-bold text-white uppercase tracking-wider">Marketing</div>
-                                        <div className="text-xs text-gray-500">Global Outreach</div>
+                                    <div className="p-4 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="text-2xl font-black text-beetle-green mb-1">30%</div>
+                                        <div className="text-xs font-bold text-white uppercase">Mining Pool</div>
                                     </div>
-                                    <div className="w-px bg-white/10 h-16 hidden md:block"></div>
-                                    <div className="text-center">
-                                        <div className="text-4xl font-black text-beetle-green mb-2">2%</div>
-                                        <div className="text-sm font-bold text-white uppercase tracking-wider">RWA Fund</div>
-                                        <div className="text-xs text-gray-500">Physical Assets</div>
+                                    <div className="p-4 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="text-2xl font-black text-beetle-electric mb-1">25%</div>
+                                        <div className="text-xs font-bold text-white uppercase">Liquidity</div>
                                     </div>
-                                    <div className="w-px bg-white/10 h-16 hidden md:block"></div>
-                                    <div className="text-center">
-                                        <div className="text-4xl font-black text-beetle-gold mb-2">0%</div>
-                                        <div className="text-sm font-bold text-white uppercase tracking-wider">Buy Tax</div>
-                                        <div className="text-xs text-gray-500">Rapid Growth</div>
+                                    <div className="p-4 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="text-2xl font-black text-purple-500 mb-1">10%</div>
+                                        <div className="text-xs font-bold text-white uppercase">Marketing</div>
+                                    </div>
+                                    <div className="p-4 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="text-2xl font-black text-gray-500 mb-1">5%</div>
+                                        <div className="text-xs font-bold text-white uppercase">Team</div>
                                     </div>
                                 </div>
                             </div>
