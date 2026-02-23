@@ -21,3 +21,4 @@ typechain-types/
 
 # Hardhat
 hardhat.config.js.backup
+.vercel

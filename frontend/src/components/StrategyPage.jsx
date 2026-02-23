@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Rocket, Shield, CheckCircle, RefreshCw, Lock } from 'lucide-react';
+import { ArrowLeft, Rocket, Shield, CheckCircle, RefreshCw, Lock, Activity } from 'lucide-react';
 
 export default function StrategyPage() {
     return (
@@ -192,29 +192,100 @@ export default function StrategyPage() {
                 <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-8 mb-10">
                     <div className="flex items-center justify-between mb-6">
                         <div className="text-[11px] uppercase tracking-[3px] text-gray-500">
-                            Unit Economics (v1 SCARAB Node)
+                            Unit Economics & Year 1 Revenue
                         </div>
                         <span className="bg-beetle-gold/10 text-beetle-gold text-[10px] font-bold px-2 py-1 rounded border border-beetle-gold/20">
-                            HARDWARE PROFITABILITY
+                            HARDWARE + SAAS PROFITABILITY
                         </span>
                     </div>
 
+                    <div className="grid md:grid-cols-2 gap-8 mb-8">
+                        {/* Solar */}
+                        <div className="p-6 bg-black/40 rounded-xl border border-beetle-electric/20 relative overflow-hidden group hover:bg-black/80 transition-colors">
+                            <h4 className="text-white font-bold mb-4 flex items-center justify-between">
+                                Solar Node
+                                <span className="text-beetle-electric font-mono text-sm">$349</span>
+                            </h4>
+                            <div className="space-y-3 text-[11px] text-gray-400 font-mono">
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>BOM Cost</span><span className="text-white">$34</span></div>
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>Hardware Margin</span><span className="text-beetle-electric">$315 (90%)</span></div>
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>Target Units (Y1)</span><span className="text-white">500</span></div>
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>Hardware Rev</span><span className="text-white">$174,500</span></div>
+                                <div className="flex justify-between"><span>Profit</span><span className="text-white">$157,500</span></div>
+                            </div>
+                        </div>
+
+                        {/* Bokashi */}
+                        <div className="p-6 bg-black/40 rounded-xl border border-beetle-gold/20 relative overflow-hidden group hover:bg-black/80 transition-colors">
+                            <h4 className="text-white font-bold mb-4 flex items-center justify-between">
+                                Smart Bokashi Kit
+                                <span className="text-beetle-gold font-mono text-sm">$89 + $9/mo</span>
+                            </h4>
+                            <div className="space-y-3 text-[11px] text-gray-400 font-mono">
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>BOM Cost</span><span className="text-white">$28</span></div>
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>Hardware Margin</span><span className="text-beetle-gold">$61 (69%)</span></div>
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>Target Units (Y1)</span><span className="text-white">2,000</span></div>
+                                <div className="flex justify-between border-b border-white/5 pb-1"><span>Hardware Rev</span><span className="text-white">$178,000</span></div>
+                                <div className="flex justify-between"><span>Bran Subs (Y1)</span><span className="text-beetle-gold">+$144,000</span></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                        <div className="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Mfg Cost</div>
-                            <div className="text-xl font-mono font-bold text-white">$85.00</div>
+                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Total Y1 Revenue</div>
+                            <div className="text-xl font-mono font-bold text-white">$544,500</div>
                         </div>
-                        <div className="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Wholesale</div>
-                            <div className="text-xl font-mono font-bold text-white">$150.00</div>
+                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Total Y1 Profit</div>
+                            <div className="text-xl font-mono font-bold text-beetle-green">$471,500</div>
                         </div>
-                        <div className="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Gross Margin</div>
-                            <div className="text-xl font-mono font-bold text-beetle-green">~$65/unit</div>
-                        </div>
-                        <div className="p-4 bg-black/40 rounded-xl border border-white/5">
+                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
                             <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Break-Even</div>
-                            <div className="text-xl font-mono font-bold text-beetle-gold">2,000 Units</div>
+                            <div className="text-xl font-mono font-bold text-beetle-gold">1.3 Months</div>
+                        </div>
+                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">LTV per Bokashi User</div>
+                            <div className="text-xl font-mono font-bold text-beetle-green">$288.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* NEW: Institutional Validation */}
+                <div className="grid md:grid-cols-3 gap-6 mb-16">
+                    <div className="bg-[#111] border border-[#1E1E1E] p-6 rounded-2xl flex flex-col items-center text-center">
+                        <div className="w-12 h-12 bg-beetle-gold/10 rounded-full flex items-center justify-center mb-4 text-beetle-gold">
+                            <Shield size={24} />
+                        </div>
+                        <h4 className="text-white font-bold mb-2">Audit & Security</h4>
+                        <p className="text-xs text-gray-400 mb-4">Smart Contracts audited by Tier-1 firms. Hardware Secure Element (ATECC608A) penetration tested.</p>
+                        <div className="flex gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
+                            <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">CertiK (Pending)</span>
+                            <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">Hacken (Pending)</span>
+                        </div>
+                    </div>
+
+                    <div className="bg-[#111] border border-[#1E1E1E] p-6 rounded-2xl flex flex-col items-center text-center">
+                        <div className="w-12 h-12 bg-beetle-electric/10 rounded-full flex items-center justify-center mb-4 text-beetle-electric">
+                            <Activity size={24} />
+                        </div>
+                        <h4 className="text-white font-bold mb-2">Review Partners</h4>
+                        <p className="text-xs text-gray-400 mb-4">Engineering methodology validation by leading academic institutions.</p>
+                        <div className="flex gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
+                            <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">TU Munich (Pilot)</span>
+                            <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">ETH Zurich (Rsrch)</span>
+                        </div>
+                    </div>
+
+                    <div className="bg-[#111] border border-[#1E1E1E] p-6 rounded-2xl flex flex-col items-center text-center">
+                        <div className="w-12 h-12 bg-beetle-green/10 rounded-full flex items-center justify-center mb-4 text-beetle-green">
+                            <Lock size={24} />
+                        </div>
+                        <h4 className="text-white font-bold mb-2">Data Integrity</h4>
+                        <p className="text-xs text-gray-400 mb-4">On-chain weather and environmental data verification via decentralized oracles.</p>
+                        <div className="flex gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
+                            <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">Chainlink</span>
+                            <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">The Graph</span>
                         </div>
                     </div>
                 </div>
@@ -274,6 +345,16 @@ export default function StrategyPage() {
                             </div>
                             <p className="text-xs text-gray-500 leading-relaxed">
                                 If soft cap not reached, automatic refunds enabled via smart contract.
+                            </p>
+                        </div>
+                        {/* Vesting Badge */}
+                        <div className="bg-black/40 border border-white/10 rounded-xl p-4 hover:border-purple-500/30 transition-colors md:col-span-3 lg:col-span-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Lock className="text-purple-500 w-4 h-4" />
+                                <span className="text-xs font-bold text-white uppercase tracking-wide">Institutional Vesting</span>
+                            </div>
+                            <p className="text-xs text-gray-500 leading-relaxed">
+                                <strong>12-Month Hard Cliff</strong> for Team & Seed. No insider dumping. Linear daily unlocks.
                             </p>
                         </div>
                     </div>

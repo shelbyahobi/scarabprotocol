@@ -1,0 +1,9 @@
+{
+  "network": "bscTestnet",
+  "timestamp": "2026-02-22T03:30:21.293Z",
+  "deployer": "0x0CFeCd2A660C342B4E45196fF868D0EC5e555e69",
+  "deviceRegistry": "0x0756c8B801eFDf8E3dAa0093126c766d896e3492",
+  "emissionController": "0x335c5fa723e66bb5237E61Adf3f39C25eE1a023A",
+  "treasuryVault": "0x929716d3360182fee990fB101e5BC6Db6aeFBD4A",
+  "productionValidator": "0x7a6f82930B686f381282abc160bbcB117A3253b0"
+}

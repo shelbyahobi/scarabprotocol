@@ -1,79 +1,119 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, ExternalLink, FileText, Rocket, TrendingUp } from 'lucide-react';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import ScarabLogo from './ScarabLogo';
 
 export default function Navbar({ onOpenBlueprint, isLanding }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Check if we are on the main landing page or subpages
+    const isAppContent = location.pathname.includes('/app') || location.pathname.includes('/transparency') || location.pathname.includes('/investors') || location.pathname.includes('/strategy');
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-40 bg-[#0a1a0f]/60 backdrop-blur-xl border-b border-white/5 transition-all duration-300 mt-8"> {/* mt-8 to account for ticker */}
-            <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'py-4' : 'py-6'} px-4 md:px-8`}>
+            {/* Inner Capsule */}
+            <div className={`mx-auto max-w-7xl flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-[#050B08]/80 backdrop-blur-xl border border-white/10 shadow-2xl py-3 px-6 rounded-2xl' : 'bg-transparent py-2 border border-transparent'}`}>
 
-                {/* Logo Area */}
-                <Link to="/" className="flex items-center gap-3 group cursor-pointer">
-                    <div className="flex items-center gap-2">
-                        {/* Logo Placeholder - User can replace with scarab.png later */}
-                        <div className="w-10 h-10 bg-beetle-gold rounded-full flex items-center justify-center font-black text-black">
-                            S
-                        </div>
-                        <span className="text-xl font-black tracking-tighter text-white">
-                            $SCARAB
-                        </span>
-                    </div>
-                </Link>
+                {/* Left: Logo */}
+                <div className="flex items-center gap-8">
+                    <Link to="/" className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo(0, 0)}>
+                        <ScarabLogo variant="wordmark" size={32} className="group-hover:opacity-80 transition-opacity" />
+                    </Link>
+                </div>
 
-                {/* Desktop Actions */}
-                <div className="hidden md:flex items-center gap-6">
-                    <div className="flex gap-6 text-sm font-bold text-gray-400">
-                        <a href="https://t.me/ScarabCommunity" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
-                            <ExternalLink size={14} /> Telegram
-                        </a>
-                        <a href="https://x.com/scarab_protocol" target="_blank" className="flex items-center gap-2 hover:text-beetle-electric transition-colors">
-                            <ExternalLink size={14} /> Twitter
-                        </a>
-                        <button onClick={onOpenBlueprint} className="flex items-center gap-2 hover:text-beetle-gold transition-colors">
-                            <FileText size={14} /> Blueprint
-                        </button>
-                        <Link to="/strategy" className="flex items-center gap-2 hover:text-beetle-gold transition-colors">
-                            <TrendingUp size={14} /> Strategy
-                        </Link>
-                    </div>
+                {/* Center: Core Nav Items (Prominent) */}
+                <div className="hidden md:flex items-center gap-1 bg-white/5 border border-white/5 rounded-full px-2 py-1.5 backdrop-blur-md">
+                    <button
+                        onClick={onOpenBlueprint}
+                        className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/10 transition-all"
+                    >
+                        <BookOpen size={16} className="text-beetle-gold/70" />
+                        The Blueprint
+                    </button>
 
-                    <div className="h-6 w-px bg-white/10"></div>
+                    <Link
+                        to="/docs"
+                        className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${location.pathname === '/docs' ? 'bg-white/10 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                    >
+                        <BookOpen size={16} className="text-blue-400/70" />
+                        Docs
+                    </Link>
 
-                    {/* Only show Connect Button on App pages, or here if we want persistent connection. Standard: Keep it. */}
+                    <Link
+                        to="/investors"
+                        className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${location.pathname === '/investors' ? 'bg-white/10 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                    >
+                        <LineChart size={16} className="text-green-400/70" />
+                        Investors
+                    </Link>
+
+                    <Link
+                        to="/strategy"
+                        className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${location.pathname === '/strategy' ? 'bg-white/10 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                    >
+                        <Target size={16} className="text-gray-400" />
+                        Strategy
+                    </Link>
+                </div>
+
+                {/* Right: Actions */}
+                <div className="hidden md:flex items-center gap-4">
                     <ConnectButton showBalance={false} chainStatus="icon" accountStatus="avatar" />
 
                     <button
                         onClick={() => navigate('/app')}
-                        className="bg-beetle-electric/10 text-beetle-electric border border-beetle-electric/50 px-6 py-2 rounded-lg font-bold hover:bg-beetle-electric hover:text-black transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] flex items-center gap-2"
+                        className="group bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-beetle-electric hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all flex items-center gap-2"
                     >
-                        <Rocket size={18} />
-                        LAUNCH APP
+                        Launch App
+                        <Rocket size={16} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                 </div>
 
                 {/* Mobile Toggle */}
-                <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                    {mobileMenuOpen ? <X /> : <Menu />}
+                <button className="md:hidden text-white p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Dropdown */}
             {mobileMenuOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-beetle-gold/20 p-6 flex flex-col gap-6 backdrop-blur-xl">
-                    <a href="https://t.me/ScarabCommunity" className="text-gray-300 hover:text-beetle-electric">Telegram</a>
-                    <a href="https://x.com/scarab_protocol" className="text-gray-300 hover:text-beetle-electric">Twitter</a>
-                    <button onClick={() => { onOpenBlueprint(); setMobileMenuOpen(false); }} className="text-gray-300 hover:text-beetle-gold text-left">Blueprint</button>
-                    <div className="flex flex-col gap-4 mt-4 border-t border-white/10 pt-6">
-                        <ConnectButton />
+                <div className="md:hidden absolute top-full left-4 right-4 mt-2 bg-[#050B08]/95 border border-white/10 p-6 rounded-2xl flex flex-col gap-6 backdrop-blur-2xl shadow-2xl">
+                    <div className="flex flex-col gap-2">
+                        <button onClick={() => { onOpenBlueprint(); setMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors text-left">
+                            <BookOpen size={20} className="text-beetle-gold" /> The Blueprint
+                        </button>
+                        <Link to="/docs" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <BookOpen size={20} className="text-blue-400" /> Docs
+                        </Link>
+                        <Link to="/investors" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <LineChart size={20} className="text-green-400" /> Investors
+                        </Link>
+                        <Link to="/strategy" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <Target size={20} /> Strategy
+                        </Link>
+                    </div>
+
+                    <div className="flex flex-col gap-4 border-t border-white/10 pt-6">
+                        <div className="flex justify-center">
+                            <ConnectButton showBalance={false} />
+                        </div>
                         <button
                             onClick={() => { navigate('/app'); setMobileMenuOpen(false); }}
-                            className="bg-beetle-electric text-black font-black py-3 rounded-lg"
+                            className="bg-white text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-beetle-electric transition-colors"
                         >
-                            LAUNCH APP
+                            Launch App <Rocket size={18} />
                         </button>
                     </div>
                 </div>

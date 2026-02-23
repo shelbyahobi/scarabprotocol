@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Rocket, FileText, Shield, Lock, CheckCircle, Zap, DollarSign } from 'lucide-react';
+import ScarabLogo from './ScarabLogo';
 
 export default function Hero({ onOpenBlueprint }) {
     return (
@@ -48,16 +49,16 @@ export default function Hero({ onOpenBlueprint }) {
                     {/* Subheadline */}
                     <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-lg mx-auto md:mx-0 leading-relaxed">
                         The ancient scarab beetle transformed waste into sustenance.
-                        Today, SCARAB transforms digital assets into physical infrastructure.
+                        Today, the SCARAB Protocol transforms <strong>Capital into Productive Assets</strong>.
                         <span className="block mt-3 text-white font-semibold">
-                            Real hardware. Community governed. Built to endure.
+                            The Institutional-Grade DePIN for the Regenerative Economy.
                         </span>
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-12">
                         <Link to="/app" className="group bg-beetle-gold text-black px-8 py-4 rounded-xl font-black text-lg hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] flex items-center justify-center gap-2">
                             <Rocket className="group-hover:translate-x-1 transition-transform" />
-                            JOIN SEED SALE
+                            JOIN ARCHITECT ROUND
                         </Link>
                         <button
                             onClick={onOpenBlueprint}
@@ -113,22 +114,32 @@ export default function Hero({ onOpenBlueprint }) {
                     </div>
                 </motion.div>
 
-                {/* 3D Visual */}
+                {/* 3D Visual — SVG Coin Mark */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1, delay: 0.2 }}
-                    className="flex-1 relative hidden md:block"
+                    className="flex-1 relative hidden md:flex items-center justify-center"
                 >
-                    {/* Glowing Backdrops */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-beetle-gold/20 rounded-full blur-[100px] animate-pulse"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-beetle-electric/10 rounded-full blur-[80px]"></div>
-
-                    <img
-                        src="/hero.png"
-                        alt="Scarab Node Prototype"
-                        className="w-full max-w-lg mx-auto relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-float"
-                    />
+                    {/* Outer glow ring */}
+                    <div className="absolute w-[340px] h-[340px] rounded-full border border-beetle-gold/20 animate-pulse" />
+                    <div className="absolute w-[280px] h-[280px] rounded-full border border-beetle-green/10" />
+                    {/* Ambient glow blobs */}
+                    <div className="absolute w-[320px] h-[320px] bg-beetle-gold/10 rounded-full blur-[80px]" />
+                    <div className="absolute w-[200px] h-[200px] bg-beetle-green/10 rounded-full blur-[60px]" />
+                    {/* Coin mark — floating */}
+                    <motion.div
+                        animate={{ y: [0, -10, 0] }}
+                        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                        className="relative z-10"
+                    >
+                        <ScarabLogo variant="coin" size={240} />
+                        {/* Token label */}
+                        <div className="text-center mt-4">
+                            <div className="text-sm font-mono font-bold text-beetle-gold tracking-[0.3em]">$SCARAB</div>
+                            <div className="text-xs text-gray-500 tracking-widest mt-1">Proof of Productive Asset</div>
+                        </div>
+                    </motion.div>
                 </motion.div>
             </div>
         </section >

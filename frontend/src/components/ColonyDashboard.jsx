@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useReadContracts } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
 import GovernanceDashboard from './GovernanceDashboard';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus, Vault, Gift } from 'lucide-react';
 import { formatEther } from 'viem';
 import { CONFIG } from '../config';
 
@@ -203,6 +203,32 @@ export default function ColonyDashboard() {
                         <Vote size={18} /> The Council (DAO)
                     </button>
                 </div>
+
+                {/* ─── CLAIM REWARDS PANEL (Pull Model) ─── */}
+                {isConnected && tier !== 'Guest' && (
+                    <div className="mb-8 bg-gradient-to-r from-beetle-gold/10 to-transparent border border-beetle-gold/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-beetle-gold/20 rounded-xl flex items-center justify-center">
+                                <Gift size={24} className="text-beetle-gold" />
+                            </div>
+                            <div>
+                                <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Pending Rewards (Pull Model)</div>
+                                <div className="text-2xl font-black text-white font-mono">0 <span className="text-beetle-gold text-sm">SCARAB</span></div>
+                                <div className="text-xs text-gray-500 mt-1">~0 SCARAB/day estimated · claim from EmissionController</div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                            <button
+                                className="px-8 py-3 bg-beetle-gold text-black font-black rounded-xl hover:brightness-110 transition-all text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                                disabled={true}
+                                title="EmissionController not yet deployed to this network"
+                            >
+                                Claim SCARAB →
+                            </button>
+                            <span className="text-[10px] text-gray-600 font-mono">EmissionController: awaiting testnet deploy</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* --- TAB: MARKETPLACE (Consolidated) --- */}
                 {activeTab === 'marketplace' && (

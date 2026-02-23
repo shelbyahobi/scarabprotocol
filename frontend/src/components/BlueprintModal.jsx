@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Scroll, Copy, Database, Layers, RefreshCw } from 'lucide-react';
 import { CONFIG } from '../config';
 import { useState } from 'react';
+import ScarabLogo from './ScarabLogo';
 
 export default function BlueprintModal({ isOpen, onClose }) {
     if (!isOpen) return null;
@@ -37,11 +38,14 @@ export default function BlueprintModal({ isOpen, onClose }) {
                 >
                     {/* Header */}
                     <div className="sticky top-0 bg-[#0a1a0f]/95 backdrop-blur border-b border-beetle-gold/10 p-6 flex justify-between items-center z-10">
-                        <div>
-                            <h2 className="text-3xl font-black text-white tracking-tighter">
-                                SCARAB <span className="text-beetle-gold">PROTOCOL</span>
-                            </h2>
-                            <p className="text-xs text-beetle-gold/70 font-mono tracking-widest uppercase mt-1">Technical Architecture & Ecosystem Blueprint</p>
+                        <div className="flex items-center gap-4">
+                            <ScarabLogo variant="mark" size={44} />
+                            <div>
+                                <h2 className="text-2xl font-black text-white tracking-tighter">
+                                    SCARAB <span className="text-beetle-gold">PROTOCOL</span>
+                                </h2>
+                                <p className="text-xs text-beetle-gold/70 font-mono tracking-widest uppercase mt-0.5">Technical Architecture & Ecosystem Blueprint</p>
+                            </div>
                         </div>
                         <button
                             onClick={onClose}
@@ -60,9 +64,12 @@ export default function BlueprintModal({ isOpen, onClose }) {
                             <p className="text-gray-300 leading-relaxed text-lg">
                                 The <strong>SCARAB Protocol</strong> is a decentralized physical infrastructure network (DePIN) designed to regenerate the planet. We finance, deploy, and verify <strong>Productive Real World Assets</strong>—from solar arrays to waste-to-energy systems.
                             </p>
-                            <p className="text-gray-300 leading-relaxed mt-4">
-                                Unlike speculative tokens, SCARAB utilizes a <strong>Proof of Productive Asset (PoPA)</strong> model. The token is minted/released only when connected hardware cryptographically verifies real-world output (Energy, Water, Commodities).
-                            </p>
+                            <div className="bg-beetle-gold/10 border border-beetle-gold/20 p-4 rounded-lg mt-4">
+                                <h4 className="text-beetle-gold font-bold text-sm uppercase tracking-widest mb-2">Primary Primitive: Proof-of-Productive-Asset (PoPA)</h4>
+                                <p className="text-gray-300 leading-relaxed text-sm">
+                                    A cryptographic attestation that a physical infrastructure unit produced measurable economic output within a defined time window. <strong>SCARAB tokens are minted as coordination incentives tied to verified physical production, not as claims on future cash flow.</strong>
+                                </p>
+                            </div>
                         </section>
 
                         {/* II. The Philosophy */}
@@ -138,6 +145,17 @@ export default function BlueprintModal({ isOpen, onClose }) {
                                 <div className="flex gap-4 items-start">
                                     <div className="w-8 h-8 rounded bg-beetle-green/20 flex items-center justify-center text-beetle-green font-bold text-sm border border-beetle-green/30 mt-1">1</div>
                                     <div>
+                                        <h4 className="text-white font-bold text-lg">Anti-Manipulation Safeguards</h4>
+                                        <ul className="text-gray-400 text-sm mt-1 space-y-1 list-disc list-inside">
+                                            <li><strong>Max Reward Caps:</strong> Hard-coded limits per device type prevent firmware spoofing.</li>
+                                            <li><strong>Geographic Anomaly Detection:</strong> GPS/IP cross-referencing to prevent "server farm" simulations.</li>
+                                            <li><strong>Weather Oracle Verification:</strong> Solar output validated against Chainlink local weather data.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 items-start">
+                                    <div className="w-8 h-8 rounded bg-beetle-green/20 flex items-center justify-center text-beetle-green font-bold text-sm border border-beetle-green/30 mt-1">2</div>
+                                    <div>
                                         <h4 className="text-white font-bold text-lg">The 48-Hour Transparency Timelock</h4>
                                         <p className="text-gray-400 text-sm mt-1">All administrative functions (such as blacklisting malicious bots or updating wallet addresses) are subject to a hard-coded 2-day delay. This ensures that the community has a 48-hour "public warning" before any significant changes are executed.</p>
                                     </div>
@@ -174,7 +192,10 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         <section>
                             <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">V. Tokenomics: Utility-First Distribution</h3>
                             <div className="bg-black/40 border border-white/10 rounded-2xl p-8 text-center">
-                                <p className="text-gray-300 mb-8 max-w-2xl mx-auto">1 Billion Fixed Supply. Asset-backed. No Inflation.</p>
+                                <p className="text-gray-300 mb-4 max-w-2xl mx-auto">1 Billion Fixed Supply. Asset-backed. No Inflation.</p>
+                                <p className="text-xs text-gray-500 mb-8 italic max-w-lg mx-auto">
+                                    DISCLAIMER: SCARAB rewards are protocol-level coordination incentives for infrastructure deployment. They are <strong>NOT dividends, profit-sharing, or guaranteed yield</strong>.
+                                </p>
 
                                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                                     <div className="p-4 bg-white/5 rounded-lg border border-white/5">

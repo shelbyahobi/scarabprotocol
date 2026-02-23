@@ -43,11 +43,11 @@ bot.action("verify_human", async (ctx) => {
 
     // 2. The Grand Welcome
     await ctx.replyWithPhoto(
-        { url: 'https://roll-token-official.vercel.app/logo_eco.jpg' }, // Use hosted image
+        { url: 'https://roll-token-official.vercel.app/logo_eco.jpg' }, // Consider updating URL to a new SCARAB image in the future
         {
-            caption: `🪲 *Access Granted: Welcome to the Colony!* 🪲\n\n` +
-                `You are now a recruit in the **ROLL Ecosystem**.\n` +
-                `We are building the currency of physical resilience.\n\n` +
+            caption: `🌍 *Access Granted: Welcome to the Ecosystem!* 🌍\n\n` +
+                `You are now a part of **SCARAB Protocol**.\n` +
+                `We are building a decentralized hardware network measuring Proof of Physical Work to back real-world value.\n\n` +
                 `👇 *Your Mission Briefing:*`,
             parse_mode: 'Markdown'
         }
@@ -55,9 +55,9 @@ bot.action("verify_human", async (ctx) => {
 
     // 3. Onboarding Menu (Persistent)
     await ctx.reply(
-        "Use the menu below to navigate:",
+        "Use the menu below to navigate the protocol:",
         Markup.keyboard([
-            ["🚀 Buy $ROLL (Seed Sale)", "📜 Read Blueprint"],
+            ["🚀 Buy $SCARAB (Seed Sale)", "📜 Read Blueprint"],
             ["🔥 Community Hub", "❓ FAQ / Help"],
             ["📊 Check Contract", "🌐 Website"]
         ]).resize()
@@ -66,18 +66,18 @@ bot.action("verify_human", async (ctx) => {
 
 // --- MAIN MENU HANDLERS ---
 
-bot.hears("🚀 Buy $ROLL (Seed Sale)", (ctx) => {
+bot.hears("🚀 Buy $SCARAB (Seed Sale)", (ctx) => {
     ctx.reply(
         `💎 *SEED SALE IS LIVE!*\n\n` +
-        `• **Price**: 1 BNB = 100,000 ROLL\n` +
+        `• **Price**: 1 BNB = 100,000 SCARAB\n` +
         `• **Min**: 0.05 BNB\n` +
         `• **Bonus**: 5% Referral Rewards\n\n` +
-        `👇 *Click below to join safely:*`,
+        `👇 *Click below to access the secure Launchpad:*`,
         {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
-                [Markup.button.webApp("🚀 Launch App to Buy", WEB_APP_URL)],
-                [Markup.button.url("📖 How to Buy Guide", WEB_APP_URL)]
+                [Markup.button.webApp("🚀 Launch DApp", WEB_APP_URL)],
+                [Markup.button.url("📖 How to Join Guide", WEB_APP_URL)]
             ])
         }
     );
@@ -85,18 +85,18 @@ bot.hears("🚀 Buy $ROLL (Seed Sale)", (ctx) => {
 
 bot.hears("📜 Read Blueprint", (ctx) => {
     ctx.reply(
-        `📘 *The Master Plan*\n\n` +
-        `Understand the mechanics behind the Dung Beetle Deflator and Eco-Mining.\n`,
+        `📘 *The Architecture Blueprint*\n\n` +
+        `Dive into the mechanics behind our DePIN architecture, solar yield integration, and the Proof of Physical Work consensus.\n`,
         Markup.inlineKeyboard([
-            Markup.button.url("📑 Open Whitepaper", BLUEPRINT_URL)
+            Markup.button.url("📑 Read DePIN Manifesto", BLUEPRINT_URL)
         ])
     );
 });
 
 bot.hears("🔥 Community Hub", (ctx) => {
     ctx.reply(
-        `🌍 *Join the Conversation*\n\n` +
-        `Stay updated and chat with fellow beetles.`,
+        `🌍 *The Decentralized Grid*\n\n` +
+        `Stay engaged with core contributors, node operators, and the community.`,
         Markup.inlineKeyboard([
             [Markup.button.url("🐦 Twitter (X)", TWITTER_URL)],
             [Markup.button.url("📢 Telegram Channel", COMMUNITY_GROUP)]
@@ -106,60 +106,56 @@ bot.hears("🔥 Community Hub", (ctx) => {
 
 bot.hears(["❓ FAQ / Help", "help"], (ctx) => {
     ctx.reply(
-        `🤖 *Colony Commander Help*\n\n` +
-        `**Q: What is ROLL?**\n` +
-        `A: A meme token with physical utility (Solar/Agri-Tech).\n\n` +
-        `**Q: When Launch?**\n` +
-        `A: After Seed Sale HardCap is hit.\n\n` +
+        `🤖 *SCARAB Protocol Command*\n\n` +
+        `**Q: What is SCARAB?**\n` +
+        `A: A DePIN (Decentralized Physical Infrastructure Network) optimizing environmental hardware like solar panels to generate verified, yielding data.\n\n` +
+        `**Q: When is the Mainnet Launch?**\n` +
+        `A: Following the completion of the hardware integration tests and the Seed Sale hardcap.\n\n` +
         `**Q: Is it safe?**\n` +
-        `A: Contract Audit passed. Team KYC verified.\n\n` +
-        `*Need support? Tag an admin!*`
+        `A: Yes. All contracts are audited and hardware uses ATECC608A cryptographic chips.\n\n` +
+        `*Need engineering support? Tag an admin in the main channel!*`
     );
 });
 
 bot.hears(["📊 Check Contract", "ca", "contract"], (ctx) => {
     ctx.reply(
-        `📝 *Official Contract Addresses*\n\n` +
-        `🔹 **Seed Sale**: \`${SEED_SALE_ADDRESS}\`\n` +
-        `🔹 **Token**: (Pending TGE)\n\n` +
-        `⚠️ *Beware of fakes! Always verify on our official site.*`,
+        `📝 *Official Protocol Contracts*\n\n` +
+        `🔹 **Seed Sale Vault**: \`${SEED_SALE_ADDRESS}\`\n` +
+        `🔹 **Token ($SCARAB)**: (Pending TGE)\n\n` +
+        `⚠️ *Never send funds to random addresses! Always verify via the official dashboard.*`,
         { parse_mode: 'Markdown' }
     );
 });
 
 bot.hears("🌐 Website", (ctx) => {
-    ctx.reply(`🌐 **Official Website**:\n${WEB_APP_URL}`);
+    ctx.reply(`🌐 **Official SCARAB Application**:\n${WEB_APP_URL}`);
 });
 
 // --- SMART AUTO-REPLIES ---
 
 // Keywords: Price
 bot.hears(/price/i, (ctx) => {
-    ctx.reply("💰 **Current Price**: 100,000 ROLL per 1 BNB (Architect Round)");
+    ctx.reply("💰 **Current Seed Price**: 100,000 SCARAB per 1 BNB. Subject to DAO adjustment post-launch.");
 });
 
 // Keywords: Scam/Fake
 bot.hears(/scam|fake|honeypot/i, (ctx) => {
-    ctx.reply("🛡️ **Safety First**: Our contract is audited and liquidity will be verified locked on launch. Do not click suspicious links in DMs!");
+    ctx.reply("🛡️ **Protocol Security**: SCARAB contracts undergo rigorous audits. Hardware attestations prevent data spoofing. Always ensure you are on our official domains.");
 });
 
 // --- GROUP EVENT HANDLERS ---
 
 // Welcome New Members
 bot.on('new_chat_members', async (ctx) => {
-    // Loop through new members
     for (const member of ctx.message.new_chat_members) {
-        if (member.is_bot) continue; // Ignore other bots
+        if (member.is_bot) continue;
 
-        const firstName = member.first_name || "Beetle";
+        const firstName = member.first_name || "Operator";
 
-        // Send a temporary welcome message that forces them to DM the bot for verification/menu
-        // We can't show the full menu in the group as it spams everyone.
-        // We link them to the bot's private chat.
         const welcomeMsg = await ctx.reply(
-            `👋 *Welcome to the Colony, ${firstName}!* \n\n` +
-            `To access the **Buy Menu**, **Whitepaper**, and **Support**, you must initialize your comms link.\n\n` +
-            `👇 *Click below to start:*`,
+            `👋 *Welcome to the SCARAB Protocol, ${firstName}!* \n\n` +
+            `To access the **Launchpad DApp**, **DePIN Manifesto**, and **Hardware Specs**, please verify your connection below.\n\n` +
+            `👇 *Click to Initialize:*`,
             {
                 parse_mode: 'Markdown',
                 ...Markup.inlineKeyboard([
@@ -168,7 +164,6 @@ bot.on('new_chat_members', async (ctx) => {
             }
         );
 
-        // Optional: Auto-delete this message after 60 seconds to keep chat clean
         setTimeout(() => {
             ctx.telegram.deleteMessage(ctx.chat.id, welcomeMsg.message_id).catch(() => { });
         }, 60000);

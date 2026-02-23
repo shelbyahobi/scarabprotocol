@@ -1,4 +1,4 @@
-import { PieChart, TrendingUp, Users, Shield, Zap } from 'lucide-react';
+import { PieChart, TrendingUp, Users, Shield, Zap, Vault } from 'lucide-react';
 
 export default function Tokenomics() {
     // Data for the chart
@@ -88,8 +88,66 @@ export default function Tokenomics() {
                             </div>
                         </div>
                     </div>
-
                 </div>
+
+                {/* ENDGAME STRATEGY */}
+                <div className="mt-8 bg-beetle-gold/5 rounded-2xl p-6 border border-beetle-gold/10">
+                    <h3 className="text-beetle-gold font-bold mb-2 flex items-center gap-2">
+                        <TrendingUp size={18} /> The Endgame: Revenue-Led Sustainability
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-4">
+                        By Year 8+, SCARAB transitions from "Emission-Led Growth" to "Revenue-Led Sustainability".
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="bg-black/40 p-2 rounded border border-white/5">
+                            <div className="text-[10px] text-gray-500 uppercase">Phase 1</div>
+                            <div className="text-white font-bold text-sm">Subsidy</div>
+                        </div>
+                        <div className="bg-black/40 p-2 rounded border border-white/5">
+                            <div className="text-[10px] text-gray-500 uppercase">Phase 2</div>
+                            <div className="text-white font-bold text-sm">Burn</div>
+                        </div>
+                        <div className="bg-black/40 p-2 rounded border border-white/5">
+                            <div className="text-[10px] text-gray-500 uppercase">Phase 3</div>
+                            <div className="text-beetle-green font-bold text-sm">Deflation</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* USDC FLOOR PRICE FORMULA */}
+                <div className="mt-6 bg-black/40 border border-white/10 rounded-2xl p-6">
+                    <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                        <Vault size={18} className="text-beetle-gold" /> Token Floor Price Mechanism
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-4">
+                        Unlike speculative tokens, SCARAB has a growing intrinsic floor backed by hardware sales revenue.
+                        <strong className="text-beetle-gold"> $50 USDC</strong> from every node sale is locked in the Liquidity Backing Vault.
+                    </p>
+                    <div className="bg-[#0a1a0f] border border-beetle-gold/20 rounded-xl p-4 mb-4 text-center font-mono">
+                        <div className="text-lg">
+                            <span className="text-beetle-gold font-bold">P</span>
+                            <span className="text-beetle-gold/60 text-xs align-sub">floor</span>
+                            <span className="text-white mx-3">=</span>
+                            <span className="text-green-400 font-bold">V</span>
+                            <span className="text-green-400/60 text-xs align-sub">USDC</span>
+                            <span className="text-white mx-3">÷</span>
+                            <span className="text-beetle-electric font-bold">S</span>
+                            <span className="text-beetle-electric/60 text-xs align-sub">circ</span>
+                        </div>
+                        <p className="text-gray-500 text-xs mt-2">USDC in Backing Vault ÷ Circulating Supply</p>
+                    </div>
+                    <div className="grid grid-cols-3 text-xs font-mono gap-0">
+                        <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">Year</div>
+                        <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">USDC Vault</div>
+                        <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">Floor</div>
+                        <div className="py-1.5 text-center text-gray-400">Y1</div><div className="py-1.5 text-center text-gray-400">$100K</div><div className="py-1.5 text-center text-white font-bold">$0.0025</div>
+                        <div className="py-1.5 text-center text-gray-400">Y2</div><div className="py-1.5 text-center text-gray-400">$500K</div><div className="py-1.5 text-center text-white font-bold">$0.0047</div>
+                        <div className="py-1.5 text-center text-gray-400">Y3</div><div className="py-1.5 text-center text-gray-400">$1.75M</div><div className="py-1.5 text-center text-white font-bold">$0.0094</div>
+                        <div className="py-1.5 text-center text-beetle-gold">Y5</div><div className="py-1.5 text-center text-beetle-gold">$12.75M</div><div className="py-1.5 text-center text-beetle-gold font-bold">$0.0425</div>
+                    </div>
+                    <p className="text-gray-600 text-[10px] mt-3 text-center">Worst-case floor. Market price typically 5–10× higher due to utility demand.</p>
+                </div>
+
             </div>
         </section>
     );

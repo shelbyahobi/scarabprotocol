@@ -22,16 +22,21 @@ import MyAllocations from './components/MyAllocations';
 import PhysicalUtility from './components/PhysicalUtility';
 import Tokenomics from './components/Tokenomics';
 import UseOfFunds from './components/UseOfFunds';
+import TransparencyDashboard from './components/TransparencyDashboard';
+import InvestorRoadmap from './components/InvestorRoadmap';
 import EcoMiningExplainer from './components/EcoMiningExplainer';
+import SoilAsAService from './components/SoilAsAService';
 import StrategyPage from './components/StrategyPage';
 import StrategyPreview from './components/StrategyPreview';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
+import { lazy, Suspense } from 'react';
+
+const Documentation = lazy(() => import('./components/Documentation'));
 
 const queryClient = new QueryClient();
 
-// --- PAGE COMPONENTS ---
 
-import TransparencyDashboard from './components/TransparencyDashboard';
+
 
 function LandingPage({ onOpenBlueprint }) {
     return (
@@ -46,7 +51,10 @@ function LandingPage({ onOpenBlueprint }) {
                 {/* 1. THE VISION (Why) */}
                 <PhysicalUtility />
 
-                {/* 1.5 THE MECHANISM (How Eco-Mining Works) - NEW */}
+                {/* 1.5 THE SOIL-AS-A-SERVICE LOOP (Drop-off mechanic) - NEW */}
+                <SoilAsAService />
+
+                {/* 1.7 THE MECHANISM (How Eco-Mining Works) - NEW */}
                 <EcoMiningExplainer />
 
                 {/* 2. THE DATA (Tokenomics) */}
@@ -184,21 +192,71 @@ function DAppPage() {
     );
 }
 
+function InvestorsPage() {
+    return (
+        <div className="min-h-screen bg-[#050a05] text-white">
+            <div className="fixed top-0 left-0 w-full z-50 bg-[#0a1a0f] border-b border-white/5 shadow-xl">
+                <Ticker />
+                <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <Link to="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-bold">Back to Home</span>
+                    </Link>
+                    <span className="text-green-400 font-black tracking-tighter text-lg">$SCARAB <span className="text-white font-normal text-sm">Investor Overview</span></span>
+                </div>
+            </div>
+            <main className="pt-36">
+                <InvestorRoadmap />
+            </main>
+            <Footer />
+        </div>
+    );
+}
+
+function ProofOfReservesPage() {
+    return (
+        <div className="min-h-screen bg-[#050a05] text-white">
+            <div className="fixed top-0 left-0 w-full z-50 bg-[#0a1a0f] border-b border-white/5 shadow-xl">
+                <Ticker />
+                <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <Link to="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-bold">Back to Home</span>
+                    </Link>
+                    <span className="text-beetle-gold font-black tracking-tighter text-lg">$SCARAB <span className="text-white font-normal text-sm">Proof of Reserves</span></span>
+                </div>
+            </div>
+            <main className="pt-36 container mx-auto px-4 pb-24 space-y-8">
+                <div className="text-center py-12">
+                    <span className="text-xs font-mono tracking-widest text-beetle-gold uppercase mb-4 block">Verified On-Chain</span>
+                    <h1 className="text-5xl font-black text-white mb-4 tracking-tighter">Liquidity Backing <span className="text-beetle-gold">Vault</span></h1>
+                    <p className="text-gray-400 max-w-xl mx-auto">Every metric below is publicly verifiable on BscScan. SCARAB does not make promises — it makes proofs.</p>
+                </div>
+                <TransparencyDashboard />
+                <UseOfFunds />
+            </main>
+            <Footer />
+        </div>
+    );
+}
+
 function Footer() {
     return (
         <footer className="py-12 border-t border-white/5 bg-black/50 backdrop-blur-sm">
             <div className="container mx-auto px-4 text-center">
-                <h3 className="text-3xl font-black text-beetle-gold mb-4 tracking-tighter">$SCARAB</h3>
-                <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-                    Bridging ancient wisdom with real-world organic commerce.
-                    Run by the community, for the community.
+                <h3 className="text-3xl font-black text-beetle-gold mb-4 tracking-tighter">$SCARAB Protocol</h3>
+                <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+                    Proof of Physical Activity. Real-world assets backing every token.
+                    Run by the community, for the planet.
                 </p>
-                <div className="flex justify-center gap-8 mb-8">
+                <div className="flex justify-center flex-wrap gap-6 mb-8">
                     <a href="https://x.com/scarab_protocol" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Twitter (X)</a>
                     <a href="https://t.me/ScarabCommunity" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Telegram</a>
+                    <Link to="/transparency" className="text-gray-400 hover:text-beetle-gold transition-colors">Proof of Reserves</Link>
+                    <Link to="/investors" className="text-gray-400 hover:text-green-400 transition-colors">Investors</Link>
                     <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
                 </div>
-                <p className="text-gray-700 text-sm">&copy; 2026 Scarab Protocol. Organic Commerce.</p>
+                <p className="text-gray-700 text-xs">© 2026 SCARAB Protocol · DePIN Infrastructure · <span className="text-gray-600">Not financial advice</span></p>
             </div>
         </footer>
     );
@@ -231,8 +289,14 @@ function App() {
                                     <Routes>
                                         <Route path="/" element={<LandingPage onOpenBlueprint={() => setShowBlueprint(true)} />} />
                                         <Route path="/strategy" element={<StrategyPage />} />
-                                        <Route path="/app" element={<DAppPage />} />
-                                        <Route path="*" element={<Navigate to="/" />} />
+                                        <Route path="/transparency" element={<Transparency />} />
+                                        <Route path="/investors" element={<InvestorRoadmap />} />
+                                        <Route path="/docs" element={
+                                            <Suspense fallback={<div className="min-h-screen bg-[#050A05] flex items-center justify-center text-green-400">Loading Docs...</div>}>
+                                                <Documentation />
+                                            </Suspense>
+                                        } />
+                                        <Route path="*" element={<Navigate to="/" replace />} />
                                     </Routes>
                                 </div>
                             </div>
