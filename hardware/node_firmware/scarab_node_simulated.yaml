@@ -1,0 +1,58 @@
+esphome:
+  name: scarab-node-simulated
+  friendly_name: SCARAB Simulated ESP32 Node
+  includes:
+    - scarab_crypto.h
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging with DEBUG level for development
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+
+# Enable local web server to access states directly via HTTP
+web_server:
+  port: 80
+
+# Mock Wi-Fi (Using fallback AP since this will likely not have actual wifi configured yet)
+wifi:
+  ssid: "Mock_Network"
+  password: "Mock_Password"
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Scarab Node Fallback"
+    password: "secure_password_123"
+
+captive_portal:
+
+# Time element is required for cryptography and timestamping payloads
+time:
+  - platform: sntp
+    id: sntp_time
+
+# Simulated Inputs: We simulate a "Solar Node" generating realistic wattage.
+sensor:
+  - platform: template
+    name: "Simulated Solar Generation (W)"
+    id: simulated_wattage
+    unit_of_measurement: "W"
+    update_interval: 15s
+    lambda: |-
+      return (random_float() * 1000.0) + 500.0; // Random wattage between 500W and 1500W
+
+# Text sensors to hold the cryptographic outputs (Mocked)
+text_sensor:
+  - platform: template
+    name: "ATECC608A Mock Payload JSON"
+    id: atecc_payload
+    update_interval: 15s
+    lambda: |-
+      float current_watts = id(simulated_wattage).state;
+      return generate_payload(current_watts);

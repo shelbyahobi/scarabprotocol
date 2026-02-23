@@ -57,6 +57,10 @@ export default function Documentation() {
                             <p className="mb-4">
                                 "Eco-Mining" requires active participation. You are providing tangible value to the network, and the decentralized Oracle distributes SCARAB proportional to the verified data.
                             </p>
+                            <div className="mb-4 text-sm bg-beetle-gold/10 border border-beetle-gold/30 p-4 rounded-xl text-beetle-gold/80">
+                                <strong className="text-beetle-gold block mb-1">Dynamic Halving Cycles</strong>
+                                To protect against inflation and exponentially reward early adopters, the SCARAB hardware emissions algorithm mathematically halves the payout rate every 50,000 successful network verifications.
+                            </div>
                         </div>
 
                         <div className="space-y-6">
@@ -106,8 +110,13 @@ export default function Documentation() {
                                 </li>
                                 <li className="relative">
                                     <div className="absolute -left-8 w-4 h-4 rounded-full bg-green-500 ring-4 ring-black"></div>
-                                    <h4 className="font-bold text-white mb-1">3. Protocol Rewards (Proof of Sequestration)</h4>
-                                    <p className="text-sm">The Smart Contract issues a **15 SCARAB Closure Bonus** to the User for correctly disposing of the waste, and a **10 SCARAB Processing Fee** to the Farmer for acting as the carbon sink.</p>
+                                    <h4 className="font-bold text-white mb-1">3. Protocol Rewards (The 3-Way Split)</h4>
+                                    <p className="text-sm">The Smart Contract issues a verified 3-way distribution: <br /></p>
+                                    <ul className="mt-2 space-y-1 text-sm">
+                                        <li><strong className="text-white">15 SCARAB (User):</strong> Closure Bonus for correct ecological behavior.</li>
+                                        <li><strong className="text-white">7 SCARAB (Farmer):</strong> Processing Fee. <em>Note: Farmers must actively stake 100 SCARAB to become a Verified Sink Hub to deter bad actors.</em></li>
+                                        <li><strong className="text-white">3 SCARAB (Solar Node):</strong> Validation Fee issued to the local Solar Node that cryptographically signed the Proof of Physical Presence.</li>
+                                    </ul>
                                 </li>
                             </ol>
                         </div>
@@ -164,8 +173,8 @@ export default function Documentation() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id
-                                        ? 'bg-beetle-green/20 text-green-400 border border-beetle-green/30 shadow-sm'
-                                        : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                                    ? 'bg-beetle-green/20 text-green-400 border border-beetle-green/30 shadow-sm'
+                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">

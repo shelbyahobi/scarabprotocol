@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Zap, Users, Globe, Database, ArrowRight, TrendingUp, BarChart3, CheckCircle, Leaf, DollarSign } from 'lucide-react';
+import { Zap, Users, Globe, Database, ArrowRight, TrendingUp, BarChart3, CheckCircle, Leaf, DollarSign, Recycle } from 'lucide-react';
 
 // ─── 4-Phase Growth Roadmap ────────────────────────────────────────────────
 const phases = [
