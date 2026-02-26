@@ -288,9 +288,10 @@ function App() {
                                 <div className="relative z-10">
                                     <Routes>
                                         <Route path="/" element={<LandingPage onOpenBlueprint={() => setShowBlueprint(true)} />} />
+                                        <Route path="/app" element={<DAppPage />} />
                                         <Route path="/strategy" element={<StrategyPage />} />
-                                        <Route path="/transparency" element={<Transparency />} />
-                                        <Route path="/investors" element={<InvestorRoadmap />} />
+                                        <Route path="/transparency" element={<ProofOfReservesPage />} />
+                                        <Route path="/investors" element={<InvestorsPage />} />
                                         <Route path="/docs" element={
                                             <Suspense fallback={<div className="min-h-screen bg-[#050A05] flex items-center justify-center text-green-400">Loading Docs...</div>}>
                                                 <Documentation />

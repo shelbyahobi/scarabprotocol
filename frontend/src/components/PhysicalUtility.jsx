@@ -84,11 +84,11 @@ export default function PhysicalUtility() {
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
                                 <span className="text-gray-400">Price Point</span>
-                                <span className="text-white font-bold text-xl">$89 <span className="text-xs font-normal text-gray-500">+ $9/mo sub</span></span>
+                                <span className="text-white font-bold text-xl">$89 <span className="text-xs font-normal text-gray-500">+ $12/mo sub</span></span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
                                 <span className="text-gray-400">Est. Returns</span>
-                                <span className="text-beetle-gold font-mono font-bold">~4,800 SCARAB/yr <span className="text-xs text-green-400 font-normal">(1.6x Multiplier)</span></span>
+                                <span className="text-beetle-gold font-mono font-bold">~1,200 SCARAB/yr</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-400">TAM</span>

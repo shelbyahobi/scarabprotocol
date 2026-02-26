@@ -4,10 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-interface IScarabToken {
-    function mintFromRegenPool(address to, uint256 amount) external;
-    function totalSupply() external view returns (uint256);
-}
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IDeviceRegistry {
     function getDevicesByOwner(address owner) external view returns (bytes32[] memory);
@@ -30,7 +27,7 @@ contract EmissionController is AccessControl, ReentrancyGuard {
 
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
 
-    IScarabToken    public scarabToken;
+    IERC20 public scarabToken;
     IDeviceRegistry public deviceRegistry;
 
     /// @notice Total SCARAB allocated to the Regeneration Pool (from tokenomics: 30%)
@@ -54,6 +51,8 @@ contract EmissionController is AccessControl, ReentrancyGuard {
     // ─── Reward rate config ─────────────────────────────────────────────────
     /// @notice Base reward per kWh in SCARAB (18 decimals). Adjusted by DAO.
     uint256 public rewardPerKwh = 10 * 1e18; // 10 SCARAB per kWh
+    uint256 public constant DECAY_LAMBDA_BP = 19; // 0.0019 = 19 basis points (halves every ~365 days)
+    uint256 public immutable launchTime;
 
     // ─── Events ─────────────────────────────────────────────────────────────
 
@@ -78,12 +77,14 @@ contract EmissionController is AccessControl, ReentrancyGuard {
         require(_scarabToken    != address(0), "EmissionController: zero token");
         require(_deviceRegistry != address(0), "EmissionController: zero registry");
 
-        scarabToken          = IScarabToken(_scarabToken);
+        scarabToken          = IERC20(_scarabToken);
         deviceRegistry       = IDeviceRegistry(_deviceRegistry);
         regenPoolAllocation  = _regenPoolAllocation;
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(VALIDATOR_ROLE,     msg.sender);
+
+        launchTime = block.timestamp;
     }
 
     // ─── Accumulation (called by ProductionValidator) ─────────────────────────
@@ -135,8 +136,8 @@ contract EmissionController is AccessControl, ReentrancyGuard {
         totalClaimed[msg.sender]        += amount;
         totalRewardsMinted              += amount;
 
-        // Single mint transaction
-        scarabToken.mintFromRegenPool(msg.sender, amount);
+        // Single transfer transaction from protocol vault
+        require(scarabToken.transfer(msg.sender, amount), "EmissionController: transfer failed");
 
         uint256 deviceCount = deviceRegistry.getDevicesByOwner(msg.sender).length;
         emit RewardsClaimed(msg.sender, amount, deviceCount);
@@ -174,10 +175,36 @@ contract EmissionController is AccessControl, ReentrancyGuard {
     // ─── Admin ────────────────────────────────────────────────────────────────
 
     /**
+     * @notice Calculate exponential decay multiplier for token emission constraints.
+     *         Calculates: M = (1 - 0.0019)^days
+     */
+    function calculateExponentialDecay(uint256 daysSinceLaunch) public view returns (uint256) {
+        uint256 rate = rewardPerKwh;
+        uint256 base = 10000 - DECAY_LAMBDA_BP; 
+        uint256 precision = 10000;
+        
+        uint256 multiplier = 10000;
+        uint256 _days = daysSinceLaunch;
+        uint256 currentBase = base;
+        
+        while (_days > 0) {
+            if (_days % 2 != 0) {
+                multiplier = (multiplier * currentBase) / precision;
+            }
+            currentBase = (currentBase * currentBase) / precision;
+            _days /= 2;
+        }
+        
+        return (rate * multiplier) / precision;
+    }
+
+    /**
      * @notice Calculate reward for a given kWh output.
      */
     function calculateReward(uint256 kwh) public view returns (uint256) {
-        return kwh * rewardPerKwh;
+        uint256 daysSinceLaunch = (block.timestamp - launchTime) / 1 days;
+        uint256 decayedRate = calculateExponentialDecay(daysSinceLaunch);
+        return kwh * decayedRate;
     }
 
     function setRewardPerKwh(uint256 newRate) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -202,7 +229,7 @@ contract EmissionController is AccessControl, ReentrancyGuard {
         totalClaimed[user]        += amount;
         totalRewardsMinted        += amount;
 
-        scarabToken.mintFromRegenPool(user, amount);
+        require(scarabToken.transfer(user, amount), "EmissionController: transfer failed");
         return amount;
     }
 

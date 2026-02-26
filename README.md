@@ -18,16 +18,17 @@ Our mission is to create a closed-loop economy where the token is used to:
 
 ## 🏗 Architecture
 
-The ROLL Protocol consists of a cohesive ecosystem of smart contracts and dApps:
+THE SCARAB Protocol consists of a cohesive ecosystem of smart contracts, physical hardware, and dApps:
 
 ### System Diagram
 ```mermaid
 graph TD
-    User[User Wallet] -->|Buy/Claim| SeedSale[SeedSale.sol]
-    User -->|View Dashboard| DApp[React Frontend]
-    SeedSale -->|Mint/Transfer| Token[ROLLToken.sol]
-    Token -->|Gate Access| Colony[ColonyDashboard.jsx]
-    Token -->|100% Liquidity| Locker[LiquidityLocker.sol]
+    User[User/Farmer] -->|Physical Action| Hardware[Bokashi/Solar Node]
+    Hardware -->|Cryptographic Hash| Oracle[Decentralized Oracle]
+    Oracle -->|Verify Data| SC[EmissionController.sol]
+    SC -->|Mint Rewards| Wallet[User Smart Wallet]
+    Wallet -->|Govern/Stake| DAO[Scarab DAO Governor]
+    DAO -->|Timelock Execute| Treasury[DAO Treasury]
 ```
 
 ### Core Components
@@ -40,22 +41,31 @@ graph TD
 
 ---
 
-## 📊 Tokenomics
+## 📊 Institutional Tokenomics & Monetary Policy
 
-A fixed-supply model designed for scarcity and value retention.
+A fixed-supply model designed for scarcity, governed by a rigorous emission decay curve (`e^(-λt)`).
 
 | Category | Allocation | Amount | Vesting/Lockup |
 | :--- | :--- | :--- | :--- |
-| **Total Supply** | 100% | 1,000,000,000 ROLL | Fixed |
-| **Seed Sale** | 30% | 300,000,000 ROLL | 10% TGE, then linear 9 mos |
-| **Liquidity** | 20% | 200,000,000 ROLL | **LOCKED 1 YEAR** (On-Chain) |
-| **Eco-Mining** | 30% | 300,000,000 ROLL | Minted via "Proof of Work" (Hardware) |
-| **Marketing** | 10% | 100,000,000 ROLL | 3-month cliff, then 24 mos vesting |
-| **Team** | 10% | 100,000,000 ROLL | **LOCKED 6 MONTHS**, then 36 mos vesting |
+| **Total Supply** | 100% | 1,000,000,000 SCARAB | Fixed Cap |
+| **Eco-Mining (Regen Pool)** | 30% | 300,000,000 SCARAB | Released over 70+ years via algorithm |
+| **Seed Sale** | 30% | 300,000,000 SCARAB | 10% TGE, then linear 9 mos |
+| **Liquidity** | 15% | 150,000,000 SCARAB | **LOCKED 1 YEAR** (On-Chain) |
+| **Marketing** | 10% | 100,000,000 SCARAB | **48-Hour Timelock + 3-of-5 Multi-Sig** |
+| **Team** | 15% | 150,000,000 SCARAB | **12-Month Cliff, then 24-Month Linear** |
 
 ### Grant & Emission Mechanics
-*   **Eco-Mining**: Released only when new "BeetleBox" hardware nodes come online (Physical Proof of Work).
+*   **Production-Gated Minting**: Tokens are minted ONLY when verified physical ecological output occurs.
 *   **Burn Mechanism**: Unsold Seed Sale tokens are burned to increase scarcity.
+
+---
+
+## 🔒 Security, Transparency & Trust
+
+*   **Zero-Trust Vesting**: The 15% Team allocation and 10% Marketing allocation are mathematically locked in verified smart contracts (`TeamVesting.sol`, `MarketingTimelock.sol`).
+*   **Hardware Security**: All nodes utilize ATECC608A cryptographic coprocessors to prevent simulation attacks.
+*   **Live Transparency**: The frontend "Protocol Vault" automatically parses the blockchain to display live treasury and vesting balances.
+*   **Audit**: Core contracts undergoing rigorous third-party auditing prior to Mainnet launch.
 
 ---
 
@@ -69,22 +79,14 @@ A fixed-supply model designed for scarcity and value retention.
 
 ---
 
-## 🚀 Roadmap
+## 🚀 Roadmap Milestones
 
 | Phase | Milestone | Status |
 | :--- | :--- | :--- |
-| **Phase 1** | **Seed Sale & Community Building** | 🟢 **Live** |
-| Phase 2 | DEX Listing & Liquidity Lock | 🟡 Pending |
-| Phase 3 | Partner Store Integration (Solar/Starlink) | 🟡 In Progress |
-| Phase 4 | First Land Acquisition Proposal | ⚪ Q4 2026 |
-
----
-
-## 🔒 Security & Trust
-
-*   **Liquidity**: 100% of Raised BNB is automatically locked via `LiquidityLocker.sol`.
-*   **Audit**: Contracts verified on BscScan.
-*   **Team**: KYC Verified (Badge visible in DApp).
+| **Phase 1** | **Audit, Testnet, & Institutional Prep** | 🟢 **Live** |
+| Phase 2 | Mainnet TGE & Transparency Dashboard | 🟡 Q1 |
+| Phase 3 | First 1,000 Solar Nodes & Bokashi Kits Deployed | ⚪ Q2 |
+| Phase 4 | Decentralized Oracle (EigenLayer AVS) Integration | ⚪ Q4 |
 
 ---
 

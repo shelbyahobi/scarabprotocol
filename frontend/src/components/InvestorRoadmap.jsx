@@ -336,7 +336,7 @@ export default function InvestorRoadmap() {
                     </h2>
                     <p className="text-gray-400 mb-8 max-w-3xl">
                         Organic waste transformation yields tangible "Soil-as-a-Service" products while preventing methane emissions.
-                        The $9/month Bran subscription isn't just revenue; it's a programmatic <strong className="text-white">Token Sink</strong>.
+                        The $12/month Bran subscription isn't just revenue; it's a programmatic <strong className="text-white">Token Sink</strong>.
                     </p>
 
                     <div className="grid md:grid-cols-2 gap-8">
@@ -344,7 +344,7 @@ export default function InvestorRoadmap() {
                             <div className="text-3xl font-black text-beetle-gold font-mono mb-2">20% Burn Rate</div>
                             <div className="text-white font-bold text-lg mb-2">Automated Buybacks</div>
                             <div className="text-gray-400 text-sm">
-                                20% of all monthly USDC revenue from the $9/mo Bokashi Bran subscription is used by the DAO to programmatically
+                                20% of all monthly USDC revenue from the $12/mo Bokashi Bran subscription is used by the DAO to programmatically
                                 buy back and burn SCARAB tokens from the open market.
                             </div>
                         </div>

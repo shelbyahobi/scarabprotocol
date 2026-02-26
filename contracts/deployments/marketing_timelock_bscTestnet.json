@@ -1,0 +1,14 @@
+{
+  "marketingTimelock": "0x60300bc99eedF706aC724A162b49235698aB40d4",
+  "multisigMembers": [
+    "0x0CFeCd2A660C342B4E45196fF868D0EC5e555e69",
+    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    "0x90F79bf6EB2c4f870365E785982E1f101E93b906"
+  ],
+  "totalAllocation": "100000000",
+  "immediateUnlock": "2000000",
+  "deployedAt": "2026-02-24T04:11:52.185Z",
+  "network": "bscTestnet"
+}

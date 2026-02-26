@@ -5,5 +5,6 @@
   "deviceRegistry": "0x0756c8B801eFDf8E3dAa0093126c766d896e3492",
   "emissionController": "0x335c5fa723e66bb5237E61Adf3f39C25eE1a023A",
   "treasuryVault": "0x929716d3360182fee990fB101e5BC6Db6aeFBD4A",
-  "productionValidator": "0x7a6f82930B686f381282abc160bbcB117A3253b0"
+  "productionValidator": "0x7a6f82930B686f381282abc160bbcB117A3253b0",
+  "scarabToken": "0x9A5AAA7663A829e3d9F9Dd9E39E746b67f3F8CBA"
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useReadContracts } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
 import GovernanceDashboard from './GovernanceDashboard';
+import VestingDashboard from './VestingDashboard';
 import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus, Vault, Gift } from 'lucide-react';
 import { formatEther } from 'viem';
 import { CONFIG } from '../config';
@@ -33,6 +34,8 @@ export default function ColonyDashboard() {
     const [activeTab, setActiveTab] = useState('marketplace'); // 'marketplace', 'hive', 'governance'
     const [userContribution, setUserContribution] = useState(0n);
     const [treasuryBalance, setTreasuryBalance] = useState("0");
+    const [isAddNodeModalOpen, setIsAddNodeModalOpen] = useState(false);
+    const [mockScanning, setMockScanning] = useState(false);
 
     // Batch Read for Efficiency & Reliability
     const { data: contractData } = useReadContracts({
@@ -149,6 +152,15 @@ export default function ColonyDashboard() {
         setSelectedProduct(product);
     };
 
+    const handleMockScan = () => {
+        setMockScanning(true);
+        setTimeout(() => {
+            setMockScanning(false);
+            setIsAddNodeModalOpen(false);
+            alert("Testnet Mock: Device registered successfully! (In production this calls DeviceRegistry.sol via the registrar API).");
+        }, 2000);
+    };
+
     return (
         <section id="colony-dashboard" className="py-24 relative overflow-hidden bg-[#0c0c0c] border-t border-white/5">
 
@@ -201,6 +213,12 @@ export default function ColonyDashboard() {
                         className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'governance' ? 'bg-beetle-green text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
                     >
                         <Vote size={18} /> The Council (DAO)
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('vault')}
+                        className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'vault' ? 'bg-slate-300 text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                    >
+                        <Vault size={18} /> Protocol Vault
                     </button>
                 </div>
 
@@ -326,7 +344,10 @@ export default function ColonyDashboard() {
                                     <h3 className="text-2xl font-bold text-white mb-2">My Nodes</h3>
                                     <p className="text-gray-400">Manage your connected hardware and monitor Production Rewards.</p>
                                 </div>
-                                <button className="bg-beetle-electric text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
+                                <button
+                                    onClick={() => setIsAddNodeModalOpen(true)}
+                                    className="bg-beetle-electric text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white transition-colors"
+                                >
                                     <Plus size={18} /> Add Device
                                 </button>
                             </div>
@@ -375,6 +396,13 @@ export default function ColonyDashboard() {
                     </motion.div>
                 )}
 
+                {/* --- TAB: PROTOCOL VAULT (Transparency) --- */}
+                {activeTab === 'vault' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-5xl mx-auto">
+                        <VestingDashboard />
+                    </motion.div>
+                )}
+
             </div>
 
             {/* Modal Reuse from Previous (Discount Code) */}
@@ -406,6 +434,54 @@ export default function ColonyDashboard() {
                             <a href={selectedProduct.link} target="_blank" className="block w-full bg-beetle-gold text-black font-bold py-3 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2">
                                 Go to Partner Store <ExternalLink size={18} />
                             </a>
+                        </motion.div>
+                    </div>
+                )}
+
+                {/* Add Device Modal (Testnet Mock) */}
+                {isAddNodeModalOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setIsAddNodeModalOpen(false)}>
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-[#0c0c0c] border border-beetle-electric border-dashed p-8 rounded-2xl max-w-md w-full text-center relative shadow-[0_0_50px_rgba(34,211,238,0.1)]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button onClick={() => setIsAddNodeModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+
+                            <div className="w-16 h-16 bg-beetle-electric/10 border border-beetle-electric/30 rounded-xl flex items-center justify-center mx-auto mb-6">
+                                <Activity className="text-beetle-electric w-8 h-8" />
+                            </div>
+
+                            <h3 className="text-xl font-black text-white mb-2">Connect New Hardware</h3>
+                            <p className="text-gray-400 mb-6 text-sm">Please power on your SCARAB Solar Node or Bokashi Kit and scan the factory QR code.</p>
+
+                            <div className="bg-black/50 border border-white/5 p-8 rounded-xl flex flex-col items-center justify-center mb-6">
+                                {mockScanning ? (
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-12 h-12 border-4 border-beetle-electric border-t-transparent rounded-full animate-spin mb-4"></div>
+                                        <p className="text-beetle-electric font-mono text-sm animate-pulse">Scanning ATECC608A Chip...</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="w-32 h-32 bg-white p-2 rounded-lg mb-4 opacity-50 relative flex items-center justify-center">
+                                            <div className="absolute inset-0 border-2 border-beetle-electric opacity-50 animate-ping rounded-lg"></div>
+                                            <div className="w-full h-full border-4 border-dashed border-black"></div>
+                                        </div>
+                                        <button
+                                            onClick={handleMockScan}
+                                            className="bg-beetle-electric text-black font-bold py-2 px-6 rounded-lg w-full hover:bg-white transition-colors"
+                                        >
+                                            Simulate QR Scan (Testnet)
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+
+                            <div className="text-xs text-gray-500 text-left bg-black/40 p-3 rounded-lg border border-white/5 line-clamp-3">
+                                <strong>Technical Info:</strong> The QR code contains an ECDSA signature from the SCARAB manufacturer. Scanning it triggers the DeviceRegistry contract to bind the physical hardware (via P-256 public key) to your wallet address: <code>{address?.substring(0, 8)}...</code>
+                            </div>
                         </motion.div>
                     </div>
                 )}

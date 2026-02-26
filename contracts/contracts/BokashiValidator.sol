@@ -7,19 +7,20 @@ import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IDeviceRegistry {
     enum DeviceType { Solar, Water, Biogas, Hydroponics, Bokashi, Other }
+    struct Device {
+        string   deviceId;
+        address  owner;
+        uint256  registrationTime;
+        bool     isActive;
+        DeviceType deviceType;
+        string   metadata;
+        bytes    devicePublicKey;
+        bytes    factorySignature;
+        bytes32  attestationHash;
+        uint256  lastAttestationTime;
+    }
     function isDeviceValid(bytes32 deviceIdHash) external view returns (bool);
-    function getDevice(bytes32 deviceIdHash) external view returns (
-        string memory deviceId,
-        address owner,
-        uint256 registrationTime,
-        bool isActive,
-        DeviceType deviceType,
-        string memory metadata,
-        bytes memory devicePublicKey,
-        bytes memory factorySignature,
-        bytes32 attestationHash,
-        uint256 lastAttestationTime
-    );
+    function getDevice(bytes32 deviceIdHash) external view returns (Device memory);
 }
 
 interface IEmissionController {
@@ -60,8 +61,9 @@ contract BokashiValidator is AccessControl {
 
     mapping(bytes32 => BokashiCycle[]) public bokashiCycles; // deviceIdHash => cycles
     mapping(bytes32 => uint256) public lastCycleCompletionTime;
-    mapping(string => bool) public usedBranCodes;
+    mapping(string => bool) public usedBranNonces;
     mapping(bytes32 => uint256) public activeCycleStartTime;
+    mapping(bytes32 => bool) public cycleHadValidSubscription;
 
     event CycleSubmitted(bytes32 indexed deviceIdHash, uint256 cycleId, uint256 rewardAmount, uint256 qualityScore);
     event CycleFlagged(bytes32 indexed deviceIdHash, uint256 cycleId, string reason);
@@ -89,29 +91,31 @@ contract BokashiValidator is AccessControl {
      */
     function startCycle(bytes32 deviceIdHash, string calldata branNonce, bytes calldata signature) external {
         require(deviceRegistry.isDeviceValid(deviceIdHash), "BokashiValidator: Invalid device");
-        
-        (, address owner, , , IDeviceRegistry.DeviceType dType, , , , , ) = deviceRegistry.getDevice(deviceIdHash);
-        require(dType == IDeviceRegistry.DeviceType.Bokashi, "BokashiValidator: Not a Bokashi device");
-        require(msg.sender == owner || hasRole(ORACLE_ROLE, msg.sender), "BokashiValidator: Not authorized");
+        IDeviceRegistry.Device memory device = deviceRegistry.getDevice(deviceIdHash);
+        require(device.deviceType == IDeviceRegistry.DeviceType.Bokashi, "BokashiValidator: Not a Bokashi device");
+        require(msg.sender == device.owner || hasRole(ORACLE_ROLE, msg.sender), "BokashiValidator: Not authorized");
 
         if (address(subscriptions) != address(0)) {
-            require(subscriptions.isSubscribed(owner), "BokashiValidator: No active bran subscription");
+            require(subscriptions.isSubscribed(device.owner), "BokashiValidator: No active bran subscription");
+            cycleHadValidSubscription[deviceIdHash] = true;
+        } else {
+            cycleHadValidSubscription[deviceIdHash] = true; // If no subscription contract set
         }
 
-        require(!usedBranCodes[branNonce], "BokashiValidator: Bran code already used");
+        require(!usedBranNonces[branNonce], "BokashiValidator: Bran code already used");
         require(activeCycleStartTime[deviceIdHash] == 0, "BokashiValidator: Cycle already active");
         
         // Enforce cooldown (approx 14 days minimum between cycles for a device)
         require(block.timestamp >= lastCycleCompletionTime[deviceIdHash] + 14 days, "BokashiValidator: Cooldown active");
 
         // Verify the signature is from an authorized BRAN_ISSUER
-        bytes32 messageHash = keccak256(abi.encodePacked(deviceIdHash, branNonce));
+        bytes32 messageHash = keccak256(abi.encodePacked(branNonce));
         bytes32 ethSignedMessageHash = MessageHashUtils.toEthSignedMessageHash(messageHash);
         address recoveredSigner = ECDSA.recover(ethSignedMessageHash, signature);
         
         require(hasRole(BRAN_ISSUER_ROLE, recoveredSigner), "BokashiValidator: Invalid signature");
 
-        usedBranCodes[branNonce] = true;
+        usedBranNonces[branNonce] = true;
         activeCycleStartTime[deviceIdHash] = block.timestamp;
 
         emit CycleStarted(deviceIdHash, branNonce, block.timestamp);
@@ -135,13 +139,10 @@ contract BokashiValidator is AccessControl {
         uint256 endWeight
     ) external onlyRole(ORACLE_ROLE) {
         require(deviceRegistry.isDeviceValid(deviceIdHash), "BokashiValidator: Invalid device");
-        
-        (, address owner, , , IDeviceRegistry.DeviceType dType, , , , , ) = deviceRegistry.getDevice(deviceIdHash);
-        require(dType == IDeviceRegistry.DeviceType.Bokashi, "BokashiValidator: Not a Bokashi device");
+        IDeviceRegistry.Device memory device = deviceRegistry.getDevice(deviceIdHash);
+        require(device.deviceType == IDeviceRegistry.DeviceType.Bokashi, "BokashiValidator: Not a Bokashi device");
 
-        if (address(subscriptions) != address(0)) {
-            require(subscriptions.isSubscribed(owner), "BokashiValidator: No active bran subscription");
-        }
+        require(cycleHadValidSubscription[deviceIdHash], "BokashiValidator: No active subscription at start");
 
         require(activeCycleStartTime[deviceIdHash] != 0, "BokashiValidator: No active cycle");
         require(startTime >= activeCycleStartTime[deviceIdHash], "BokashiValidator: Start time mismatch");
@@ -176,9 +177,10 @@ contract BokashiValidator is AccessControl {
 
         lastCycleCompletionTime[deviceIdHash] = block.timestamp;
         activeCycleStartTime[deviceIdHash] = 0; // Reset for next cycle
+        cycleHadValidSubscription[deviceIdHash] = false;
 
         // Accumulate reward in the EmissionController for the user to claim
-        emissionController.accumulateReward(deviceIdHash, owner, (BASE_BOKASHI_REWARD * qualityScore) / 10000);
+        emissionController.accumulateReward(deviceIdHash, device.owner, (BASE_BOKASHI_REWARD * qualityScore) / 10000);
 
         emit CycleSubmitted(deviceIdHash, cycleId, (BASE_BOKASHI_REWARD * qualityScore) / 10000, qualityScore);
     }
@@ -206,6 +208,7 @@ contract BokashiValidator is AccessControl {
         
         lastCycleCompletionTime[deviceIdHash] = block.timestamp; // Enforce wait time even when flagged
         activeCycleStartTime[deviceIdHash] = 0; // Reset
+        cycleHadValidSubscription[deviceIdHash] = false;
         emit CycleFlagged(deviceIdHash, cycleId, reason);
     }
 
