@@ -1,4 +1,4 @@
-import { PieChart, TrendingUp, Users, Shield, Zap, Vault } from 'lucide-react';
+import { PieChart, TrendingUp, Users, Shield, Zap, Vault, Scale, ArrowDownRight, ArrowUpRight } from 'lucide-react';
 
 export default function Tokenomics() {
     // Data for the chart
@@ -111,6 +111,75 @@ export default function Tokenomics() {
                             <div className="text-[10px] text-gray-500 uppercase">Phase 3</div>
                             <div className="text-beetle-green font-bold text-sm">Deflation</div>
                         </div>
+                    </div>
+                </div>
+
+                {/* THE NODE SCALING FLYWHEEL - NEW */}
+                <div className="mt-8 bg-black/40 border border-white/10 rounded-2xl p-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-beetle-green/10 rounded-full blur-[80px]"></div>
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-beetle-green/10 border border-beetle-green/30 rounded-xl flex items-center justify-center">
+                                <Scale className="text-beetle-green w-6 h-6" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-black text-white">The Scaling Flywheel</h3>
+                                <p className="text-gray-400">Yield Compression vs. Value Appreciation</p>
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                                    <ArrowDownRight className="text-red-400" size={18} /> 1. Yield Compression
+                                </h4>
+                                <p className="text-gray-400 text-sm mb-4">
+                                    The protocol emits a <strong className="text-white">fixed</strong> daily overall pool of SCARAB. As we add <strong>different types of nodes</strong> (Solar, Bokashi, Biogas), they all share this exact same fixed pool. If 1,000 new Solar nodes join, the daily quantity of SCARAB earned by existing Bokashi nodes decreases. Early adopters earn the highest token quantities.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                                    <ArrowUpRight className="text-beetle-gold" size={18} /> 2. Value Appreciation
+                                </h4>
+                                <p className="text-gray-400 text-sm mb-4">
+                                    While individual token <em>quantity</em> drops, token <em>value</em> rises. 10,000 nodes of varying types generate 100x more real-world revenue (hardware sales, energy, compost) than 100 nodes. All that revenue flows directly into the Liquidity Vault, driving the <strong className="text-beetle-gold">Intrinsic Floor Price</strong> upward. You earn fewer tokens, but each token is worth significantly more.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 p-5 rounded-xl mt-4">
+                            <p className="text-gray-300 text-sm leading-relaxed">
+                                <strong className="text-beetle-electric font-bold">The DePIN Meta:</strong> Earning 5 SCARAB when the protocol is backed by $10,000,000 in Real-World Assets is mathematically far more lucrative than earning 50 SCARAB when it is backed by $0. As the network expands, the shared pool compresses yields, but aggressively skyrockets the token value.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* BOKASHI ROI EXAMPLE */}
+                <div className="mt-8 bg-[#0a1a0f] border border-green-500/20 rounded-2xl p-8 relative overflow-hidden">
+                    <h3 className="text-2xl font-black text-white mb-2">The Ecosystem Subscription (ROI Example)</h3>
+                    <p className="text-gray-400 mb-6">
+                        To earn SCARAB from an active Bokashi Node, users must maintain an active <strong>$9 USDT/month</strong> hardware supply subscription (for the fermentation Bran bags) and physically scan the unique QR code on each bag to unlock the smart contract minting cycle. Here is how the Vault Floor mathematically guarantees profitability over time:
+                    </p>
+
+                    <div className="grid md:grid-cols-3 gap-6 text-center">
+                        <div className="bg-black/40 p-6 rounded-xl border border-white/5">
+                            <div className="text-3xl font-black text-white">100</div>
+                            <div className="text-sm text-gray-500 mt-1">SCARAB / Month<br />(Example Compressed Yield)</div>
+                        </div>
+                        <div className="bg-black/40 p-6 rounded-xl border border-white/5">
+                            <div className="text-3xl font-black text-red-400">$9</div>
+                            <div className="text-sm text-gray-500 mt-1">Monthly Subscription Cost<br />(Bokashi Bran)</div>
+                        </div>
+                        <div className="bg-black/40 p-6 rounded-xl border border-green-500/20 relative shadow-[0_0_30px_rgba(34,197,94,0.1)]">
+                            <div className="absolute top-0 right-0 bg-green-500 text-black text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl">GUARANTEED ROI</div>
+                            <div className="text-3xl font-black text-green-400">$0.09</div>
+                            <div className="text-sm text-gray-500 mt-1">Required Floor Price<br />to Break Even</div>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 text-sm text-gray-400 leading-relaxed border-t border-white/10 pt-6">
+                        <strong className="text-white">The Math:</strong> When the SCARAB Intrinsic Floor Price reaches $0.09 (backed entirely by hard cash in the Vault), selling 100 tokens nets $9.00—completely covering the subscription cost forever. Any market speculation above the $0.09 floor is pure profit. Because the Vault Floor constantly rises as thousands of cross-sector nodes are sold, early adopters lock in massive token reserves before the yield compresses, guaranteeing a risk-free ROI.
                     </div>
                 </div>
 
