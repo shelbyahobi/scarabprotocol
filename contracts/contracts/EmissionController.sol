@@ -185,7 +185,14 @@ contract EmissionController is AccessControl, ReentrancyGuard {
 
     /**
      * @notice Calculate exponential decay multiplier for token emission constraints.
-     *         Calculates: M = (1 - 0.0019)^days
+     * @dev Decay constant λ = 0.0019 per DAY
+     * 
+     * This creates:
+     * - 50% decay after 365 days
+     * - 25% decay after 730 days
+     * - Emission halves yearly
+     * 
+     * Formula: e^(-λt) where t is DAYS since launch
      */
     function calculateExponentialDecay(uint256 startingValue, uint256 daysSinceLaunch) public view returns (uint256) {
         uint256 base = 10000 - DECAY_LAMBDA_BP; 

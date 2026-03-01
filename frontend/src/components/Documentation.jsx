@@ -206,7 +206,7 @@ export default function Documentation() {
                                 <h3 className="text-xl font-bold text-white mb-3 text-beetle-green">Layer 4: Smart Contract Layer</h3>
                                 <ul className="list-disc list-inside space-y-2 text-sm ml-2 mb-6">
                                     <li><strong className="text-white">Emission Controller:</strong> Calculates token generation strictly bound to verified telemetry.</li>
-                                    <li><strong className="text-white">Decay Mechanism:</strong> Immutable `e^(-λt)` lambda decay curve controlling macro inflation.</li>
+                                    <li><strong className="text-white">Decay Mechanism:</strong> Immutable `e^(-λt)` lambda decay curve controlling macro inflation, where `t` is measured in days.</li>
                                     <li><strong className="text-white">Efficiency Cap:</strong> Programmatic limits preventing overproduction from exploiting the treasury.</li>
                                 </ul>
 
@@ -237,14 +237,14 @@ export default function Documentation() {
                         <div>
                             <h2 className="text-3xl font-black text-white mb-4">Emission & Monetary Policy</h2>
                             <p className="mb-4">
-                                SCARAB has a fixed maximum supply of 1,000,000,000 tokens. The <code>SCARABToken.sol</code> contract has no <code>mint()</code> function accessible post-deployment. The only emission mechanism is the Regeneration Pool (300M tokens) which unlocks via <code>EmissionController.sol</code> according to the <code>e^(-λt)</code> decay formula over approximately 77 years at current device density.
+                                SCARAB has a fixed maximum supply of 1,000,000,000 tokens. The <code>SCARABToken.sol</code> contract has no <code>mint()</code> function accessible post-deployment. The only emission mechanism is the Regeneration Pool (300M tokens) which unlocks via <code>EmissionController.sol</code> according to the <code>e^(-0.0019 × days)</code> decay formula over approximately 77 years at current device density.
                             </p>
                         </div>
                         <div className="bg-black/40 border border-white/10 p-8 rounded-2xl font-mono text-sm leading-8 text-gray-300 overflow-x-auto text-nowrap">
                             <span className="text-beetle-gold">Emission Formula:</span> <br />
                             <span className="text-white">R(t) = (B * e^(-λt)) * MIN(1, (V_t / T_t))</span><br /><br />
                             <strong>B</strong> = Base Emission Rate (Starts at 80,000 SCARAB/day)<br />
-                            <strong>λ</strong> = Decay Factor (0.0019 or ~19 basis points / halves yearly)<br />
+                            <strong>λ</strong> = Decay Factor (0.0019 per day, resulting in a 50% yearly reduction)<br />
                             <strong>V_t</strong> = Verified Network Output (e.g., total kWh generated)<br />
                             <strong>T_t</strong> = Target Output (Active Devices * Target kWh)<br />
                         </div>
@@ -612,7 +612,7 @@ export default function Documentation() {
                             </details>
                             <details className="bg-black/40 border border-white/10 p-5 rounded-xl group cursor-pointer">
                                 <summary className="font-bold text-white flex justify-between items-center outline-none">
-                                    What happens when the emissions decay?
+                                    What happens when the emissions decay via the 0.0019 daily rate?
                                     <ChevronRight size={16} className="group-open:rotate-90 transition-transform" />
                                 </summary>
                                 <p className="mt-4 text-sm text-gray-400">As base block rewards halve over the years, the network transitions to a transaction-fee economy. Third-party carbon credit buyers and ecological analysts will pay fees in SCARAB to access the verified data stream, subsidizing the nodes entirely through organic demand.</p>
