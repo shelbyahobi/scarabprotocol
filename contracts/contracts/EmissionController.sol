@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IDeviceRegistry {
     function getDevicesByOwner(address owner) external view returns (bytes32[] memory);
+    function activeDeviceCount() external view returns (uint256);
 }
 
 /**
@@ -50,9 +51,12 @@ contract EmissionController is AccessControl, ReentrancyGuard {
 
     // ─── Reward rate config ─────────────────────────────────────────────────
     /// @notice Base reward per kWh in SCARAB (18 decimals). Adjusted by DAO.
-    uint256 public rewardPerKwh = 10 * 1e18; // 10 SCARAB per kWh
+    uint256 public rewardPerKwh = 8 * 1e18; // 8 SCARAB per kWh (updated)
     uint256 public constant DECAY_LAMBDA_BP = 19; // 0.0019 = 19 basis points (halves every ~365 days)
     uint256 public immutable launchTime;
+
+    uint256 public constant BASE_DAILY_EMISSION = 80_000 * 1e18;
+    uint256 public constant TARGET_DAILY_REWARD_PER_DEVICE = 533 * 1e16; // ~5.33 SCARAB/day blended
 
     // ─── Events ─────────────────────────────────────────────────────────────
 
@@ -102,17 +106,22 @@ contract EmissionController is AccessControl, ReentrancyGuard {
     ) external onlyRole(VALIDATOR_ROLE) {
         require(owner      != address(0), "EmissionController: zero owner");
         require(rewardAmount > 0,         "EmissionController: zero reward");
+        
+        // Apply network efficiency ratio to incoming raw reward amounts
+        uint256 efficiency = getEfficiencyRatio();
+        uint256 scaledReward = (rewardAmount * efficiency) / 10000;
+
         require(
-            totalRewardsMinted + rewardAmount <= regenPoolAllocation,
+            totalRewardsMinted + scaledReward <= regenPoolAllocation,
             "EmissionController: regen pool exhausted"
         );
 
-        accumulatedRewards[owner]       += rewardAmount;
-        pendingRewards[deviceIdHash]    += rewardAmount;
-        deviceTotalRewards[deviceIdHash]+= rewardAmount;
+        accumulatedRewards[owner]       += scaledReward;
+        pendingRewards[deviceIdHash]    += scaledReward;
+        deviceTotalRewards[deviceIdHash]+= scaledReward;
         deviceLastSubmission[deviceIdHash] = block.timestamp;
 
-        emit RewardAccumulated(owner, deviceIdHash, rewardAmount, accumulatedRewards[owner]);
+        emit RewardAccumulated(owner, deviceIdHash, scaledReward, accumulatedRewards[owner]);
     }
 
     // ─── Claiming (called by user) ────────────────────────────────────────────
@@ -178,8 +187,7 @@ contract EmissionController is AccessControl, ReentrancyGuard {
      * @notice Calculate exponential decay multiplier for token emission constraints.
      *         Calculates: M = (1 - 0.0019)^days
      */
-    function calculateExponentialDecay(uint256 daysSinceLaunch) public view returns (uint256) {
-        uint256 rate = rewardPerKwh;
+    function calculateExponentialDecay(uint256 startingValue, uint256 daysSinceLaunch) public view returns (uint256) {
         uint256 base = 10000 - DECAY_LAMBDA_BP; 
         uint256 precision = 10000;
         
@@ -195,16 +203,54 @@ contract EmissionController is AccessControl, ReentrancyGuard {
             _days /= 2;
         }
         
-        return (rate * multiplier) / precision;
+        return (startingValue * multiplier) / precision;
+    }
+
+    function calculateDailyEmissionCap() public view returns (uint256) {
+        uint256 daysSinceLaunch = (block.timestamp - launchTime) / 1 days;
+        return calculateExponentialDecay(BASE_DAILY_EMISSION, daysSinceLaunch);
+    }
+
+    function getEfficiencyRatio() public view returns (uint256) {
+        uint256 activeCount = deviceRegistry.activeDeviceCount();
+        if (activeCount == 0) return 10000; // 100%
+        
+        uint256 dailyCap = calculateDailyEmissionCap();
+        uint256 dailyDemand = activeCount * TARGET_DAILY_REWARD_PER_DEVICE;
+        
+        if (dailyDemand <= dailyCap) {
+            return 10000; // 100%
+        } else {
+            return (dailyCap * 10000) / dailyDemand;
+        }
+    }
+
+    /**
+     * @notice Frontend helper to display current rates and capacity.
+     */
+    function getCurrentEffectiveRate() external view returns (
+        uint256 bokashiRate,
+        uint256 solarRate,
+        uint256 efficiencyPercent,
+        uint256 activeDevices
+    ) {
+        uint256 efficiency = getEfficiencyRatio();
+        
+        // Base Bokashi is 50 SCARAB/cycle
+        bokashiRate = (50 * 1e18 * efficiency) / 10000;
+        solarRate = (rewardPerKwh * efficiency) / 10000;
+        
+        efficiencyPercent = efficiency / 100;
+        activeDevices = deviceRegistry.activeDeviceCount();
     }
 
     /**
      * @notice Calculate reward for a given kWh output.
      */
     function calculateReward(uint256 kwh) public view returns (uint256) {
-        uint256 daysSinceLaunch = (block.timestamp - launchTime) / 1 days;
-        uint256 decayedRate = calculateExponentialDecay(daysSinceLaunch);
-        return kwh * decayedRate;
+        uint256 efficiency = getEfficiencyRatio();
+        uint256 effectiveRewardPerKwh = (rewardPerKwh * efficiency) / 10000;
+        return kwh * effectiveRewardPerKwh;
     }
 
     function setRewardPerKwh(uint256 newRate) external onlyRole(DEFAULT_ADMIN_ROLE) {

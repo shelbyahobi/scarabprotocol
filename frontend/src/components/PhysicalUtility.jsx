@@ -45,7 +45,7 @@ export default function PhysicalUtility() {
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
                                 <span className="text-gray-400">Est. Returns</span>
-                                <span className="text-beetle-electric font-mono font-bold">~2,900 SCARAB/yr <span className="text-xs text-gray-500 font-normal">(1.0x Base)</span></span>
+                                <span className="text-beetle-electric font-mono font-bold">~2,920 SCARAB/yr <span className="text-xs text-gray-500 font-normal">(1.0x Base)</span></span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-400">TAM</span>

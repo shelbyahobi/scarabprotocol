@@ -1,5 +1,5 @@
 {
-  "marketingTimelock": "0x60300bc99eedF706aC724A162b49235698aB40d4",
+  "marketingTimelock": "0x6E746739941cC8AB5a58212e179D495E664bF5A3",
   "multisigMembers": [
     "0x0CFeCd2A660C342B4E45196fF868D0EC5e555e69",
     "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -9,6 +9,6 @@
   ],
   "totalAllocation": "100000000",
   "immediateUnlock": "2000000",
-  "deployedAt": "2026-02-24T04:11:52.185Z",
+  "deployedAt": "2026-02-27T01:38:28.068Z",
   "network": "bscTestnet"
 }

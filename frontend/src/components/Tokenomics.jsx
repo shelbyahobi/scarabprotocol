@@ -149,7 +149,7 @@ export default function Tokenomics() {
 
                         <div className="bg-white/5 border border-white/10 p-5 rounded-xl mt-4">
                             <p className="text-gray-300 text-sm leading-relaxed">
-                                <strong className="text-beetle-electric font-bold">The DePIN Meta:</strong> Earning 5 SCARAB when the protocol is backed by $10,000,000 in Real-World Assets is mathematically far more lucrative than earning 50 SCARAB when it is backed by $0. As the network expands, the shared pool compresses yields, but aggressively skyrockets the token value.
+                                <strong className="text-beetle-electric font-bold">The DePIN Meta:</strong> Earning 5 SCARAB when the protocol is backed by $10,000,000 in Real-World Assets is mathematically far more lucrative than earning up to 50 SCARAB when it is backed by $0. As the network expands, the shared pool compresses yields, but aggressively skyrockets the token value.
                             </p>
                         </div>
                     </div>

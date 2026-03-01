@@ -81,18 +81,18 @@ export default function Documentation() {
                         <div className="space-y-6">
                             <div className="border border-beetle-electric/20 bg-beetle-electric/5 p-6 rounded-2xl">
                                 <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Sun className="text-beetle-electric" /> Solar Node Mining (1.0x Base Reward)</h3>
-                                <p className="mb-4 text-sm">Hardware cost: $349. Users plug the SCARAB Node directly between their solar inverter and the grid. The ATECC608A chip hashes the live production data.</p>
+                                <p className="mb-4 text-sm">Hardware cost: $349. Users plug the SCARAB Node directly between their solar inverter and the grid. Assumes an average of 1 kWh/day output.</p>
                                 <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Reward calculation: Base emission rate * Verified kWh generated.</li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Expected Returns: ~2,900 SCARAB / Year.</li>
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Reward calculation: Up to 8 SCARAB per Verified kWh generated.</li>
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Expected Returns: ~2,920 SCARAB / Year.</li>
                                 </ul>
                             </div>
 
                             <div className="border border-beetle-gold/20 bg-beetle-gold/5 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Recycle className="text-beetle-gold" /> Smart Bokashi Mining (50 SCARAB / Cycle)</h3>
+                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Recycle className="text-beetle-gold" /> Smart Bokashi Mining (Up to 50 SCARAB / Cycle)</h3>
                                 <p className="mb-4 text-sm">Hardware cost: $89 + $12/mo Bran Subscription.</p>
                                 <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> <span className="font-bold text-white">Why 50 SCARAB per cycle?</span> Rewards dual-impact verification. (1) Avoids methane emissions vs landfills. (2) Sequesters carbon into the soil.</li>
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> <span className="font-bold text-white">Why up to 50 SCARAB per cycle?</span> Rewards dual-impact verification. (1) Avoids methane emissions vs landfills. (2) Sequesters carbon into the soil.</li>
                                     <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Requirements: Maintain 35-42°C temp profile, 800+ ppm gas production, and verifiable 8-15% weight loss over a 14-day cycle.</li>
                                     <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Expected Returns: ~1,200 SCARAB / Year. Cost offset: $144/year subscription vs 1,200 SCARAB (valued organically) + Free high-grade compost.</li>
                                 </ul>

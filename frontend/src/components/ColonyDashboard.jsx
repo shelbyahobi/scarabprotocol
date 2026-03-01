@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useReadContracts } from 'wagmi';
+import { useAccount, useReadContracts, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QrReader } from 'react-qr-reader';
 import GovernanceDashboard from './GovernanceDashboard';
 import VestingDashboard from './VestingDashboard';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus, Vault, Gift } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus, Vault, Gift, Camera, CheckCircle, AlertCircle } from 'lucide-react';
 import { formatEther } from 'viem';
 import { CONFIG } from '../config';
 
@@ -24,6 +25,21 @@ const SEED_SALE_ABI = [
     { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
+const EMISSION_CONTROLLER_ABI = [
+    {
+        "inputs": [],
+        "name": "getCurrentEffectiveRate",
+        "outputs": [
+            { "internalType": "uint256", "name": "bokashiRate", "type": "uint256" },
+            { "internalType": "uint256", "name": "solarRate", "type": "uint256" },
+            { "internalType": "uint256", "name": "efficiencyPercent", "type": "uint256" },
+            { "internalType": "uint256", "name": "activeDevices", "type": "uint256" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+];
+
 const SEED_SALE_ADDRESS = CONFIG.SEED_SALE_ADDRESS;
 const TOKEN_ADDRESS = CONFIG.ROLL_TOKEN_ADDRESS;
 
@@ -36,6 +52,17 @@ export default function ColonyDashboard() {
     const [treasuryBalance, setTreasuryBalance] = useState("0");
     const [isAddNodeModalOpen, setIsAddNodeModalOpen] = useState(false);
     const [mockScanning, setMockScanning] = useState(false);
+    const [scanResult, setScanResult] = useState(null);
+    const [scanError, setScanError] = useState(null);
+    const [isScanningActive, setIsScanningActive] = useState(false);
+
+    // Emission Metrics
+    const [emissionRates, setEmissionRates] = useState({
+        bokashi: "50.0",
+        solar: "8.0",
+        efficiency: "100",
+        devices: "0"
+    });
 
     // Batch Read for Efficiency & Reliability
     const { data: contractData } = useReadContracts({
@@ -56,6 +83,11 @@ export default function ColonyDashboard() {
                 address: SEED_SALE_ADDRESS,
                 abi: SEED_SALE_ABI,
                 functionName: 'totalRaised',
+            },
+            {
+                address: CONFIG.EMISSION_CONTROLLER_ADDRESS,
+                abi: EMISSION_CONTROLLER_ABI,
+                functionName: 'getCurrentEffectiveRate',
             }
         ],
         query: {
@@ -95,6 +127,17 @@ export default function ColonyDashboard() {
             else {
                 setTier('Guest');
             }
+        }
+
+        // Handle Emission Metrics (index 3 may be present even if user is Guest)
+        if (contractData && contractData[3]?.status === 'success' && contractData[3].result) {
+            const [bRate, sRate, eff, devs] = contractData[3].result;
+            setEmissionRates({
+                bokashi: parseFloat(formatEther(bRate)).toFixed(1),
+                solar: parseFloat(formatEther(sRate)).toFixed(1),
+                efficiency: eff.toString(),
+                devices: devs.toString()
+            });
         }
 
     }, [contractData, isConnected, address]);
@@ -159,6 +202,82 @@ export default function ColonyDashboard() {
             setIsAddNodeModalOpen(false);
             alert("Testnet Mock: Device registered successfully! (In production this calls DeviceRegistry.sol via the registrar API).");
         }, 2000);
+    };
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const { writeContractAsync } = useWriteContract();
+
+    const handleScanResult = (result, error) => {
+        if (result) {
+            setIsScanningActive(false);
+            setScanResult(result?.text);
+            console.log("QR Data:", result?.text);
+        }
+        if (error && error.message) {
+            // Ignore frequent 'No QR code found' errors from continuous scanning
+            if (!error.message.includes('No QR code found')) {
+                console.warn(error);
+            }
+        }
+    };
+
+    const processSignature = async () => {
+        setIsSubmitting(true);
+        try {
+            // The QR code on the bag is expected to contain:
+            // "SCARAB_BOKASHI_BRAN|v1.0|NONCE_STRING|SIGNATURE_HEX"
+            // For the MVP, we assume the scanner just gets the signature or the user provides a signed nonce.
+            // Under real conditions, parsing happens here. 
+            // We use a mock nonce and signature for the hackathon/demo environment if format is simple.
+
+            let branNonce = "bn_" + Math.random().toString(36).substring(2, 10);
+            let signature = scanResult;
+
+            // If the QR contains the full packed string, we split it
+            if (scanResult.includes('|')) {
+                const parts = scanResult.split('|');
+                if (parts.length >= 4) {
+                    branNonce = parts[2];
+                    signature = parts[3];
+                }
+            }
+
+            // Ensure signature has 0x prefix
+            if (!signature.startsWith('0x')) {
+                signature = '0x' + signature;
+            }
+
+            console.log("Submitting to Bokashi Validator:", { branNonce, signature });
+
+            const txHash = await writeContractAsync({
+                address: CONFIG.PRODUCTION_VALIDATOR_ADDRESS,
+                abi: [
+                    {
+                        "inputs": [
+                            { "internalType": "string", "name": "branNonce", "type": "string" },
+                            { "internalType": "bytes", "name": "signature", "type": "bytes" }
+                        ],
+                        "name": "startCycle",
+                        "outputs": [],
+                        "stateMutability": "nonpayable",
+                        "type": "function"
+                    }
+                ],
+                functionName: 'startCycle',
+                args: [branNonce, signature],
+            });
+
+            alert(`✅ Transaction Submitted!\nHash: ${txHash}`);
+            setIsAddNodeModalOpen(false);
+            setScanResult(null);
+
+        } catch (error) {
+            console.error("Submission failed", error);
+            alert(`❌ Error submitting cycle:\n${error.shortMessage || error.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -375,15 +494,45 @@ export default function ColonyDashboard() {
                             </div>
                         </div>
 
-                        {/* Network Stats */}
+                        {/* Network Stats - Updated with Dynamic Emission Widget */}
                         <div className="md:col-span-4 space-y-4">
-                            <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
-                                <div className="text-gray-500 text-sm mb-1">Network Difficulty</div>
-                                <div className="text-2xl font-bold text-white">1.05x</div>
-                            </div>
-                            <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
-                                <div className="text-gray-500 text-sm mb-1">Active Nodes (Testnet)</div>
-                                <div className="text-2xl font-bold text-beetle-electric">12 <span className="text-xs text-gray-500 font-normal">Online</span></div>
+                            <div className="bg-black/60 rounded-2xl p-6 border border-beetle-gold/30">
+                                <div className="text-xs text-gray-500 uppercase font-bold mb-4 flex items-center justify-between">
+                                    Current Network Rate <span className="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-[10px]">LIVE</span>
+                                </div>
+
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-3xl font-black text-beetle-gold">
+                                        {emissionRates.bokashi} <span className="text-sm">SCARAB</span>
+                                    </span>
+                                </div>
+                                <div className="text-sm text-gray-400 mb-4 font-bold border-b border-white/10 pb-4">per bokashi cycle</div>
+
+                                <div className="flex items-baseline gap-2 mt-2">
+                                    <span className="text-2xl font-bold text-beetle-gold">
+                                        {emissionRates.solar} <span className="text-sm">SCARAB</span>
+                                    </span>
+                                </div>
+                                <div className="text-sm text-gray-400 pb-2">per kWh</div>
+
+                                <div className="mt-4 pt-4 border-t border-white/10">
+                                    <div className="flex justify-between items-center mb-2 text-sm">
+                                        <span className="text-gray-500">Network Efficiency</span>
+                                        <span className={`font-mono font-bold ${Number(emissionRates.efficiency) < 100 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                            {emissionRates.efficiency}%
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500">Active Devices</span>
+                                        <span className="text-white font-mono font-bold">
+                                            {emissionRates.devices}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <p className="text-[10px] text-gray-500 mt-4 leading-relaxed">
+                                    Rates adjust dynamically based on total network production capabilities to maintain a sustainable 80,000 SCARAB daily emission cap. Early participants benefit from 100% capacity.
+                                </p>
                             </div>
                         </div>
                     </motion.div>
@@ -457,24 +606,84 @@ export default function ColonyDashboard() {
                             <h3 className="text-xl font-black text-white mb-2">Connect New Hardware</h3>
                             <p className="text-gray-400 mb-6 text-sm">Please power on your SCARAB Solar Node or Bokashi Kit and scan the factory QR code.</p>
 
-                            <div className="bg-black/50 border border-white/5 p-8 rounded-xl flex flex-col items-center justify-center mb-6">
-                                {mockScanning ? (
-                                    <div className="flex flex-col items-center">
-                                        <div className="w-12 h-12 border-4 border-beetle-electric border-t-transparent rounded-full animate-spin mb-4"></div>
-                                        <p className="text-beetle-electric font-mono text-sm animate-pulse">Scanning ATECC608A Chip...</p>
+                            <div className="bg-black/50 border border-white/5 p-6 rounded-xl flex flex-col items-center justify-center mb-6 w-full">
+                                {scanResult ? (
+                                    <div className="fade-in w-full text-center">
+                                        <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/50">
+                                            <CheckCircle size={32} />
+                                        </div>
+                                        <h4 className="text-xl font-bold text-white mb-2">Signature Verified</h4>
+                                        <div className="bg-black/80 rounded p-3 mb-6 border border-white/10 font-mono text-xs text-green-400 break-all overflow-hidden h-16">
+                                            {scanResult}
+                                        </div>
+                                        <button
+                                            onClick={processSignature}
+                                            className="bg-beetle-electric w-full text-black font-bold py-3 rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+                                        >
+                                            Submit to Blockchain →
+                                        </button>
+                                        <button
+                                            onClick={() => setScanResult(null)}
+                                            className="text-gray-500 text-sm mt-4 hover:text-white"
+                                        >
+                                            Scan Another Code
+                                        </button>
+                                    </div>
+                                ) : isScanningActive ? (
+                                    <div className="w-full">
+                                        <div className="relative mb-4 rounded-xl overflow-hidden border-2 border-beetle-electric shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                                            <QrReader
+                                                onResult={handleScanResult}
+                                                constraints={{ facingMode: 'environment' }}
+                                                containerStyle={{ width: '100%' }}
+                                                videoStyle={{ objectFit: 'cover' }}
+                                            />
+                                            {/* Scanning reticle overlay */}
+                                            <div className="absolute inset-0 border-[40px] border-black/50 pointer-events-none"></div>
+                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                <div className="w-48 h-48 border-2 border-beetle-electric/50 rounded-lg relative">
+                                                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-beetle-electric"></div>
+                                                    <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-beetle-electric"></div>
+                                                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-beetle-electric"></div>
+                                                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-beetle-electric"></div>
+                                                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-beetle-electric/30 animate-pulse"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => setIsScanningActive(false)}
+                                            className="text-gray-500 hover:text-white w-full py-2"
+                                        >
+                                            Cancel Scan
+                                        </button>
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="w-32 h-32 bg-white p-2 rounded-lg mb-4 opacity-50 relative flex items-center justify-center">
-                                            <div className="absolute inset-0 border-2 border-beetle-electric opacity-50 animate-ping rounded-lg"></div>
-                                            <div className="w-full h-full border-4 border-dashed border-black"></div>
-                                        </div>
-                                        <button
-                                            onClick={handleMockScan}
-                                            className="bg-beetle-electric text-black font-bold py-2 px-6 rounded-lg w-full hover:bg-white transition-colors"
+                                        <div className="w-32 h-32 bg-[#111] border border-white/10 p-2 rounded-2xl mb-6 relative flex items-center justify-center group cursor-pointer hover:border-beetle-electric/50 transition-all"
+                                            onClick={() => setIsScanningActive(true)}
                                         >
-                                            Simulate QR Scan (Testnet)
-                                        </button>
+                                            <Camera size={48} className="text-gray-600 group-hover:text-beetle-electric transition-colors" />
+                                            <div className="absolute inset-x-0 bottom-2 text-center text-xs text-gray-500 font-bold uppercase tracking-widest">
+                                                Tap to Scan
+                                            </div>
+                                        </div>
+                                        <p className="text-sm text-gray-400 mb-6">Position the QR code inside the frame.</p>
+
+                                        <div className="flex w-full gap-2">
+                                            <button
+                                                onClick={() => setIsScanningActive(true)}
+                                                className="bg-beetle-electric flex-1 text-black font-bold py-3 px-4 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-lg"
+                                            >
+                                                <Camera size={18} /> Open Camera
+                                            </button>
+                                            <button
+                                                onClick={handleMockScan}
+                                                className="bg-[#222] text-gray-400 font-bold py-3 px-4 rounded-xl hover:text-white hover:bg-[#333] transition-colors"
+                                                title="Simulate successful scan (for testing)"
+                                            >
+                                                Mock
+                                            </button>
+                                        </div>
                                     </>
                                 )}
                             </div>

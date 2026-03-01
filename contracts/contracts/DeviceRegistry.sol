@@ -41,6 +41,7 @@ contract DeviceRegistry is AccessControl {
     mapping(bytes32 => bool)      public isRegistered;
 
     uint256 public totalDevices;
+    uint256 public activeDeviceCount;
 
     // ─── Events ────────────────────────────────────────────────────────────────
 
@@ -123,6 +124,7 @@ contract DeviceRegistry is AccessControl {
         ownerDevices[owner].push(deviceIdHash);
         isRegistered[deviceIdHash] = true;
         totalDevices++;
+        activeDeviceCount++;
 
         emit DeviceRegistered(deviceIdHash, deviceId, owner, deviceType);
         emit AttestationUpdated(deviceIdHash, initialAttestationHash, block.timestamp);
@@ -168,7 +170,9 @@ contract DeviceRegistry is AccessControl {
 
     function deactivateDevice(bytes32 deviceIdHash) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(isRegistered[deviceIdHash], "DeviceRegistry: not registered");
+        require(devices[deviceIdHash].isActive, "DeviceRegistry: already inactive");
         devices[deviceIdHash].isActive = false;
+        activeDeviceCount--;
         emit DeviceDeactivated(deviceIdHash);
     }
 

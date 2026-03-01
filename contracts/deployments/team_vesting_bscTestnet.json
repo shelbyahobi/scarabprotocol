@@ -1,7 +1,7 @@
 {
-  "teamVesting": "0x319923184a105Db69dbcB309A971AE22657FC9d6",
+  "teamVesting": "0x9d3b5AD2Cf55043B64d486F66ae0d947ac087EeB",
   "beneficiary": "0x0CFeCd2A660C342B4E45196fF868D0EC5e555e69",
   "totalAllocation": "50000000",
-  "deployedAt": "2026-02-24T04:11:29.556Z",
+  "deployedAt": "2026-02-27T01:37:48.499Z",
   "network": "bscTestnet"
 }
