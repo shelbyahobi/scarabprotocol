@@ -28,7 +28,11 @@ import EcoMiningExplainer from './components/EcoMiningExplainer';
 import SoilAsAService from './components/SoilAsAService';
 import StrategyPage from './components/StrategyPage';
 import StrategyPreview from './components/StrategyPreview';
-import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
+import ValueProposition from './components/ValueProposition';
+import HowItWorks from './components/HowItWorks';
+import SoilAsAServiceTeaser from './components/SoilAsAServiceTeaser';
+import SimplifiedTokenomics from './components/SimplifiedTokenomics';
+import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 
 const Documentation = lazy(() => import('./components/Documentation'));
@@ -43,84 +47,86 @@ function LandingPage({ onOpenBlueprint }) {
         <>
             <Navbar onOpenBlueprint={onOpenBlueprint} isLanding={true} />
             <main className="pt-20">
+                {/* 1. HERO */}
                 <Hero onOpenBlueprint={onOpenBlueprint} />
 
-                {/* 1.5 TRANSPARENCY DASHBOARD (Layer 2) - NEW */}
-                <TransparencyDashboard />
+                {/* 2. VALUE PROPOSITION (New) */}
+                <ValueProposition />
 
-                {/* 1. THE VISION (Why) */}
+                {/* 3. THE TWO PILLARS (Hardware) */}
                 <PhysicalUtility />
 
-                {/* 1.5 THE SOIL-AS-A-SERVICE LOOP (Drop-off mechanic) - NEW */}
-                <SoilAsAService />
+                {/* 4. HOW IT WORKS (New 4-Step Flow) */}
+                <HowItWorks />
 
-                {/* 1.7 THE MECHANISM (How Eco-Mining Works) - NEW */}
-                <EcoMiningExplainer />
+                {/* 5. SOIL-AS-A-SERVICE TEASER (Shortened) */}
+                <SoilAsAServiceTeaser />
 
-                {/* 2. THE DATA (Tokenomics) */}
-                <Tokenomics />
+                {/* 6. TRUST & SECURITY (Moved up) */}
+                <div className="container mx-auto px-4 py-24 border-t border-white/5 bg-black">
+                    <Transparency />
+                </div>
 
-                {/* 3. THE TRUST (Use of Funds) */}
-                <UseOfFunds />
+                {/* 7. TOKENOMICS (Simplified) */}
+                <SimplifiedTokenomics />
 
-                {/* 3.5 THE STRATEGY (Phases) - NEW */}
-                <StrategyPreview />
+                {/* 8. ROADMAP */}
+                <div className="container mx-auto px-4 py-24 border-t border-white/5 bg-black">
+                    <Roadmap />
+                </div>
 
-                {/* 4. THE MECHANICS (How to Buy - Teaser) */}
-                <div className="container mx-auto px-4 py-24">
-                    <div className="grid md:grid-cols-2 gap-12 bg-black/40 border border-white/10 rounded-3xl p-12 backdrop-blur-md relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-beetle-gold/10 rounded-full blur-[80px]"></div>
-
-                        <div>
-                            <h3 className="text-3xl font-black text-white mb-6">Seed Sale Mechanics</h3>
-                            <ul className="space-y-6 text-gray-400">
-                                <li className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-beetle-electric/20 flex items-center justify-center text-beetle-electric font-bold">1</div>
-                                    <div>
-                                        <strong className="text-white block">Soft Cap Protection</strong>
-                                        If the minimum goal isn't met, the smart contract automatically enables 100% refunds. Verified by audit.
-                                    </div>
-                                </li>
-                                <li className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-beetle-electric/20 flex items-center justify-center text-beetle-electric font-bold">2</div>
-                                    <div>
-                                        <strong className="text-white block">Instant Allocation</strong>
-                                        Tokens are reserved immediately. Connect via the App to see your "Reserved Balance" update in real-time.
-                                    </div>
-                                </li>
-                            </ul>
-                            <div className="mt-8">
-                                <Link to="/app" className="inline-flex items-center gap-2 text-beetle-gold font-bold hover:gap-4 transition-all">
-                                    Go to Launchpad <Rocket size={16} />
-                                </Link>
+                {/* 9. FINAL CALL TO ACTION */}
+                <section className="py-24 bg-gradient-to-b from-black to-[#0a1a0f] border-t border-white/5 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay pointer-events-none"></div>
+                    <div className="container mx-auto px-4 relative z-10">
+                        <div className="max-w-4xl mx-auto bg-black border border-beetle-gold/30 rounded-3xl p-8 md:p-14 text-center shadow-[0_0_50px_rgba(212,175,55,0.1)] relative">
+                            {/* Urgency Badge */}
+                            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-900/50 border border-red-500/50 text-red-400 font-bold px-4 py-1.5 rounded-full text-sm whitespace-nowrap hidden sm:block">
+                                ⏰ Phase 1 closes in 42 days (Price increases 67% in Phase 2)
                             </div>
-                        </div>
 
-                        {/* Whitepaper Glimpse */}
-                        <div className="bg-[#0a1a0f] border border-beetle-electric/20 rounded-2xl p-8 relative overflow-hidden group hover:border-beetle-electric/50 transition-colors cursor-pointer" onClick={onOpenBlueprint}>
-                            <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-100 transition-opacity">
-                                <ExternalLink className="text-beetle-electric" />
-                            </div>
-                            <div className="flex items-center gap-3 mb-6">
-                                <BookOpen className="text-white" size={28} />
-                                <h3 className="text-2xl font-bold text-white">The Blueprint</h3>
-                            </div>
-                            <p className="text-gray-400 mb-6">
-                                Read the full technical documentation. From the "Sacred Scarab" deflator mechanism to the "Ecoloop" physical hardware network.
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
+                                Join the <span className="text-beetle-gold">Phase 1 Seed Sale</span>
+                            </h2>
+                            <p className="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+                                Secure early infrastructure allocation: <strong className="text-white">8M SCARAB per $100</strong>.<br className="hidden sm:block" />
+                                <span className="text-beetle-gold font-bold">+167% ROI</span> vs. public launch price.
                             </p>
-                            <div className="flex gap-4 flex-wrap">
-                                <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Tokenomics</span>
-                                <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Roadmap 2026</span>
-                                <span className="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs text-gray-400">Legal</span>
+
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+                                <Link
+                                    to="/app"
+                                    className="bg-beetle-gold text-black font-black px-8 py-4 rounded-xl hover:bg-white hover:scale-105 transition-all text-lg flex items-center justify-center gap-2"
+                                >
+                                    Invest Now <Rocket size={20} />
+                                </Link>
+                                <button
+                                    onClick={onOpenBlueprint}
+                                    className="bg-black border-2 border-white/20 text-white font-bold px-8 py-4 rounded-xl hover:border-white hover:bg-white/5 transition-all text-lg flex items-center justify-center gap-2"
+                                >
+                                    Read Blueprint <BookOpen size={20} />
+                                </button>
+                            </div>
+
+                            {/* Trust Signals */}
+                            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 font-medium border-t border-white/10 pt-8 mt-4">
+                                <div className="flex items-center gap-2">
+                                    <ShieldCheck className="w-5 h-5 text-green-400" />
+                                    Verified BSC Contract
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Lock className="w-5 h-5 text-green-400" />
+                                    Liquidity Locked 12mo
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Users className="w-5 h-5 text-green-400" />
+                                    1,200+ Waitlist
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div className="container mx-auto px-4 py-10 space-y-24">
-                    <Transparency />
-                    <Roadmap />
-                </div>
             </main>
             <Footer />
         </>
