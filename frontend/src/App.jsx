@@ -256,6 +256,22 @@ function Footer() {
                     <Link to="/investors" className="text-gray-400 hover:text-green-400 transition-colors">Investors</Link>
                     <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
                 </div>
+
+                {/* Brand Safety Warning */}
+                <div className="mt-8 mb-6 inline-block bg-red-900/10 border border-red-500/20 rounded-lg p-4 max-w-lg mx-auto transform transition-transform hover:scale-105">
+                    <div className="flex items-center justify-center gap-2 text-red-500 font-bold mb-2">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        Security Alert: Protect Your Assets
+                    </div>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                        Official Scarab Protocol Contract: <br />
+                        <span className="text-beetle-gold font-mono text-xs break-all selection:bg-beetle-gold selection:text-black block mt-1 mb-2">
+                            {CONFIG.ROLL_TOKEN_ADDRESS || '0x...'}
+                        </span>
+                        Admin/Team will <strong className="text-white">never</strong> DM you first. Beware of fake $SCARAB tokens masquerading as the real protocol.
+                    </p>
+                </div>
+
                 <p className="text-gray-700 text-xs">© 2026 SCARAB Protocol · DePIN Infrastructure · <span className="text-gray-600">Not financial advice</span></p>
             </div>
         </footer>
