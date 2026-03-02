@@ -26,44 +26,68 @@ describe("BokashiValidator - Bran QR Code & Quality Score", function () {
     describe("Quality Score Calculation", function () {
         it("1. Ideal Conditions (100% Score)", async function () {
             // temp: 38 (4000), gas: 900 (3000), weightLoss: 10% (3000) -> 10000
-            const score = await validator.calculateQualityScore(38, 900, 100, 1000);
+            // lidOpenings = 5 (100%), averageFillWeight = 4000g (100%)
+            const score = await validator.calculateQualityScore(38, 900, 500, 5000, 5, 4000);
             expect(score).to.equal(10000);
         });
 
         it("2. Sub-optimal Temperature", async function () {
-            // temp: 32 (2000), gas: 900 (3000), weightLoss: 10% (3000) -> 8000
-            const score = await validator.calculateQualityScore(32, 900, 100, 1000);
+            const score = await validator.calculateQualityScore(32, 900, 500, 5000, 5, 4000);
             expect(score).to.equal(8000);
         });
 
         it("3. Low Gas Production", async function () {
-            // temp: 38 (4000), gas: 500 (1500), weightLoss: 10% (3000) -> 8500
-            const score = await validator.calculateQualityScore(38, 500, 100, 1000);
+            const score = await validator.calculateQualityScore(38, 500, 500, 5000, 5, 4000);
             expect(score).to.equal(8500);
         });
 
         it("4. Poor Weight Loss", async function () {
-            // temp: 38 (4000), gas: 900 (3000), weightLoss: 4% (0) -> 7000
-            const score = await validator.calculateQualityScore(38, 900, 40, 1000);
+            const score = await validator.calculateQualityScore(38, 900, 200, 5000, 5, 4000);
             expect(score).to.equal(7000);
         });
 
         it("5. Highly Suspicious / Fake conditions", async function () {
-            // temp: 20 (0), gas: 100 (0), weightLoss: 0% (0) -> 0
-            const score = await validator.calculateQualityScore(20, 100, 0, 1000);
+            const score = await validator.calculateQualityScore(20, 100, 0, 5000, 5, 4000);
             expect(score).to.equal(0);
         });
 
         it("6. Extreme Weight Loss Anomaly", async function () {
-            // temp: 38 (4000), gas: 900 (3000), weightLoss: 50% (0) -> 7000
-            const score = await validator.calculateQualityScore(38, 900, 500, 1000);
+            const score = await validator.calculateQualityScore(38, 900, 2500, 5000, 5, 4000);
             expect(score).to.equal(7000);
         });
 
         it("7. Overheating Edge Case", async function () {
-            // temp: 44 (2000), gas: 900 (3000), weightLoss: 10% (3000) -> 8000
-            const score = await validator.calculateQualityScore(44, 900, 100, 1000);
+            const score = await validator.calculateQualityScore(44, 900, 500, 5000, 5, 4000);
             expect(score).to.equal(8000);
+        });
+
+        it("8. Excessive Oxygen Exposure (Lid Openings 18 -> 80% penalty)", async function () {
+            // Base score 10000 * 0.8 = 8000
+            const score = await validator.calculateQualityScore(38, 900, 500, 5000, 18, 4000);
+            expect(score).to.equal(8000);
+        });
+
+        it("9. Severe Oxygen Exposure (Lid Openings 22 -> 50% penalty)", async function () {
+            // Base score 10000 * 0.5 = 5000
+            const score = await validator.calculateQualityScore(38, 900, 500, 5000, 22, 4000);
+            expect(score).to.equal(5000);
+        });
+
+        it("10. Critical Oxygen Exposure (Lid Openings > 25 -> Slashed to 0)", async function () {
+            const score = await validator.calculateQualityScore(38, 900, 500, 5000, 30, 4000);
+            expect(score).to.equal(0);
+        });
+
+        it("11. Low Fill Weight Penalty (< 2000g -> 50% penalty)", async function () {
+            // Base score 10000 * 0.5 = 5000
+            const score = await validator.calculateQualityScore(38, 900, 500, 5000, 5, 1000);
+            expect(score).to.equal(5000);
+        });
+
+        it("12. Combined Penalties (Oxygen 80% and Low Fill Weight 50%)", async function () {
+            // Base score 10000 * 0.8 * 0.5 = 4000
+            const score = await validator.calculateQualityScore(38, 900, 500, 5000, 18, 1000);
+            expect(score).to.equal(4000);
         });
     });
 });

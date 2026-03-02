@@ -363,6 +363,47 @@ export default function InvestorRoadmap() {
                     </div>
                 </div>
 
+                {/* ── BRU Economics ── */}
+                <div className="mb-24">
+                    <h2 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
+                        <Globe className="text-green-400" /> The BRU Monetary Standard
+                    </h2>
+                    <p className="text-gray-400 mb-8 max-w-3xl">
+                        As of the V2 Institutional Upgrade, SCARAB emissions have decoupled from arbitrary "per-device" rewards.
+                        The token supply operates on a mathematically closed <strong className="text-white">exponential decay curve (λ = 0.00020518)</strong>,
+                        distributing a 300,000,000 supply pool over a 40-year horizon without jarring halving cliffs.
+                    </p>
+
+                    <div className="bg-black/40 border border-green-500/20 rounded-2xl p-8 mb-8">
+                        <div className="text-2xl md:text-3xl font-black text-white font-mono mb-4 border-l-4 border-green-500 pl-4 py-1">
+                            1 SCARAB = 1 Share of Planetary Regeneration
+                        </div>
+                        <p className="text-gray-400 text-lg leading-relaxed">
+                            Nodes are measured by their <strong className="text-green-400">Base Regenerative Unit (BRU)</strong> output.
+                            1 BRU = 1 kg of CO₂-equivalent displaced from the atmosphere. The daily emission budget is distributed proportionally
+                            across the network based on the exact percentage of the world's BRU an individual node has verifiably produced during a 30-day epoch.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6">
+                            <div className="text-white font-bold text-lg mb-2">Solar Sentinel Nodes</div>
+                            <div className="text-3xl font-black text-green-400 font-mono mb-2">2,400 BRU/yr</div>
+                            <div className="text-gray-400 text-sm">
+                                Base unit dynamically scaled by a Regen Weight Multiplier (RWM) based on local power grid displacement calculations and real-time generation.
+                            </div>
+                        </div>
+
+                        <div className="bg-beetle-gold/10 border border-beetle-gold/20 rounded-2xl p-6">
+                            <div className="text-white font-bold text-lg mb-2">Smart Bokashi Kits</div>
+                            <div className="text-3xl font-black text-beetle-gold font-mono mb-2">650 BRU/yr</div>
+                            <div className="text-gray-400 text-sm">
+                                Variable based on the physical weight of organic matter transferred directly back to agricultural soil via the "Fertility Handshake" (0-20km local range).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* ── Risk Matrix ── */}
                 <div>
                     <h2 className="text-2xl font-black text-white mb-8 flex items-center gap-3">

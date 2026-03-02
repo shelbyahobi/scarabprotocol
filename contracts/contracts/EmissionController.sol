@@ -3,288 +3,206 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface IDeviceRegistry {
-    function getDevicesByOwner(address owner) external view returns (bytes32[] memory);
-    function activeDeviceCount() external view returns (uint256);
+interface INodeTypeRegistry {
+    function getNodeEconometrics(uint256 _id) external view returns (uint256 maxDailyBRU, uint256 rwm, bool isActive);
 }
 
 /**
- * @title EmissionController
- * @notice Pull-based reward emission for SCARAB Protocol DePIN nodes.
+ * @title EmissionController V2 (BRU Standard)
+ * @notice Institutional-grade emission controller utilizing Base Regenerative Units (BRU).
  *
- * GAS MODEL:
- *   PUSH (old): 1,000 devices × 288 submissions/day = 288,000 txs → $374/day
- *   PULL (now): 1,000 users × 1 claim/week = 143 txs/day → $0.53/day
- *   Savings: 99.86% gas reduction
- *
- * Flow:
- *   1. ProductionValidator calls accumulateReward() → updates ledger, NO MINT
- *   2. User calls claimRewards() when ready → single mint tx
+ * MECHANICS:
+ *   1. Epoch Accounting: Rewards are distributed via 30-day discrete epochs to prevent front-running.
+ *   2. Daily Decay: Total emission applies a discrete daily exponential decay (λ = 0.00020518) to exactly 
+ *      exhaust the 300,000,000 SCARAB pool over ~40 years without halving cliffs.
+ *   3. Monopolization Guard: A 5% hard ceiling on individual user BRU share per epoch ensures early-network
+ *      or extreme industrial players cannot capture the entirely of a daily emission block.
  */
 contract EmissionController is AccessControl, ReentrancyGuard {
-
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
 
     IERC20 public scarabToken;
-    IDeviceRegistry public deviceRegistry;
+    INodeTypeRegistry public nodeRegistry;
 
-    /// @notice Total SCARAB allocated to the Regeneration Pool (from tokenomics: 30%)
-    uint256 public regenPoolAllocation;
-    /// @notice Total rewards minted to date
-    uint256 public totalRewardsMinted;
+    // ─── Emission Constraints ───────────────────────────────────────────────
+    uint256 public constant TOTAL_POOL = 300_000_000 * 1e18;
+    uint256 public totalEmitted;
+    uint256 public currentDailyBudget = 61_554 * 1e18; // D_0 mathematically derived
+    uint256 public constant DECAY_RATE = 99979484;     // r = 0.99979484 (1e8 precision)
 
-    uint256 public constant MIN_CLAIM_INTERVAL = 1 days;
-    uint256 public constant ADMIN_CLAIM_LOCKOUT = 90 days; // centralization guard
+    uint256 public launchTime;
+    uint256 public lastUpdateDay;
 
-    // ─── Per-user reward ledger ─────────────────────────────────────────────
-    mapping(address  => uint256) public accumulatedRewards;
-    mapping(address  => uint256) public lastClaimTime;
-    mapping(address  => uint256) public totalClaimed;
+    // ─── Epoch Accounting ───────────────────────────────────────────────────
+    uint256 public constant EPOCH_LENGTH_DAYS = 30;
+    uint256 public currentEpochId;
 
-    // ─── Per-device tracking ────────────────────────────────────────────────
-    mapping(bytes32 => uint256) public pendingRewards;       // deviceIdHash => pending
-    mapping(bytes32 => uint256) public deviceTotalRewards;   // deviceIdHash => lifetime
-    mapping(bytes32 => uint256) public deviceLastSubmission;
+    struct Epoch {
+        uint256 totalBRU;
+        uint256 totalBudget;
+        bool isClosed;
+    }
+    mapping(uint256 => Epoch) public epochs;
+    mapping(uint256 => mapping(address => uint256)) public userBRUPerEpoch;
+    mapping(uint256 => mapping(address => bool))    public hasClaimedEpoch;
 
-    // ─── Reward rate config ─────────────────────────────────────────────────
-    /// @notice Base reward per kWh in SCARAB (18 decimals). Adjusted by DAO.
-    uint256 public rewardPerKwh = 8 * 1e18; // 8 SCARAB per kWh (updated)
-    uint256 public constant DECAY_LAMBDA_BP = 19; // 0.0019 = 19 basis points (halves every ~365 days)
-    uint256 public immutable launchTime;
-
-    uint256 public constant BASE_DAILY_EMISSION = 80_000 * 1e18;
-    uint256 public constant TARGET_DAILY_REWARD_PER_DEVICE = 533 * 1e16; // ~5.33 SCARAB/day blended
+    // Lifetime tracking
+    mapping(address => uint256) public totalClaimedLifetime;
+    mapping(address => uint256) public lifetimeBRUContributed;
 
     // ─── Events ─────────────────────────────────────────────────────────────
+    event BRURecorded(uint256 indexed epochId, address indexed user, uint256 bruAmount);
+    event EpochClosed(uint256 indexed epochId, uint256 totalBRU, uint256 totalBudget);
+    event RewardsClaimed(address indexed user, uint256 epochId, uint256 rewardAmount, uint256 effectiveBRU);
 
-    event RewardAccumulated(
-        address indexed user,
-        bytes32 indexed deviceIdHash,
-        uint256 amount,
-        uint256 totalPending
-    );
+    // ─── Constructor ────────────────────────────────────────────────────────
+    constructor(address _scarabToken, address _nodeRegistry) {
+        require(_scarabToken  != address(0), "Zero token");
+        require(_nodeRegistry != address(0), "Zero registry");
 
-    event RewardsClaimed(
-        address indexed user,
-        uint256 amount,
-        uint256 deviceCount
-    );
-
-    event RewardPerKwhUpdated(uint256 oldRate, uint256 newRate);
-
-    // ─── Constructor ─────────────────────────────────────────────────────────
-
-    constructor(address _scarabToken, address _deviceRegistry, uint256 _regenPoolAllocation) {
-        require(_scarabToken    != address(0), "EmissionController: zero token");
-        require(_deviceRegistry != address(0), "EmissionController: zero registry");
-
-        scarabToken          = IERC20(_scarabToken);
-        deviceRegistry       = IDeviceRegistry(_deviceRegistry);
-        regenPoolAllocation  = _regenPoolAllocation;
+        scarabToken  = IERC20(_scarabToken);
+        nodeRegistry = INodeTypeRegistry(_nodeRegistry);
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(VALIDATOR_ROLE,     msg.sender);
 
         launchTime = block.timestamp;
+        lastUpdateDay = 0; // Starts at day 0
     }
 
-    // ─── Accumulation (called by ProductionValidator) ─────────────────────────
+    // ─── Internal Decay & Epoch Management ──────────────────────────────────
 
     /**
-     * @notice Record earned reward WITHOUT minting. Gas cost: ~30k vs ~80k for mint.
-     * @param deviceIdHash Device that produced energy
-     * @param owner        Wallet to credit
-     * @param rewardAmount SCARAB amount (18 decimals)
+     * @notice Fast-forwards the exact daily budget decay and aligns funds to their respective epochs.
+     * @dev    This approach completely eliminates float math, while remaining perfectly EVM accurate.
      */
-    function accumulateReward(
-        bytes32 deviceIdHash,
-        address owner,
-        uint256 rewardAmount
-    ) external onlyRole(VALIDATOR_ROLE) {
-        require(owner      != address(0), "EmissionController: zero owner");
-        require(rewardAmount > 0,         "EmissionController: zero reward");
-        
-        // Apply network efficiency ratio to incoming raw reward amounts
-        uint256 efficiency = getEfficiencyRatio();
-        uint256 scaledReward = (rewardAmount * efficiency) / 10000;
+    function _transitionEpochsIfNeeded() internal {
+        uint256 currentDay = (block.timestamp - launchTime) / 1 days;
+        uint256 expectedEpochId = currentDay / EPOCH_LENGTH_DAYS;
 
-        require(
-            totalRewardsMinted + scaledReward <= regenPoolAllocation,
-            "EmissionController: regen pool exhausted"
-        );
+        if (currentDay > lastUpdateDay) {
+            uint256 daysElapsed = currentDay - lastUpdateDay;
 
-        accumulatedRewards[owner]       += scaledReward;
-        pendingRewards[deviceIdHash]    += scaledReward;
-        deviceTotalRewards[deviceIdHash]+= scaledReward;
-        deviceLastSubmission[deviceIdHash] = block.timestamp;
+            // Cap the loop if it's been down to prevent out-of-gas, though unlikely on BSC
+            if (daysElapsed > 365) daysElapsed = 365;
 
-        emit RewardAccumulated(owner, deviceIdHash, scaledReward, accumulatedRewards[owner]);
-    }
+            for (uint256 i = 0; i < daysElapsed; i++) {
+                uint256 dayToProcess = lastUpdateDay + i;
+                uint256 epochForDay = dayToProcess / EPOCH_LENGTH_DAYS;
 
-    // ─── Claiming (called by user) ────────────────────────────────────────────
-
-    /**
-     * @notice Claim all accumulated rewards in a single transaction.
-     *         Can claim at most once per day (prevents spam; weekly typical).
-     */
-    function claimRewards() external nonReentrant returns (uint256 amount) {
-        require(
-            block.timestamp >= lastClaimTime[msg.sender] + MIN_CLAIM_INTERVAL,
-            "EmissionController: claim too soon"
-        );
-
-        amount = accumulatedRewards[msg.sender];
-        require(amount > 0, "EmissionController: nothing to claim");
-
-        // Update state before external call (CEI pattern)
-        accumulatedRewards[msg.sender]  = 0;
-        lastClaimTime[msg.sender]       = block.timestamp;
-        totalClaimed[msg.sender]        += amount;
-        totalRewardsMinted              += amount;
-
-        // Single transfer transaction from protocol vault
-        require(scarabToken.transfer(msg.sender, amount), "EmissionController: transfer failed");
-
-        uint256 deviceCount = deviceRegistry.getDevicesByOwner(msg.sender).length;
-        emit RewardsClaimed(msg.sender, amount, deviceCount);
-    }
-
-    // ─── Views ────────────────────────────────────────────────────────────────
-
-    /**
-     * @notice Returns pending rewards, lifetime claimed, and estimated daily rate.
-     */
-    function estimateRewards(address user) external view returns (
-        uint256 pending,
-        uint256 claimedTotal,
-        uint256 estimatedDailyRate
-    ) {
-        pending      = accumulatedRewards[user];
-        claimedTotal = totalClaimed[user];
-
-        if (lastClaimTime[user] > 0 && block.timestamp > lastClaimTime[user]) {
-            uint256 daysSinceClaim = (block.timestamp - lastClaimTime[user]) / 1 days;
-            if (daysSinceClaim > 0) {
-                estimatedDailyRate = pending / daysSinceClaim;
+                // Stop emitting entirely if the hard cap is hit
+                if (totalEmitted + currentDailyBudget <= TOTAL_POOL) {
+                    epochs[epochForDay].totalBudget += currentDailyBudget;
+                    totalEmitted += currentDailyBudget;
+                    // Apply daily decay
+                    currentDailyBudget = (currentDailyBudget * DECAY_RATE) / 1e8;
+                }
             }
+            lastUpdateDay += daysElapsed;
+        }
+
+        // Close epoch if we naturally crossed the boundary
+        if (expectedEpochId > currentEpochId) {
+            epochs[currentEpochId].isClosed = true;
+            emit EpochClosed(currentEpochId, epochs[currentEpochId].totalBRU, epochs[currentEpochId].totalBudget);
+            currentEpochId = expectedEpochId;
         }
     }
 
-    function viewPendingRewards(address user) external view returns (uint256) {
-        return accumulatedRewards[user];
-    }
-
-    function regenPoolRemaining() external view returns (uint256) {
-        return regenPoolAllocation - totalRewardsMinted;
-    }
-
-    // ─── Admin ────────────────────────────────────────────────────────────────
+    // ─── Accumulation ───────────────────────────────────────────────────────
 
     /**
-     * @notice Calculate exponential decay multiplier for token emission constraints.
-     * @dev Decay constant λ = 0.0019 per DAY
-     * 
-     * This creates:
-     * - 50% decay after 365 days
-     * - 25% decay after 730 days
-     * - Emission halves yearly
-     * 
-     * Formula: e^(-λt) where t is DAYS since launch
+     * @notice Records verified BRU to the current active Epoch.
+     * @param user     User receiving the BRU credit
+     * @param bruAmount Quantified BRU (including RWM / GeoMultiplier calculated by Oracle layer)
      */
-    function calculateExponentialDecay(uint256 startingValue, uint256 daysSinceLaunch) public view returns (uint256) {
-        uint256 base = 10000 - DECAY_LAMBDA_BP; 
-        uint256 precision = 10000;
+    function recordBRU(address user, uint256 bruAmount) external onlyRole(VALIDATOR_ROLE) {
+        require(user != address(0), "Zero address");
+        require(bruAmount > 0, "Zero BRU");
+
+        _transitionEpochsIfNeeded();
+
+        userBRUPerEpoch[currentEpochId][user] += bruAmount;
+        epochs[currentEpochId].totalBRU += bruAmount;
+        lifetimeBRUContributed[user] += bruAmount;
+
+        emit BRURecorded(currentEpochId, user, bruAmount);
+    }
+
+    /**
+     * @notice Fallback to trigger updates manually if no oracle submissions occur
+     */
+    function triggerNetworkUpdate() external { _transitionEpochsIfNeeded(); }
+
+    // ─── Claiming ───────────────────────────────────────────────────────────
+
+    /**
+     * @notice Claims rewards for a closed epoch. 
+     *         Enforces the 5% maximum epoch share rule to prevent industrial monopolization.
+     */
+    function claimEpochRewards(uint256 epochId) external nonReentrant returns (uint256) {
+        _transitionEpochsIfNeeded(); // Ensure state is fresh
         
-        uint256 multiplier = 10000;
-        uint256 _days = daysSinceLaunch;
-        uint256 currentBase = base;
-        
-        while (_days > 0) {
-            if (_days % 2 != 0) {
-                multiplier = (multiplier * currentBase) / precision;
-            }
-            currentBase = (currentBase * currentBase) / precision;
-            _days /= 2;
+        Epoch memory ep = epochs[epochId];
+        require(ep.isClosed, "EmissionController: Epoch not closed");
+        require(!hasClaimedEpoch[epochId][msg.sender], "EmissionController: Already claimed");
+
+        uint256 rawBru = userBRUPerEpoch[epochId][msg.sender];
+        require(rawBru > 0, "EmissionController: No BRU for this epoch");
+
+        uint256 effectiveBru = rawBru;
+        uint256 maxBruAllowed = (ep.totalBRU * 5) / 100; // 5% Soft Cap
+
+        // Slice off excess BRU. This permanently 'burns' the excess reward from the network
+        // since the denominator remains `ep.totalBRU`.
+        if (effectiveBru > maxBruAllowed) {
+            effectiveBru = maxBruAllowed;
         }
-        
-        return (startingValue * multiplier) / precision;
+
+        uint256 rewardAmount = (effectiveBru * ep.totalBudget) / ep.totalBRU;
+
+        hasClaimedEpoch[epochId][msg.sender] = true;
+        totalClaimedLifetime[msg.sender] += rewardAmount;
+
+        require(scarabToken.transfer(msg.sender, rewardAmount), "Transfer failed");
+
+        emit RewardsClaimed(msg.sender, epochId, rewardAmount, effectiveBru);
+        return rewardAmount;
     }
 
-    function calculateDailyEmissionCap() public view returns (uint256) {
-        uint256 daysSinceLaunch = (block.timestamp - launchTime) / 1 days;
-        return calculateExponentialDecay(BASE_DAILY_EMISSION, daysSinceLaunch);
-    }
+    /**
+     * @notice Batch claim for UX convenience
+     */
+    function claimMultipleEpochs(uint256[] calldata epochIds) external nonReentrant {
+        _transitionEpochsIfNeeded();
+        uint256 totalReward = 0;
 
-    function getEfficiencyRatio() public view returns (uint256) {
-        uint256 activeCount = deviceRegistry.activeDeviceCount();
-        if (activeCount == 0) return 10000; // 100%
-        
-        uint256 dailyCap = calculateDailyEmissionCap();
-        uint256 dailyDemand = activeCount * TARGET_DAILY_REWARD_PER_DEVICE;
-        
-        if (dailyDemand <= dailyCap) {
-            return 10000; // 100%
-        } else {
-            return (dailyCap * 10000) / dailyDemand;
+        for (uint256 i = 0; i < epochIds.length; i++) {
+            uint256 epId = epochIds[i];
+            
+            if (!epochs[epId].isClosed || hasClaimedEpoch[epId][msg.sender]) continue;
+            
+            uint256 rawBru = userBRUPerEpoch[epId][msg.sender];
+            if (rawBru == 0) continue;
+
+            uint256 effectiveBru = rawBru;
+            uint256 maxBruAllowed = (epochs[epId].totalBRU * 5) / 100;
+            if (effectiveBru > maxBruAllowed) effectiveBru = maxBruAllowed;
+
+            uint256 reward = (effectiveBru * epochs[epId].totalBudget) / epochs[epId].totalBRU;
+            hasClaimedEpoch[epId][msg.sender] = true;
+            totalReward += reward;
         }
-    }
 
-    /**
-     * @notice Frontend helper to display current rates and capacity.
-     */
-    function getCurrentEffectiveRate() external view returns (
-        uint256 bokashiRate,
-        uint256 solarRate,
-        uint256 efficiencyPercent,
-        uint256 activeDevices
-    ) {
-        uint256 efficiency = getEfficiencyRatio();
+        require(totalReward > 0, "No valid claims");
+        totalClaimedLifetime[msg.sender] += totalReward;
         
-        // Base Bokashi is 50 SCARAB/cycle
-        bokashiRate = (50 * 1e18 * efficiency) / 10000;
-        solarRate = (rewardPerKwh * efficiency) / 10000;
-        
-        efficiencyPercent = efficiency / 100;
-        activeDevices = deviceRegistry.activeDeviceCount();
+        require(scarabToken.transfer(msg.sender, totalReward), "Batch transfer failed");
     }
 
-    /**
-     * @notice Calculate reward for a given kWh output.
-     */
-    function calculateReward(uint256 kwh) public view returns (uint256) {
-        uint256 efficiency = getEfficiencyRatio();
-        uint256 effectiveRewardPerKwh = (rewardPerKwh * efficiency) / 10000;
-        return kwh * effectiveRewardPerKwh;
-    }
-
-    function setRewardPerKwh(uint256 newRate) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        emit RewardPerKwhUpdated(rewardPerKwh, newRate);
-        rewardPerKwh = newRate;
-    }
-
-    /**
-     * @notice Emergency claim for inactive users (e.g. lost wallet migration).
-     * @dev    Restricted to accounts inactive for 90+ days to prevent centralization.
-     */
-    function adminClaim(address user) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant returns (uint256) {
-        require(
-            block.timestamp >= lastClaimTime[user] + ADMIN_CLAIM_LOCKOUT,
-            "EmissionController: user is active, cannot admin claim"
-        );
-
-        uint256 amount = accumulatedRewards[user];
-        require(amount > 0, "EmissionController: no rewards");
-
-        accumulatedRewards[user]  = 0;
-        totalClaimed[user]        += amount;
-        totalRewardsMinted        += amount;
-
-        require(scarabToken.transfer(user, amount), "EmissionController: transfer failed");
-        return amount;
-    }
+    // ─── Administration & Views ─────────────────────────────────────────────
 
     function setValidatorRole(address validator) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _grantRole(VALIDATOR_ROLE, validator);

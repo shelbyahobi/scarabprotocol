@@ -54,6 +54,8 @@ contract BokashiValidator is AccessControl {
         uint256 peakTemperature;
         uint256 gasPPM;
         uint256 endWeight;
+        uint256 lidOpenings;
+        uint256 averageFillWeight;
         uint256 cycleId;
         bool verified;
         bool flagged;
@@ -81,6 +83,18 @@ contract BokashiValidator is AccessControl {
 
     function setSubscriptions(address _subscriptions) external onlyRole(DEFAULT_ADMIN_ROLE) {
         subscriptions = IScarabSubscriptions(_subscriptions);
+    }
+
+    // ─── SaaS 2.0 Settlement Helpers ─────────────────────────────────────
+
+    /**
+     * @notice Returns the final weight of the device's most recently completed cycle.
+     *         Used by SoilTransferValidator to ensure drop-off mass matches fermented mass.
+     */
+    function getLatestCycleEndWeight(bytes32 deviceIdHash) external view returns (uint256) {
+        uint256 length = bokashiCycles[deviceIdHash].length;
+        if (length == 0) return 0;
+        return bokashiCycles[deviceIdHash][length - 1].endWeight;
     }
 
     /**
@@ -129,6 +143,8 @@ contract BokashiValidator is AccessControl {
      * @param peakTemperature Peak temp reached during fermentation (°C).
      * @param gasPPM          Average or peak CO2/VOC ppm detected.
      * @param endWeight       Weight at end of fermentation (grams).
+     * @param lidOpenings     Number of times the lid was opened (oxygen exposure).
+     * @param averageFillWeight Average weight of mass within bucket (proof of mass).
      */
     function submitBokashiCycle(
         bytes32 deviceIdHash,
@@ -136,7 +152,9 @@ contract BokashiValidator is AccessControl {
         uint256 startWeight,
         uint256 peakTemperature,
         uint256 gasPPM,
-        uint256 endWeight
+        uint256 endWeight,
+        uint256 lidOpenings,
+        uint256 averageFillWeight
     ) external onlyRole(ORACLE_ROLE) {
         require(deviceRegistry.isDeviceValid(deviceIdHash), "BokashiValidator: Invalid device");
         IDeviceRegistry.Device memory device = deviceRegistry.getDevice(deviceIdHash);
@@ -152,15 +170,15 @@ contract BokashiValidator is AccessControl {
         
         // Basic anti-cheat sanity checks
         if (startWeight < endWeight || startWeight == 0) {
-            _flagCycle(deviceIdHash, startTime, startWeight, peakTemperature, gasPPM, endWeight, cycleId, "INVALID_WEIGHTS");
+            _flagCycle(deviceIdHash, startTime, startWeight, peakTemperature, gasPPM, endWeight, lidOpenings, averageFillWeight, cycleId, "INVALID_WEIGHTS");
             return;
         }
 
-        uint256 qualityScore = calculateQualityScore(peakTemperature, gasPPM, startWeight - endWeight, startWeight);
+        uint256 qualityScore = calculateQualityScore(peakTemperature, gasPPM, startWeight - endWeight, startWeight, lidOpenings, averageFillWeight);
         
         // If quality score is extremely low (e.g. padding numbers), flag it for manual review.
         if (qualityScore < 5000) { 
-            _flagCycle(deviceIdHash, startTime, startWeight, peakTemperature, gasPPM, endWeight, cycleId, "LOW_QUALITY_SCORE");
+            _flagCycle(deviceIdHash, startTime, startWeight, peakTemperature, gasPPM, endWeight, lidOpenings, averageFillWeight, cycleId, "LOW_QUALITY_SCORE");
             return;
         }
 
@@ -170,6 +188,8 @@ contract BokashiValidator is AccessControl {
             peakTemperature: peakTemperature,
             gasPPM: gasPPM,
             endWeight: endWeight,
+            lidOpenings: lidOpenings,
+            averageFillWeight: averageFillWeight,
             cycleId: cycleId,
             verified: true,
             flagged: false
@@ -192,6 +212,8 @@ contract BokashiValidator is AccessControl {
         uint256 peakTemperature,
         uint256 gasPPM,
         uint256 endWeight,
+        uint256 lidOpenings,
+        uint256 averageFillWeight,
         uint256 cycleId,
         string memory reason
     ) internal {
@@ -201,6 +223,8 @@ contract BokashiValidator is AccessControl {
             peakTemperature: peakTemperature,
             gasPPM: gasPPM,
             endWeight: endWeight,
+            lidOpenings: lidOpenings,
+            averageFillWeight: averageFillWeight,
             cycleId: cycleId,
             verified: false,
             flagged: true
@@ -222,8 +246,15 @@ contract BokashiValidator is AccessControl {
         uint256 peakTemp,
         uint256 gasPPM,
         uint256 weightLoss,
-        uint256 startWeight
+        uint256 startWeight,
+        uint256 lidOpenings,
+        uint256 averageFillWeight
     ) public pure returns (uint256) {
+        // Critical Slash
+        if (lidOpenings > 25) {
+            return 0;
+        }
+
         uint256 score = 0;
         
         // 1. Temperature check (40% weight = max 4000 pts)
@@ -252,7 +283,21 @@ contract BokashiValidator is AccessControl {
             score += 1500;
         }
         
-        return score;
+        uint256 finalScore = score;
+        
+        // 4. Oxygen exposure penalty
+        if (lidOpenings >= 15 && lidOpenings <= 20) {
+            finalScore = (finalScore * 80) / 100;
+        } else if (lidOpenings > 20 && lidOpenings <= 25) {
+            finalScore = (finalScore * 50) / 100;
+        }
+        
+        // 5. Proof of mass penalty
+        if (averageFillWeight < 2000) {
+            finalScore = (finalScore * 50) / 100;
+        }
+        
+        return finalScore;
     }
 
     function getCycleCount(bytes32 deviceIdHash) external view returns (uint256) {

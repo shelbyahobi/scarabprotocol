@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @title DeviceRegistry
@@ -43,7 +44,18 @@ contract DeviceRegistry is AccessControl {
     uint256 public totalDevices;
     uint256 public activeDeviceCount;
 
+    // Token Sink Configuration
+    IERC20 public scarabToken;
+    uint256 public activationFee = 50 * 10**18;
+    bool public activationFeeEnabled = false;
+    uint256 public totalActivationFeesBurned;
+    mapping(DeviceType => uint256) public deviceTypeCount;
+    uint256 public totalDevicesRegistered;
+
     // ─── Events ────────────────────────────────────────────────────────────────
+
+    event ActivationFeeConfigured(address token, uint256 fee, bool enabled);
+    event ActivationFeeBurned(bytes32 indexed deviceIdHash, address indexed owner, uint256 amount);
 
     event DeviceRegistered(
         bytes32 indexed deviceIdHash,
@@ -73,6 +85,14 @@ contract DeviceRegistry is AccessControl {
 
     // ─── Registration ──────────────────────────────────────────────────────────
 
+    function setActivationConfig(address _scarabToken, uint256 _fee, bool _enabled) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(_scarabToken != address(0), "DeviceRegistry: invalid token");
+        scarabToken = IERC20(_scarabToken);
+        activationFee = _fee;
+        activationFeeEnabled = _enabled;
+        emit ActivationFeeConfigured(_scarabToken, _fee, _enabled);
+    }
+
     /**
      * @notice Register a device with factory proof of authenticity.
      * @param deviceId        ATECC608A serial number (unique hardware ID)
@@ -100,6 +120,20 @@ contract DeviceRegistry is AccessControl {
         deviceIdHash = keccak256(bytes(deviceId));
         require(!isRegistered[deviceIdHash], "DeviceRegistry: already registered");
 
+        if (activationFeeEnabled && address(scarabToken) != address(0)) {
+            require(scarabToken.balanceOf(owner) >= activationFee, "DeviceRegistry: insufficient SCARAB");
+            try scarabToken.transferFrom(owner, address(this), activationFee) {
+                (bool success,) = address(scarabToken).call(
+                    abi.encodeWithSignature("burn(uint256)", activationFee)
+                );
+                require(success, "DeviceRegistry: burn failed");
+                totalActivationFeesBurned += activationFee;
+                emit ActivationFeeBurned(deviceIdHash, owner, activationFee);
+            } catch {
+                revert("DeviceRegistry: fee transfer failed");
+            }
+        }
+
         // CRITICAL: verify the factory signed this device's public key
         // TESTNET: trusts REGISTRAR_ROLE — registrar is responsible for pre-verification
         // TODO: MAINNET — implement P-256 verification via EIP-7212 precompile or Chainlink Functions
@@ -125,6 +159,8 @@ contract DeviceRegistry is AccessControl {
         isRegistered[deviceIdHash] = true;
         totalDevices++;
         activeDeviceCount++;
+        deviceTypeCount[deviceType]++;
+        totalDevicesRegistered++;
 
         emit DeviceRegistered(deviceIdHash, deviceId, owner, deviceType);
         emit AttestationUpdated(deviceIdHash, initialAttestationHash, block.timestamp);

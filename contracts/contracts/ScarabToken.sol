@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
-contract ScarabToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes {
+contract ScarabToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes, ERC20Burnable {
     // Tax Configuration
     uint256 public constant BUY_TAX = 0;
     uint256 public constant SELL_TAX = 500; // 5% (basis points: 500/10000)
@@ -37,6 +38,10 @@ contract ScarabToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes
     event ExcludedFromFees(address indexed account, bool isExcluded);
     event ExcludedFromLimits(address indexed account, bool isExcluded);
     event Blacklisted(address indexed account); 
+
+    // Token Sink Burn Tracking
+    uint256 public totalBurned; 
+    event TokensBurned(address indexed burner, uint256 amount, string reason);
 
     // Audit Fix: Timelock Blacklist
     mapping(address => BlacklistRequest) public blacklistRequests;
@@ -224,5 +229,31 @@ contract ScarabToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes
         returns (uint256)
     {
         return super.nonces(owner);
+    }
+
+    /**
+     * @notice Override burn to track total burned
+     */
+    function burn(uint256 amount) public virtual override {
+        super.burn(amount);
+        totalBurned += amount;
+        emit TokensBurned(msg.sender, amount, "Direct burn");
+    }
+
+    /**
+     * @notice Override burnFrom to track total burned
+     */
+    function burnFrom(address account, uint256 amount) public virtual override {
+        super.burnFrom(account, amount);
+        totalBurned += amount;
+        emit TokensBurned(account, amount, "Burn from allowance");
+    }
+
+    /**
+     * @notice Burn tokens with reason (for token sink transparency)
+     */
+    function burnWithReason(uint256 amount, string memory reason) external {
+        burn(amount);
+        emit TokensBurned(msg.sender, amount, reason);
     }
 }

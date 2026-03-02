@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { QrReader } from 'react-qr-reader';
 import GovernanceDashboard from './GovernanceDashboard';
 import VestingDashboard from './VestingDashboard';
-import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus, Vault, Gift, Camera, CheckCircle, AlertCircle } from 'lucide-react';
+import { Lock, ShieldCheck, Zap, ShoppingCart, ExternalLink, Copy, Users, Leaf, Vote, Server, Activity, Plus, Vault, Gift, Camera, CheckCircle, AlertCircle, Globe } from 'lucide-react';
 import { formatEther } from 'viem';
 import { CONFIG } from '../config';
 
@@ -51,10 +51,43 @@ export default function ColonyDashboard() {
     const [userContribution, setUserContribution] = useState(0n);
     const [treasuryBalance, setTreasuryBalance] = useState("0");
     const [isAddNodeModalOpen, setIsAddNodeModalOpen] = useState(false);
+    const [registrationStep, setRegistrationStep] = useState('approve'); // 'approve' | 'register'
     const [mockScanning, setMockScanning] = useState(false);
     const [scanResult, setScanResult] = useState(null);
     const [scanError, setScanError] = useState(null);
     const [isScanningActive, setIsScanningActive] = useState(false);
+
+    // Mock Active Nodes for the Professional Mining UX
+    const [mockNodes, setMockNodes] = useState([
+        {
+            id: 'BOK-RIG-001',
+            type: 'Bokashi',
+            status: 'Active',
+            progress: 85, // 12/14 days
+            subscriptionActive: true,
+            metrics: {
+                temp: 38.5,
+                gas: 950,
+                lidOpenings: 4,
+                averageFillWeight: 4200,
+            },
+            yieldProbability: 100
+        },
+        {
+            id: 'BOK-RIG-002',
+            type: 'Bokashi',
+            status: 'Completed',
+            progress: 100,
+            subscriptionActive: false, // Trigger revenue lock
+            metrics: {
+                temp: 39.0,
+                gas: 810,
+                lidOpenings: 18, // 80% penalty territory
+                averageFillWeight: 3500,
+            },
+            yieldProbability: 80
+        }
+    ]);
 
     // Emission Metrics
     const [emissionRates, setEmissionRates] = useState({
@@ -144,24 +177,26 @@ export default function ColonyDashboard() {
 
     const hardwareProducts = [
         {
-            id: 1,
-            name: "Scarab Node v1",
-            price: "2,500 SCARAB",
-            retailPrice: "$450 USD",
-            image: "/beetlebox-prototype.png",
-            features: ["Solar MPPT", "LoRaWAN Gateway", "Bio-Sensor"],
-            stock: "Pre-Order Q3",
-            minTier: "Scout"
+            id: 'solar',
+            name: "Solar Sentinel Node (v1)",
+            deposit: "100 USDC",
+            totalCost: "$349 USD",
+            image: "☀️",
+            features: ["ATECC608A Cryptography", "Inverter Telemetry Pipeline", "2,400 BRU/yr Base Ratio"],
+            minTier: "Guest",
+            maxSupply: 1000,
+            preordered: 42
         },
         {
-            id: 2,
-            name: "Hydro-Bit Sensor",
-            price: "500 SCARAB",
-            retailPrice: "$99 USD",
-            image: "/hydrobit-prototype.png",
-            features: ["Water Flow Meter", "Purity Sensor", "WiFi"],
-            stock: "Design Phase",
-            minTier: "Scout"
+            id: 'bokashi',
+            name: "Smart Bokashi Kit",
+            deposit: "25 USDC",
+            totalCost: "$89 USD",
+            image: "♻️",
+            features: ["IoT Sensored Lid", "Bluetooth Proximity Comm", "650 BRU/yr Base Ratio"],
+            minTier: "Guest",
+            maxSupply: 2000,
+            preordered: 154
         }
     ];
 
@@ -207,6 +242,45 @@ export default function ColonyDashboard() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { writeContractAsync } = useWriteContract();
+
+    const openAddNodeModal = () => {
+        setIsAddNodeModalOpen(true);
+        setRegistrationStep('approve');
+        setScanResult(null);
+        setIsScanningActive(false);
+    };
+
+    const ACTIVATION_FEE = 50n * 10n ** 18n;
+    const handleApproveFee = async () => {
+        setIsSubmitting(true);
+        try {
+            const txHash = await writeContractAsync({
+                address: TOKEN_ADDRESS,
+                abi: [
+                    {
+                        "inputs": [
+                            { "internalType": "address", "name": "spender", "type": "address" },
+                            { "internalType": "uint256", "name": "amount", "type": "uint256" }
+                        ],
+                        "name": "approve",
+                        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+                        "stateMutability": "nonpayable",
+                        "type": "function"
+                    }
+                ],
+                functionName: 'approve',
+                args: [CONFIG.DEVICE_REGISTRY_ADDRESS, ACTIVATION_FEE],
+            });
+            console.log("Approval tx:", txHash);
+            alert("Approval transaction sent! Waiting for confirmation...");
+            setRegistrationStep('register');
+        } catch (error) {
+            console.error("Approval failed", error);
+            alert(`Approval failed: ${error.shortMessage || error.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const handleScanResult = (result, error) => {
         if (result) {
@@ -398,17 +472,33 @@ export default function ColonyDashboard() {
                                                     <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded font-bold">Priority</span>
                                                 </div>
                                                 <div className="flex items-baseline gap-2 mb-4">
-                                                    <span className="text-beetle-gold font-mono font-bold text-xl">{product.price}</span>
-                                                    <span className="text-gray-500 text-sm line-through">{product.retailPrice}</span>
+                                                    <span className="text-beetle-gold font-mono font-bold text-xl">{product.deposit} Deposit</span>
+                                                    <span className="text-gray-500 text-sm">/ {product.totalCost}</span>
                                                 </div>
                                                 <ul className="space-y-2 mb-6 text-sm text-gray-400 flex-1">
                                                     {product.features.map((f, i) => <li key={i} className="flex gap-2"><div className="w-1.5 h-1.5 rounded-full bg-beetle-electric mt-1.5" /> {f}</li>)}
                                                 </ul>
+
+                                                {/* Supply Progress Bar */}
+                                                <div className="w-full bg-black/50 h-2 rounded-full mb-2 overflow-hidden border border-white/5">
+                                                    <div
+                                                        className="h-full bg-beetle-gold transition-all"
+                                                        style={{ width: `${(product.preordered / product.maxSupply) * 100}%` }}
+                                                    ></div>
+                                                </div>
+                                                <div className="flex justify-between text-xs text-gray-500 font-bold uppercase tracking-widest mb-6">
+                                                    <span>Pre-ordered</span>
+                                                    <span className="text-white">{product.preordered} / {product.maxSupply}</span>
+                                                </div>
+
                                                 <button
-                                                    disabled
-                                                    className="w-full bg-white/10 text-gray-300 font-bold py-3 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
+                                                    onClick={() => {
+                                                        if (!isConnected) alert("Please connect wallet first");
+                                                        else alert(`Mock: Sending ${product.deposit} to HardwarePreorder.sol...`);
+                                                    }}
+                                                    className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                                                 >
-                                                    {product.stock}
+                                                    Secure Pre-order Allocation
                                                 </button>
                                             </div>
                                         </div>
@@ -460,37 +550,134 @@ export default function ColonyDashboard() {
                         <div className="md:col-span-8 bg-black/40 border border-white/10 rounded-3xl p-8">
                             <div className="flex justify-between items-start mb-8">
                                 <div>
-                                    <h3 className="text-2xl font-bold text-white mb-2">My Nodes</h3>
-                                    <p className="text-gray-400">Manage your connected hardware and monitor Production Rewards.</p>
+                                    <h3 className="text-2xl font-bold text-white mb-2">My Mining Rigs</h3>
+                                    <p className="text-gray-400 text-sm">Monitor live telemetry, optimize variables, and claim rewards.</p>
                                 </div>
                                 <button
-                                    onClick={() => setIsAddNodeModalOpen(true)}
+                                    onClick={openAddNodeModal}
                                     className="bg-beetle-electric text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white transition-colors"
                                 >
-                                    <Plus size={18} /> Add Device
+                                    <Plus size={18} /> Add Rig
                                 </button>
                             </div>
 
-                            {/* Empty State / Simulator */}
-                            <div className="bg-[#0a1a0f] border border-dashed border-beetle-electric/30 rounded-2xl p-8 text-center">
-                                <div className="w-16 h-16 bg-beetle-electric/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Activity className="text-beetle-electric" size={32} />
-                                </div>
-                                <h4 className="text-xl font-bold text-white mb-2">No Active Miners Found</h4>
-                                <p className="text-gray-500 mb-6">Connect a verified Scarab Node to start earning.</p>
+                            {/* Active Miners - Professional Mining UI */}
+                            <div className="space-y-6">
+                                {mockNodes.map((node, i) => (
+                                    <div key={i} className={`bg-[#0a1a0f] border ${node.metrics.lidOpenings > 14 ? 'border-yellow-500/30' : 'border-green-500/30'} rounded-2xl p-6 relative overflow-hidden shadow-lg`}>
+                                        {/* Background gradient based on state */}
+                                        <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-[80px] pointer-events-none ${node.metrics.lidOpenings > 14 ? 'bg-yellow-500/5' : 'bg-green-500/5'}`}></div>
 
-                                {/* Simulator */}
-                                <div className="bg-black/50 rounded-xl p-4 max-w-md mx-auto text-left">
-                                    <div className="text-xs text-gray-500 uppercase font-bold mb-3">Projected Earnings (1x Scarab Node)</div>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="text-gray-300">Daily Output (Est)</span>
-                                        <span className="text-beetle-gold font-mono font-bold">250 ROLL</span>
+                                        <div className="relative z-10">
+                                            {/* Header */}
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-black/50 border border-white/10 rounded-xl flex items-center justify-center">
+                                                        <Activity className={node.status === 'Active' ? 'text-beetle-electric animate-pulse' : 'text-gray-500'} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-white font-bold font-mono tracking-wider">{node.id}</h4>
+                                                        <div className="text-sm font-bold mt-1 inline-flex items-center gap-1">
+                                                            <span className="text-gray-400">{node.type} Miner</span>
+                                                            <span className="mx-2 text-white/20">•</span>
+                                                            <span className={node.status === 'Active' ? 'text-blue-400' : 'text-green-400'}>{node.status}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Yield Probability */}
+                                                <div className="text-right">
+                                                    <div className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Yield Estimate</div>
+                                                    <div className={`text-2xl font-black font-mono ${node.yieldProbability === 100 ? 'text-green-400' : 'text-yellow-400'}`}>
+                                                        {node.yieldProbability}%
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Industrial Telemetry Grid */}
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                                <div className="bg-black/50 border border-white/5 rounded-xl p-3">
+                                                    <div className="text-[10px] text-gray-500 uppercase font-bold mb-1">Peak Core Temp</div>
+                                                    <div className="text-white font-mono">{node.metrics.temp}°C</div>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 rounded-xl p-3">
+                                                    <div className="text-[10px] text-gray-500 uppercase font-bold mb-1">Anaerobic Gas</div>
+                                                    <div className="text-white font-mono">{node.metrics.gas} PPM</div>
+                                                </div>
+                                                <div className={`bg-black/50 border rounded-xl p-3 ${node.metrics.lidOpenings > 14 ? 'border-yellow-500/50' : 'border-white/5'}`}>
+                                                    <div className="text-[10px] text-gray-500 uppercase font-bold mb-1">Lid Openings (O2)</div>
+                                                    <div className={`font-mono ${node.metrics.lidOpenings > 14 ? 'text-yellow-400' : 'text-white'}`}>
+                                                        {node.metrics.lidOpenings} / 14 max
+                                                    </div>
+                                                </div>
+                                                <div className="bg-black/50 border border-white/5 rounded-xl p-3">
+                                                    <div className="text-[10px] text-gray-500 uppercase font-bold mb-1">Current Mass</div>
+                                                    <div className="text-white font-mono">{(node.metrics.averageFillWeight / 1000).toFixed(1)} kg</div>
+                                                </div>
+                                            </div>
+
+                                            {/* Progress Bar */}
+                                            <div className="w-full bg-black/50 h-2 rounded-full mb-2 overflow-hidden border border-white/5">
+                                                <div
+                                                    className={`h-full ${node.status === 'Active' ? 'bg-blue-500' : 'bg-green-500'} transition-all`}
+                                                    style={{ width: `${node.progress}%` }}
+                                                ></div>
+                                            </div>
+                                            <div className="flex justify-between text-xs text-gray-500 font-bold uppercase tracking-widest mb-6">
+                                                <span>Cycle Start</span>
+                                                <span>{node.progress}% Complete</span>
+                                            </div>
+
+                                            {/* Contextual Action Areas */}
+                                            {node.status === 'Active' && node.metrics.lidOpenings <= 14 && (
+                                                <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 p-3 rounded-xl text-sm flex items-center gap-2">
+                                                    <CheckCircle size={16} /> Optimal parameters maintained. Keep lid sealed to protect yield.
+                                                </div>
+                                            )}
+
+                                            {node.metrics.lidOpenings > 14 && (
+                                                <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 p-3 rounded-xl text-sm flex items-center gap-2">
+                                                    <AlertCircle size={16} /> Excessive Oxygen penalty active (-20% Yield). Stop opening the lid.
+                                                </div>
+                                            )}
+
+                                            {node.status === 'Completed' && (
+                                                <div className="mt-4 border-t border-white/10 pt-4 flex items-center justify-between">
+                                                    <div>
+                                                        <div className="text-white font-bold">Cycle Ready for Settlement</div>
+                                                        <p className="text-xs text-gray-500 mt-1">Generate your drop-off QR code for the Farmer Sink Node.</p>
+                                                    </div>
+
+                                                    {!node.subscriptionActive ? (
+                                                        <button disabled className="bg-red-500/20 text-red-500 border border-red-500/50 font-bold px-4 py-2 rounded-lg text-sm flex items-center gap-2 opacity-80 cursor-not-allowed">
+                                                            <Lock size={16} /> Sub Inactive
+                                                        </button>
+                                                    ) : (
+                                                        <button className="bg-beetle-green text-black font-bold px-4 py-2 rounded-lg text-sm hover:brightness-110 transition-all">
+                                                            Generate Fertility Handshake
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Subscription Lock Overlay (if completed & inactive) */}
+                                            {node.status === 'Completed' && !node.subscriptionActive && (
+                                                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-20 flex flex-col justify-center items-center text-center p-6 border border-red-500/30 rounded-2xl">
+                                                    <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+                                                        <Lock className="text-red-500" size={24} />
+                                                    </div>
+                                                    <h4 className="text-xl font-bold text-white mb-2">Bran Subscription Expired</h4>
+                                                    <p className="text-sm text-gray-400 max-w-sm mb-6">
+                                                        A valid SaaS Bran subscription is required to complete the Fertility Handshake and claim your {node.yieldProbability}% yield tokens.
+                                                    </p>
+                                                    <button className="bg-beetle-gold text-black font-bold px-6 py-3 rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                                                        Renew Subscription ($12/mo)
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-300">Monthly Yield</span>
-                                        <span className="text-beetle-gold font-mono font-bold">7,500 ROLL</span>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
 
@@ -530,80 +717,132 @@ export default function ColonyDashboard() {
                                     </div>
                                 </div>
 
-                                <p className="text-[10px] text-gray-500 mt-4 leading-relaxed">
-                                    Rates adjust dynamically based on total network production capabilities to maintain a sustainable 80,000 SCARAB daily emission cap. Early participants benefit from 100% capacity.
-                                </p>
-                            </div>
+                            </p>
                         </div>
-                    </motion.div>
-                )}
 
-                {/* --- TAB: GOVERNANCE (DAO) --- */}
-                {activeTab === 'governance' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto">
-                        <GovernanceDashboard />
-                    </motion.div>
-                )}
-
-                {/* --- TAB: PROTOCOL VAULT (Transparency) --- */}
-                {activeTab === 'vault' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-5xl mx-auto">
-                        <VestingDashboard />
-                    </motion.div>
-                )}
-
-            </div>
-
-            {/* Modal Reuse from Previous (Discount Code) */}
-            <AnimatePresence>
-                {selectedProduct && selectedProduct.code && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedProduct(null)}>
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-[#0a1a0f] border border-beetle-gold/50 p-8 rounded-2xl max-w-md w-full text-center relative shadow-[0_0_50px_rgba(212,175,55,0.2)]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button onClick={() => setSelectedProduct(null)} className="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-
-                            <div className="w-16 h-16 bg-beetle-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Zap className="text-beetle-gold w-8 h-8" />
+                        {/* Lifetime Regen Stats Widget */}
+                        <div className="bg-black/60 rounded-2xl p-6 border border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.05)]">
+                            <div className="text-xs text-gray-500 uppercase font-bold mb-4 flex items-center gap-2">
+                                <Globe size={16} className="text-green-400" />
+                                Global Lifetime Impact
                             </div>
 
-                            <h3 className="text-2xl font-black text-white mb-2">Access Granted</h3>
-                            <p className="text-gray-400 mb-6">Use this code at checkout on our partner's site.</p>
-
-                            <div className="bg-black/50 border border-white/10 p-4 rounded-xl flex items-center justify-between mb-6 group cursor-pointer"
-                                onClick={() => navigator.clipboard.writeText(selectedProduct.code)}>
-                                <code className="text-beetle-electric font-mono text-xl font-bold">{selectedProduct.code}</code>
-                                <Copy className="text-gray-500 group-hover:text-white transition-colors w-5 h-5" />
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                                    <span className="text-gray-400">CO₂-eq Diverted</span>
+                                    <span className="text-white font-mono font-bold">14,290 kg</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                                    <span className="text-gray-400">Organic Mass Repurposed</span>
+                                    <span className="text-white font-mono font-bold">4.2 Tons</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-gray-400">Fertility Handshakes</span>
+                                    <span className="text-white font-mono font-bold">3,104</span>
+                                </div>
                             </div>
 
-                            <a href={selectedProduct.link} target="_blank" className="block w-full bg-beetle-gold text-black font-bold py-3 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2">
-                                Go to Partner Store <ExternalLink size={18} />
-                            </a>
-                        </motion.div>
+                            <p className="text-[10px] text-gray-500 mt-4 leading-relaxed">
+                                These metrics reflect the cumulative verifiable physical output generated by the SCARAB network. Real World Assets permanently recorded on-chain.
+                            </p>
+                        </div>
                     </div>
+                    </motion.div>
                 )}
 
-                {/* Add Device Modal (Testnet Mock) */}
-                {isAddNodeModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setIsAddNodeModalOpen(false)}>
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-[#0c0c0c] border border-beetle-electric border-dashed p-8 rounded-2xl max-w-md w-full text-center relative shadow-[0_0_50px_rgba(34,211,238,0.1)]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button onClick={() => setIsAddNodeModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            {/* --- TAB: GOVERNANCE (DAO) --- */}
+            {activeTab === 'governance' && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto">
+                    <GovernanceDashboard />
+                </motion.div>
+            )}
 
+            {/* --- TAB: PROTOCOL VAULT (Transparency) --- */}
+            {activeTab === 'vault' && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-5xl mx-auto">
+                    <VestingDashboard />
+                </motion.div>
+            )}
+
+        </div>
+
+            {/* Modal Reuse from Previous (Discount Code) */ }
+    <AnimatePresence>
+        {selectedProduct && selectedProduct.code && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedProduct(null)}>
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="bg-[#0a1a0f] border border-beetle-gold/50 p-8 rounded-2xl max-w-md w-full text-center relative shadow-[0_0_50px_rgba(212,175,55,0.2)]"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button onClick={() => setSelectedProduct(null)} className="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+
+                    <div className="w-16 h-16 bg-beetle-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Zap className="text-beetle-gold w-8 h-8" />
+                    </div>
+
+                    <h3 className="text-2xl font-black text-white mb-2">Access Granted</h3>
+                    <p className="text-gray-400 mb-6">Use this code at checkout on our partner's site.</p>
+
+                    <div className="bg-black/50 border border-white/10 p-4 rounded-xl flex items-center justify-between mb-6 group cursor-pointer"
+                        onClick={() => navigator.clipboard.writeText(selectedProduct.code)}>
+                        <code className="text-beetle-electric font-mono text-xl font-bold">{selectedProduct.code}</code>
+                        <Copy className="text-gray-500 group-hover:text-white transition-colors w-5 h-5" />
+                    </div>
+
+                    <a href={selectedProduct.link} target="_blank" className="block w-full bg-beetle-gold text-black font-bold py-3 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2">
+                        Go to Partner Store <ExternalLink size={18} />
+                    </a>
+                </motion.div>
+            </div>
+        )}
+
+        {/* Add Device Modal (Testnet Mock) */}
+        {isAddNodeModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setIsAddNodeModalOpen(false)}>
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="bg-[#0c0c0c] border border-beetle-electric border-dashed p-8 rounded-2xl max-w-md w-full text-center relative shadow-[0_0_50px_rgba(34,211,238,0.1)]"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button onClick={() => setIsAddNodeModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+
+                    {registrationStep === 'approve' && (
+                        <>
+                            <div className="w-16 h-16 bg-beetle-gold/20 border border-beetle-gold/30 rounded-xl flex items-center justify-center mx-auto mb-6">
+                                <Lock className="text-beetle-gold w-8 h-8" />
+                            </div>
+                            <h3 className="text-xl font-black text-white mb-2">Step 1: Protocol Activation Burn</h3>
+                            <p className="text-gray-400 mb-6 text-sm">To connect a node and start earning, you must burn a 50 SCARAB activation fee. This creates a permanent deflationary sink for the token.</p>
+
+                            <div className="bg-black/50 border border-white/5 p-4 rounded-xl flex flex-col mb-6 w-full text-left">
+                                <div className="flex justify-between items-center text-sm mb-2">
+                                    <span className="text-gray-500">Activation Fee</span>
+                                    <span className="text-white font-mono font-bold">50 SCARAB</span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleApproveFee}
+                                disabled={isSubmitting}
+                                className="bg-beetle-gold w-full text-black font-bold py-3 rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] disabled:opacity-50"
+                            >
+                                {isSubmitting ? 'Approving...' : 'Approve 50 SCARAB Burn →'}
+                            </button>
+                        </>
+                    )}
+
+                    {registrationStep === 'register' && (
+                        <>
                             <div className="w-16 h-16 bg-beetle-electric/10 border border-beetle-electric/30 rounded-xl flex items-center justify-center mx-auto mb-6">
                                 <Activity className="text-beetle-electric w-8 h-8" />
                             </div>
 
-                            <h3 className="text-xl font-black text-white mb-2">Connect New Hardware</h3>
+                            <h3 className="text-xl font-black text-white mb-2">Step 2: Sync Hardware</h3>
                             <p className="text-gray-400 mb-6 text-sm">Please power on your SCARAB Solar Node or Bokashi Kit and scan the factory QR code.</p>
 
                             <div className="bg-black/50 border border-white/5 p-6 rounded-xl flex flex-col items-center justify-center mb-6 w-full">
@@ -672,9 +911,9 @@ export default function ColonyDashboard() {
                                         <div className="flex w-full gap-2">
                                             <button
                                                 onClick={() => setIsScanningActive(true)}
-                                                className="bg-beetle-electric flex-1 text-black font-bold py-3 px-4 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-lg"
+                                                className="bg-beetle-electric flex-1 w-full text-black font-bold py-3 px-4 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-lg"
                                             >
-                                                <Camera size={18} /> Open Camera
+                                                <Camera size={18} /> Start Camera
                                             </button>
                                             <button
                                                 onClick={handleMockScan}
@@ -691,10 +930,12 @@ export default function ColonyDashboard() {
                             <div className="text-xs text-gray-500 text-left bg-black/40 p-3 rounded-lg border border-white/5 line-clamp-3">
                                 <strong>Technical Info:</strong> The QR code contains an ECDSA signature from the SCARAB manufacturer. Scanning it triggers the DeviceRegistry contract to bind the physical hardware (via P-256 public key) to your wallet address: <code>{address?.substring(0, 8)}...</code>
                             </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-        </section>
+                        </>
+                    )}
+                </motion.div>
+            </div>
+        )}
+    </AnimatePresence>
+        </section >
     );
 }

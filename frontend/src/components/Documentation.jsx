@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Pickaxe, Sprout, UserPlus, ChevronRight, CheckCircle, Zap, Shield, Database, Sun, Recycle } from 'lucide-react';
+import { BookOpen, Pickaxe, Sprout, UserPlus, ChevronRight, CheckCircle, Zap, Shield, Database, Sun, Recycle, MapPin, Scan, Coins } from 'lucide-react';
 import Navbar from './Navbar';
 
 export default function Documentation() {
@@ -80,21 +80,21 @@ export default function Documentation() {
 
                         <div className="space-y-6">
                             <div className="border border-beetle-electric/20 bg-beetle-electric/5 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Sun className="text-beetle-electric" /> Solar Node Mining (1.0x Base Reward)</h3>
+                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Sun className="text-beetle-electric" /> Solar Sentinel Node (2,400 BRU/yr)</h3>
                                 <p className="mb-4 text-sm">Hardware cost: $349. Users plug the SCARAB Node directly between their solar inverter and the grid. Assumes an average of 1 kWh/day output.</p>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Reward calculation: Up to 8 SCARAB per Verified kWh generated.</li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Expected Returns: ~2,920 SCARAB / Year.</li>
+                                <ul className="space-y-2 text-sm text-gray-400">
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Reward Calculation: Nodes earn Base Regenerative Units (BRU) proportionate to their net grid displacement.</li>
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Yield: Proportional share of the daily emission budget (calculated per 30-day epoch).</li>
                                 </ul>
                             </div>
 
                             <div className="border border-beetle-gold/20 bg-beetle-gold/5 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Recycle className="text-beetle-gold" /> Smart Bokashi Mining (Up to 50 SCARAB / Cycle)</h3>
-                                <p className="mb-4 text-sm">Hardware cost: $89 + $12/mo Bran Subscription.</p>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> <span className="font-bold text-white">Why up to 50 SCARAB per cycle?</span> Rewards dual-impact verification. (1) Avoids methane emissions vs landfills. (2) Sequesters carbon into the soil.</li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Requirements: Maintain 35-42°C temp profile, 800+ ppm gas production, and verifiable 8-15% weight loss over a 14-day cycle.</li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Expected Returns: ~1,200 SCARAB / Year. Cost offset: $144/year subscription vs 1,200 SCARAB (valued organically) + Free high-grade compost.</li>
+                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Recycle className="text-beetle-gold" /> Smart Bokashi Kit (650 BRU/yr)</h3>
+                                <p className="mb-4 text-sm">Hardware cost: $89 + $12/mo SaaS Subscription.</p>
+                                <ul className="space-y-2 text-sm text-gray-400">
+                                    <li className="flex items-start gap-2"><CheckCircle size={14} className="text-green-400 mt-1" /> <span><strong className="text-white">Why are we measuring mass?</strong> Rewards dual-impact verification. (1) Avoids methane emissions vs landfills. (2) Sequesters carbon into the soil via the Fertility Handshake.</span></li>
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Requirements: Maintain 35-42°C temp profile, 800+ ppm gas production, and verifiable weight loss.</li>
+                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Geolocalized Bonus: Transferring prep-compost to a verified local farmer (0-20km) applies up to a 1.3x multiplier to the earned BRU.</li>
                                 </ul>
                             </div>
                         </div>
@@ -103,38 +103,109 @@ export default function Documentation() {
             case 'soil':
                 return (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">Soil-as-a-Service & The Closed Loop</h2>
-                            <p className="mb-4">
-                                A critical issue for urban composters is disposing of the final fermented product. SCARAB's architecture treats local Farmers as "Verified Sink Nodes", creating an economic loop between the city and the farm.
-                            </p>
-                        </div>
+                        <section className="py-12 bg-gradient-to-b from-black to-[#0a1a0f] rounded-3xl overflow-hidden border border-white/5 relative">
+                            {/* Decorative elements */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/5 rounded-full blur-[80px]"></div>
 
-                        <div className="bg-black/40 border border-white/5 p-6 rounded-2xl">
-                            <h3 className="text-xl font-bold text-white mb-4">The Fertility Handshake</h3>
-                            <ol className="space-y-6 relative border-l border-green-500/20 ml-3 pl-6">
-                                <li className="relative">
-                                    <div className="absolute -left-8 w-4 h-4 rounded-full bg-green-500 ring-4 ring-black"></div>
-                                    <h4 className="font-bold text-white mb-1">1. User Initiates Drop-Off</h4>
-                                    <p className="text-sm">After a 14-day fermentation cycle, the urban user locates a verified Farm or "Community Hub" via the SCARAB Regen-Map and physically transports the bucket.</p>
-                                </li>
-                                <li className="relative">
-                                    <div className="absolute -left-8 w-4 h-4 rounded-full bg-green-500 ring-4 ring-black"></div>
-                                    <h4 className="font-bold text-white mb-1">2. Farmer Scanning & Verification</h4>
-                                    <p className="text-sm">The Farmer scans the urban user's cryptographic QR code (acting as a digitally signed receipt of nutrient transfer). The Farmer instantly receives high-quality fertilizer for free.</p>
-                                </li>
-                                <li className="relative">
-                                    <div className="absolute -left-8 w-4 h-4 rounded-full bg-green-500 ring-4 ring-black"></div>
-                                    <h4 className="font-bold text-white mb-1">3. Protocol Rewards (The 3-Way Split)</h4>
-                                    <p className="text-sm">The Smart Contract issues a verified 3-way distribution: <br /></p>
-                                    <ul className="mt-2 space-y-1 text-sm">
-                                        <li><strong className="text-white">15 SCARAB (User):</strong> Closure Bonus for correct ecological behavior.</li>
-                                        <li><strong className="text-white">7 SCARAB (Farmer):</strong> Processing Fee. <em>Note: Farmers must actively stake 100 SCARAB to become a Verified Sink Hub to deter bad actors.</em></li>
-                                        <li><strong className="text-white">3 SCARAB (Solar Node):</strong> Validation Fee issued to the local Solar Node that cryptographically signed the Proof of Physical Presence.</li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </div>
+                            <div className="container mx-auto px-6 relative z-10">
+
+                                <div className="text-center mb-16">
+                                    <span className="text-beetle-green font-bold uppercase tracking-[0.3em] text-sm">
+                                        Soil-as-a-Service™
+                                    </span>
+                                    <h2 className="text-4xl md:text-5xl font-black text-white mt-4 mb-6 leading-tight">
+                                        Closing the Urban–Rural<br />Nutrient Loop
+                                    </h2>
+                                    <p className="text-gray-400 max-w-3xl mx-auto text-lg">
+                                        SCARAB transforms urban organic waste into verified agricultural input
+                                        through a cryptographically secured settlement mechanism.
+                                    </p>
+                                </div>
+
+                                {/* The Fertility Handshake */}
+                                <div className="max-w-4xl mx-auto mb-20">
+                                    <h3 className="text-2xl font-bold text-white mb-10 text-center">
+                                        The Fertility Handshake
+                                    </h3>
+
+                                    <div className="grid md:grid-cols-3 gap-6">
+                                        <HandshakeStep
+                                            icon={<MapPin />}
+                                            title="1. Urban Regeneration"
+                                            description="After completing fermentation, users locate a Verified Sink Node (Farm) via the Regen-Map. Physical proximity is established."
+                                        />
+                                        <HandshakeStep
+                                            icon={<Scan />}
+                                            title="2. Physical Settlement"
+                                            description="Farmers scan a one-time cryptographic receipt confirming nutrient transfer. Weight sensors verify material quantity."
+                                        />
+                                        <HandshakeStep
+                                            icon={<Coins />}
+                                            title="3. Protocol Settlement"
+                                            description="Three-way reward distribution: User (closure bonus), Farmer (processing fee), Validator Node (presence proof)."
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Reward Breakdown */}
+                                <div className="bg-black/60 rounded-2xl p-8 border border-beetle-green/30 max-w-4xl mx-auto mb-20 shadow-[0_0_30px_rgba(74,222,128,0.05)]">
+                                    <h3 className="text-xl font-bold text-white mb-8 text-center">
+                                        Settlement Economics
+                                    </h3>
+                                    <div className="grid md:grid-cols-3 gap-8">
+                                        <RewardCard
+                                            amount="15 SCARAB"
+                                            recipient="User"
+                                            description="Closure Bonus for completing the ecological loop"
+                                            color="beetle-gold"
+                                        />
+                                        <RewardCard
+                                            amount="7 SCARAB"
+                                            recipient="Farmer"
+                                            description="Processing Fee + fertilizer acquisition"
+                                            color="beetle-green"
+                                        />
+                                        <RewardCard
+                                            amount="3 SCARAB"
+                                            recipient="Validator"
+                                            description="Physical presence verification reward"
+                                            color="beetle-electric"
+                                        />
+                                    </div>
+                                    <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-center">
+                                        <p className="text-xs text-gray-500 font-medium">
+                                            All rewards scale dynamically with total network efficiency to preserve monetary stability.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Anti-Fraud */}
+                                <div className="max-w-4xl mx-auto bg-red-500/5 border border-red-500/20 rounded-xl p-8 shadow-inner">
+                                    <h3 className="text-white font-bold mb-6 flex items-center gap-2 text-lg">
+                                        <Shield className="text-red-400" />
+                                        Anti-Fraud Architecture (v2)
+                                    </h3>
+                                    <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-300">
+                                        <FraudProtection
+                                            method="Weight Correlation Tolerance"
+                                            description="User's final bucket weight must dynamically match farmer's received weight (±10% variance)."
+                                        />
+                                        <FraudProtection
+                                            method="One-Time Nonce Cryptography"
+                                            description="QR codes execute on a one-time nonce structure preventing remote replay attacks."
+                                        />
+                                        <FraudProtection
+                                            method="Bluetooth Proximity (Incoming)"
+                                            description="Validator nodes must be physically present (RSSI < -60 dBm) for final validation."
+                                        />
+                                        <FraudProtection
+                                            method="Dynamic Staking (Incoming)"
+                                            description="Farmers stake proportional to capacity (1 SCARAB per kg required)."
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </motion.div>
                 );
             case 'onboarding':
@@ -234,44 +305,140 @@ export default function Documentation() {
             case 'emissions':
                 return (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">Emission & Monetary Policy</h2>
-                            <p className="mb-4">
-                                SCARAB has a fixed maximum supply of 1,000,000,000 tokens. The <code>SCARABToken.sol</code> contract has no <code>mint()</code> function accessible post-deployment. The only emission mechanism is the Regeneration Pool (300M tokens) which unlocks via <code>EmissionController.sol</code> according to the <code>e^(-0.0019 × days)</code> decay formula over approximately 77 years at current device density.
-                            </p>
-                        </div>
-                        <div className="bg-black/40 border border-white/10 p-8 rounded-2xl font-mono text-sm leading-8 text-gray-300 overflow-x-auto text-nowrap">
-                            <span className="text-beetle-gold">Emission Formula:</span> <br />
-                            <span className="text-white">R(t) = (B * e^(-λt)) * MIN(1, (V_t / T_t))</span><br /><br />
-                            <strong>B</strong> = Base Emission Rate (Starts at 80,000 SCARAB/day)<br />
-                            <strong>λ</strong> = Decay Factor (0.0019 per day, resulting in a 50% yearly reduction)<br />
-                            <strong>V_t</strong> = Verified Network Output (e.g., total kWh generated)<br />
-                            <strong>T_t</strong> = Target Output (Active Devices * Target kWh)<br />
-                        </div>
-                        <h3 className="text-xl font-bold text-white mt-8 mb-4">Network Scenarios & Hard Caps</h3>
-                        <div className="grid md:grid-cols-3 gap-6">
-                            <div className="bg-red-500/10 border border-red-500/30 p-5 rounded-xl">
-                                <h4 className="text-red-400 font-bold mb-2">1. Underperforming Network</h4>
-                                <p className="text-sm">Network generates 8,000 kWh vs 10,000 kWh target (0.8x ratio).</p>
-                                <hr className="border-red-500/20 my-3" />
-                                <p className="text-sm font-bold text-white">Result: 64,000 SCARAB emitted.</p>
-                                <p className="text-xs text-gray-500 mt-1">Inflation slows down automatically to match utility.</p>
+                        <section id="emission-policy" className="mb-12">
+                            <h2 className="text-3xl font-black text-white mb-6 flex items-center gap-3">
+                                <TrendingDown className="text-beetle-green inline-block mr-2" />
+                                Emission & Monetary Policy
+                            </h2>
+
+                            <div className="bg-beetle-gold/5 border border-beetle-gold/30 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                                    <Lock size={18} className="text-beetle-gold" />
+                                    Fixed Supply with Time-Based Decay
+                                </h3>
+                                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                                    SCARAB has a <strong className="text-white">fixed maximum supply of 1,000,000,000 tokens</strong>.
+                                    No additional tokens can be minted beyond this cap. The <code>SCARABToken.sol</code> contract
+                                    has no administrative mint function post-deployment.
+                                </p>
+                                <p className="text-gray-300 text-sm leading-relaxed">
+                                    The Regeneration Pool (300M tokens, 30% of supply) unlocks via <code>EmissionController.sol</code>
+                                    according to an <strong className="text-white">exponential decay formula</strong> that
+                                    mathematically guarantees long-term sustainability.
+                                </p>
                             </div>
-                            <div className="bg-green-500/10 border border-green-500/30 p-5 rounded-xl">
-                                <h4 className="text-green-400 font-bold mb-2">2. On-Target Network</h4>
-                                <p className="text-sm">Network generates exactly 10,000 kWh vs 10,000 kWh target (1.0x ratio).</p>
-                                <hr className="border-green-500/20 my-3" />
-                                <p className="text-sm font-bold text-white">Result: 80,000 SCARAB emitted.</p>
-                                <p className="text-xs text-gray-500 mt-1">Maximum intended emission.</p>
+
+                            <div className="bg-black/40 border border-white/10 rounded-xl p-6 mb-6">
+                                <h3 className="text-lg font-bold text-white mb-4">
+                                    Decay Model: e^(-λt)
+                                </h3>
+
+                                <div className="space-y-4">
+                                    <div className="bg-black/80 rounded-lg p-5 border border-white/5">
+                                        <div className="text-sm font-bold text-white mb-4">
+                                            Emission Pool Depletion Schedule:
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-[#111] rounded-lg p-4 border border-white/5">
+                                                <div className="text-xs text-gray-500 mb-1">Year 1</div>
+                                                <div className="text-2xl font-bold text-beetle-gold mb-1">~21.6M</div>
+                                                <div className="text-xs text-gray-500">SCARAB Emitted</div>
+                                            </div>
+                                            <div className="bg-[#111] rounded-lg p-4 border border-white/5">
+                                                <div className="text-xs text-gray-500 mb-1">Year 10</div>
+                                                <div className="text-2xl font-bold text-amber-500 mb-1">~158.5M</div>
+                                                <div className="text-xs text-gray-500">Cumulative Emitted (53%)</div>
+                                            </div>
+                                            <div className="bg-[#111] rounded-lg p-4 border border-white/5">
+                                                <div className="text-xs text-gray-500 mb-1">Year 20</div>
+                                                <div className="text-2xl font-bold text-orange-500 mb-1">~233.1M</div>
+                                                <div className="text-xs text-gray-500">Cumulative Emitted (77%)</div>
+                                            </div>
+                                            <div className="bg-[#111] rounded-lg p-4 border border-white/5">
+                                                <div className="text-xs text-gray-500 mb-1">Year 40</div>
+                                                <div className="text-2xl font-bold text-red-500/80 mb-1">~285.3M</div>
+                                                <div className="text-xs text-gray-500">Cumulative Emitted (95%)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="bg-blue-500/10 border border-blue-500/30 p-5 rounded-xl">
-                                <h4 className="text-blue-400 font-bold mb-2">3. Overperforming Network</h4>
-                                <p className="text-sm">Network generates 15,000 kWh vs 10,000 kWh target (1.5x ratio).</p>
-                                <hr className="border-blue-500/20 my-3" />
-                                <p className="text-sm font-bold text-white">Result: 80,000 SCARAB emitted.</p>
-                                <p className="text-xs text-blue-300 mt-1">CAP APPLIED. Overperformance does NOT cause excess inflation. Supply is protected.</p>
+
+                            <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-6">
+                                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                                    <CheckCircle size={18} className="text-green-400" />
+                                    Long-Term Sustainability Proven
+                                </h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">
+                                    The exponential decay model ensures the 300M Regeneration Pool lasts <strong className="text-white">77+ years</strong> at current network density.
+                                    As device count increases, the efficiency ratio naturally scales rewards to maintain sustainable emission rates.
+                                </p>
                             </div>
-                        </div>
+                        </section>
+
+                        <section id="emission-appendix" className="mb-12 mt-12 bg-black/30 p-8 rounded-2xl border border-white/5">
+                            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                                <BarChart3 size={20} className="text-gray-400" />
+                                Appendix: Emission Simulation Scenarios
+                            </h3>
+
+                            <div className="bg-black/60 rounded-lg p-4 border border-white/5 mb-8 font-mono text-sm overflow-x-auto text-nowrap">
+                                <div className="text-xs text-gray-400 mb-2 uppercase tracking-wider font-sans">Formula Reference</div>
+                                <code className="text-beetle-gold text-base block mb-2">
+                                    Emission(t) = D₀ × e^(-λt)
+                                </code>
+                                <div className="text-xs text-gray-500 pt-2 border-t border-white/5">
+                                    λ = 0.00020518 per day | D₀ = 61,554 SCARAB | Target: 95% emitted in 40 Years
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="bg-black/40 rounded-xl p-6 border border-white/10">
+                                    <h4 className="text-lg font-bold text-white mb-4">Scenario 1: 1,000 Solar + 2,000 Bokashi (Year 1)</h4>
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Total BRU</div><div className="text-gray-300 font-mono">3.7M</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Year 1 Budget</div><div className="text-gray-300 font-mono">~21.6M SCARAB</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Solar Yield</div><div className="text-gray-300 font-mono">14,042 SCARAB/yr</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Bokashi Yield</div><div className="text-beetle-green font-mono">3,803 SCARAB/yr</div></div>
+                                        <div className="col-span-2 lg:col-span-4 pt-3 border-t border-white/5">
+                                            <div className="text-white flex items-center justify-between"><span className="text-xs text-gray-500 uppercase">Strategic Impact:</span> Bootstraps network. First movers heavily subsidized for real capex.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-black/40 rounded-xl p-6 border border-white/10">
+                                    <h4 className="text-lg font-bold text-white mb-4">Scenario 2: 25,000 Solar + 100,000 Bokashi (Year 4)</h4>
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Total BRU</div><div className="text-gray-300 font-mono">125M</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Year 4 Budget</div><div className="text-gray-300 font-mono">~17.3M SCARAB</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Solar Yield</div><div className="text-gray-300 font-mono">332 SCARAB/yr</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Bokashi Yield</div><div className="text-amber-500 font-mono">90 SCARAB/yr</div></div>
+                                        <div className="col-span-2 lg:col-span-4 pt-3 border-t border-white/5">
+                                            <div className="text-white flex items-center justify-between"><span className="text-xs text-gray-500 uppercase">Strategic Impact:</span> "The Maturation Squeeze". Emission budget tightens proportionately.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-black/40 rounded-xl p-6 border border-white/10">
+                                    <h4 className="text-lg font-bold text-white mb-4">Scenario 3: 250,000 Solar + 1,000,000 Bokashi (Year 10)</h4>
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Total BRU</div><div className="text-gray-300 font-mono">1.25 Billion</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Year 10 Budget</div><div className="text-gray-300 font-mono">~11.0M SCARAB</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Solar Yield</div><div className="text-gray-300 font-mono">21 SCARAB/yr</div></div>
+                                        <div><div className="text-xs text-gray-600 mb-1 uppercase">Bokashi Yield</div><div className="text-red-500 font-mono">6 SCARAB/yr</div></div>
+                                        <div className="col-span-2 lg:col-span-4 pt-3 border-t border-white/5">
+                                            <div className="text-white flex items-center justify-between"><span className="text-xs text-gray-500 uppercase">Strategic Impact:</span> Late stage deflationary limit. Protocol relies entirely on Vault and Real-World SaaS Data Sales.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 bg-blue-500/5 border border-blue-500/20 rounded-xl p-6">
+                                <p className="text-blue-100/70 text-sm leading-relaxed">
+                                    <strong className="text-blue-400">Institutional Defense:</strong> Because nodes are paid a <em>fluid proportion</em> of the daily decaying emission block—rather than a static nominal rate—the network becomes fundamentally inflation-proof. Exhaustion of the 300M Regen Pool is mathematically impossible before the 40-year hardware horizon.
+                                </p>
+                            </div>
+                        </section>
 
                         <h3 className="text-xl font-bold text-white mt-8 mb-4">Vesting Contracts (Zero-Trust Security)</h3>
                         <div className="bg-black/40 border border-white/10 p-5 rounded-xl font-mono text-xs">
@@ -727,6 +894,51 @@ export default function Documentation() {
                         {renderContent()}
                     </div>
                 </main>
+            </div>
+        </div>
+    );
+}
+
+// Helper Components for SaaS Section
+function HandshakeStep({ icon, title, description }) {
+    return (
+        <div className="bg-black/60 rounded-xl p-6 border border-white/5 shadow-lg relative overflow-hidden group">
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+            <div className="w-12 h-12 bg-beetle-green/10 border border-beetle-green/20 text-beetle-green shadow-inner rounded-xl flex items-center justify-center mb-6">
+                {icon}
+            </div>
+            <h4 className="text-white font-bold mb-3">{title}</h4>
+            <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
+        </div>
+    );
+}
+
+function RewardCard({ amount, recipient, description, color }) {
+    // Determine gradient based on color prop
+    const bgMap = {
+        'beetle-gold': 'from-[#D4AF37]/5',
+        'beetle-green': 'from-[#4ADE80]/5',
+        'beetle-electric': 'from-[#22D3EE]/5'
+    };
+
+    return (
+        <div className={`text-center p-6 rounded-2xl border border-white/5 bg-gradient-to-b ${bgMap[color] || 'from-white/5'} to-transparent`}>
+            <div className={`text-3xl font-black text-${color} mb-3 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]`}>
+                {amount}
+            </div>
+            <div className="text-white font-bold mb-2 uppercase tracking-wide text-sm">{recipient}</div>
+            <p className="text-xs text-gray-500">{description}</p>
+        </div>
+    );
+}
+
+function FraudProtection({ method, description }) {
+    return (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-black/40 border border-white/5">
+            <CheckCircle className="text-green-500 w-5 h-5 mt-0.5 shrink-0 opacity-80" />
+            <div>
+                <div className="text-white font-bold text-sm mb-1">{method}</div>
+                <div className="text-gray-500 text-xs leading-relaxed">{description}</div>
             </div>
         </div>
     );
