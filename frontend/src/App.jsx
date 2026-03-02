@@ -82,7 +82,7 @@ function LandingPage({ onOpenBlueprint }) {
                         <div className="max-w-4xl mx-auto bg-black border border-beetle-gold/30 rounded-3xl p-8 md:p-14 text-center shadow-[0_0_50px_rgba(212,175,55,0.1)] relative">
                             {/* Urgency Badge */}
                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-900/50 border border-red-500/50 text-red-400 font-bold px-4 py-1.5 rounded-full text-sm whitespace-nowrap hidden sm:block">
-                                ⏰ Phase 1 closes in 42 days (Price increases 67% in Phase 2)
+                                ⏰ Phase 1 limited to MVP R&D hardware allocation
                             </div>
 
                             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
@@ -90,7 +90,7 @@ function LandingPage({ onOpenBlueprint }) {
                             </h2>
                             <p className="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
                                 Secure early infrastructure allocation: <strong className="text-white">8M SCARAB per $100</strong>.<br className="hidden sm:block" />
-                                <span className="text-beetle-gold font-bold">+167% ROI</span> vs. public launch price.
+                                <span className="text-beetle-gold font-bold">Funding R&D</span> and institutional scaling.
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">

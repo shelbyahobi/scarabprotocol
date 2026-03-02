@@ -29,8 +29,8 @@ export default function SimplifiedTokenomics() {
                         Asset-Backed <span className="text-beetle-gold">Tokenomics</span>
                     </h2>
                     <p className="text-center text-gray-400 max-w-2xl mx-auto mt-6 text-lg">
-                        Unlike speculative tokens, SCARAB has an intrinsic floor price backed by
-                        hardware sales revenue. As more devices sell, the floor rises mathematically.
+                        Unlike speculative tokens, SCARAB features a mathematically supported treasury ratio backed by
+                        hardware sales revenue. As more devices sell, the baseline rises.
                     </p>
                 </div>
 
@@ -85,7 +85,7 @@ export default function SimplifiedTokenomics() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-beetle-gold to-transparent opacity-50"></div>
 
                     <h3 className="text-2xl font-bold text-white text-center mb-4">
-                        Intrinsic Floor Mechanism
+                        Treasury Support Ratio
                     </h3>
                     <p className="text-gray-300 text-center mb-10 max-w-2xl mx-auto">
                         $50 from every single $349 hardware purchase is locked natively as USDC in the Treasury Vault.
@@ -102,7 +102,7 @@ export default function SimplifiedTokenomics() {
                     </div>
 
                     <p className="text-sm text-gray-500 text-center mt-8 italic">
-                        * Note: This represents the absolute mathematical "worst-case" floor limit. The actual market peg is historically modeled at 5-10× higher due to real utility demand scaling against decreasing emissions.
+                        * Note: This represents the mathematical support limit. The actual market value is historically modeled at 5-10× higher due to real utility demand scaling against decreasing emissions.
                     </p>
                 </div>
 

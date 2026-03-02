@@ -32,7 +32,7 @@ export default function UseOfFunds() {
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto">
                         Every hardware sale is a reinvestment event. 14% of each node's revenue
-                        is locked as USDC, growing the token's intrinsic floor price automatically.
+                        is locked as USDC, growing the token's treasury support ratio automatically.
                     </p>
                 </div>
 
@@ -77,7 +77,7 @@ export default function UseOfFunds() {
                     {/* 5-Year Floor Price Projection */}
                     <div className="bg-[#111] border border-white/10 rounded-3xl p-8 relative overflow-hidden">
                         <div className="absolute top-4 right-4 bg-beetle-gold/20 text-beetle-gold text-xs font-bold px-3 py-1 rounded-full">LIVE MODEL</div>
-                        <h3 className="text-white font-bold text-lg mb-2">5-Year Floor Price Projection</h3>
+                        <h3 className="text-white font-bold text-lg mb-2">5-Year Treasury Model</h3>
                         <p className="text-gray-500 text-xs mb-6 font-mono">P<sub>floor</sub> = V<sub>USDC</sub> ÷ S<sub>circ</sub></p>
 
                         <div className="space-y-3 font-mono text-sm">
@@ -102,7 +102,7 @@ export default function UseOfFunds() {
                                 </div>
                             ))}
                         </div>
-                        <p className="text-gray-600 text-xs mt-4">Worst-case floor only. Market price typically 5–10× floor due to utility demand.</p>
+                        <p className="text-gray-600 text-xs mt-4">Mathematical minimum ratio. Market price typically scales 5–10× based on utility demand.</p>
                     </div>
                 </div>
 

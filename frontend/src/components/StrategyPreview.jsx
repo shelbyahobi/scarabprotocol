@@ -42,8 +42,8 @@ export default function StrategyPreview() {
                                 <span className="text-white font-mono font-bold">5% (50M)</span>
                             </div>
                             <div className="flex justify-between text-sm pb-2">
-                                <span className="text-gray-500">Benefit</span>
-                                <span className="text-green-400 font-bold">+167% vs Launch</span>
+                                <span className="text-gray-500">Purpose</span>
+                                <span className="text-green-400 font-bold">R&D Bootstrapping</span>
                             </div>
                         </div>
 
@@ -72,8 +72,8 @@ export default function StrategyPreview() {
                                 <span className="text-white font-mono font-bold">10% (100M)</span>
                             </div>
                             <div className="flex justify-between text-sm pb-2">
-                                <span className="text-gray-500">Benefit</span>
-                                <span className="text-green-400 font-bold">+100% vs Launch</span>
+                                <span className="text-gray-500">Purpose</span>
+                                <span className="text-green-400 font-bold">Initial Manufacturing</span>
                             </div>
                         </div>
 
@@ -102,8 +102,8 @@ export default function StrategyPreview() {
                                 <span className="text-white font-mono font-bold">15% (150M)</span>
                             </div>
                             <div className="flex justify-between text-sm pb-2">
-                                <span className="text-gray-500">Benefit</span>
-                                <span className="text-green-400 font-bold">+50% vs Launch</span>
+                                <span className="text-gray-500">Purpose</span>
+                                <span className="text-green-400 font-bold">Strategic Scale</span>
                             </div>
                         </div>
 

@@ -142,7 +142,7 @@ export default function Tokenomics() {
                                     <ArrowUpRight className="text-beetle-gold" size={18} /> 2. Value Appreciation
                                 </h4>
                                 <p className="text-gray-400 text-sm mb-4">
-                                    While individual token <em>quantity</em> drops, token <em>value</em> rises. 10,000 nodes of varying types generate 100x more real-world revenue (hardware sales, energy, compost) than 100 nodes. All that revenue flows directly into the Liquidity Vault, driving the <strong className="text-beetle-gold">Intrinsic Floor Price</strong> upward. You earn fewer tokens, but each token is worth significantly more.
+                                    While individual token <em>quantity</em> drops, token <em>value</em> rises. 10,000 nodes of varying types generate 100x more real-world revenue (hardware sales, energy, compost) than 100 nodes. All that revenue flows directly into the Liquidity Vault, driving the <strong className="text-beetle-gold">Treasury Support Ratio</strong> upward. You earn fewer tokens, but each token represents significantly more underlying value.
                                 </p>
                             </div>
                         </div>
@@ -157,9 +157,9 @@ export default function Tokenomics() {
 
                 {/* BOKASHI ROI EXAMPLE */}
                 <div className="mt-8 bg-[#0a1a0f] border border-green-500/20 rounded-2xl p-8 relative overflow-hidden">
-                    <h3 className="text-2xl font-black text-white mb-2">The Ecosystem Subscription (ROI Example)</h3>
+                    <h3 className="text-2xl font-black text-white mb-2">The Ecosystem Subscription (Network Value)</h3>
                     <p className="text-gray-400 mb-6">
-                        To earn SCARAB from an active Bokashi Node, users must maintain an active <strong>$9 USDT/month</strong> hardware supply subscription (for the fermentation Bran bags) and physically scan the unique QR code on each bag to unlock the smart contract minting cycle. Here is how the Vault Floor mathematically guarantees profitability over time:
+                        To earn SCARAB from an active Bokashi Node, users must maintain an active <strong>$9 USDT/month</strong> hardware supply subscription (for the fermentation Bran bags) and physically scan the unique QR code on each bag to unlock the smart contract minting cycle. Here is how the Vault Floor mathematically supports the ecosystem over time:
                     </p>
 
                     <div className="grid md:grid-cols-3 gap-6 text-center">
@@ -172,24 +172,23 @@ export default function Tokenomics() {
                             <div className="text-sm text-gray-500 mt-1">Monthly Subscription Cost<br />(Bokashi Bran)</div>
                         </div>
                         <div className="bg-black/40 p-6 rounded-xl border border-green-500/20 relative shadow-[0_0_30px_rgba(34,197,94,0.1)]">
-                            <div className="absolute top-0 right-0 bg-green-500 text-black text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl">GUARANTEED ROI</div>
                             <div className="text-3xl font-black text-green-400">$0.09</div>
-                            <div className="text-sm text-gray-500 mt-1">Required Floor Price<br />to Break Even</div>
+                            <div className="text-sm text-gray-500 mt-1">Required Support Ratio<br />to Break Even</div>
                         </div>
                     </div>
 
                     <div className="mt-6 text-sm text-gray-400 leading-relaxed border-t border-white/10 pt-6">
-                        <strong className="text-white">The Math:</strong> When the SCARAB Intrinsic Floor Price reaches $0.09 (backed entirely by hard cash in the Vault), selling 100 tokens nets $9.00—completely covering the subscription cost forever. Any market speculation above the $0.09 floor is pure profit. Because the Vault Floor constantly rises as thousands of cross-sector nodes are sold, early adopters lock in massive token reserves before the yield compresses, guaranteeing a risk-free ROI.
+                        <strong className="text-white">The Math:</strong> When the SCARAB Treasury Support Ratio reaches $0.09 (backed entirely by hard cash in the Vault), burning 100 tokens nets $9.00—completely covering the subscription cost forever. Any market speculation above the $0.09 baseline is additional value. Because the Vault continuously rises as thousands of cross-sector nodes are sold, early adopters lock in massive token reserves before the yield compresses.
                     </div>
                 </div>
 
                 {/* USDC FLOOR PRICE FORMULA */}
                 <div className="mt-6 bg-black/40 border border-white/10 rounded-2xl p-6">
                     <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-                        <Vault size={18} className="text-beetle-gold" /> Token Floor Price Mechanism
+                        <Vault size={18} className="text-beetle-gold" /> Token Baseline Treasury Mechanism
                     </h3>
                     <p className="text-gray-400 text-sm mb-4">
-                        Unlike speculative tokens, SCARAB has a growing intrinsic floor backed by hardware sales revenue.
+                        Unlike speculative tokens, SCARAB has a growing mathematical baseline backed by hardware sales revenue.
                         <strong className="text-beetle-gold"> $50 USDC</strong> from every node sale is locked in the Liquidity Backing Vault.
                     </p>
                     <div className="bg-[#0a1a0f] border border-beetle-gold/20 rounded-xl p-4 mb-4 text-center font-mono">

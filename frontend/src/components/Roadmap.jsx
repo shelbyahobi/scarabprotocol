@@ -9,7 +9,7 @@ const phases = [
         items: [
             "Smart Contract Deployment (BSC Mainnet)",
             "SCARAB Branding & Domain Live",
-            "Phase 1 Seed Sale: $600K target",
+            "Pre-Seed Round: $600K MVP target",
             "Working Prototype Video Demonstration"
         ],
         kpis: [
@@ -23,7 +23,7 @@ const phases = [
         subtitle: "Manufacturing",
         status: "upcoming",
         items: [
-            "Phase 2 & 3 Seed Sales",
+            "Seed Round: Manufacturing Allocation",
             "Validator Network: 50+ nodes operational",
             "Manufacturing: 1,000 SCARAB Nodes",
             "Wyoming DAO LLC Formation"
@@ -39,15 +39,15 @@ const phases = [
         subtitle: "Launch & Utility",
         status: "upcoming",
         items: [
-            "PancakeSwap Listing + 12mo Liquidity Lock",
+            "Strategic / Public Round Finalization",
             "CoinGecko & CoinMarketCap Verified",
             "SCARAB Marketplace v1.0 Launch",
             "First 100 Devices Deployed (Pilot)"
         ],
         kpis: [
-            { label: "Total Raised", value: "$2M", color: "text-beetle-gold" },
+            { label: "Total Raised", value: "$2M+", color: "text-beetle-gold" },
             { label: "Active Devices", value: "100+", color: "text-white" },
-            { label: "Locked Liquidity", value: "$1.6M", color: "text-beetle-green" }
+            { label: "Locked Liquidity", value: "Strategic", color: "text-beetle-green" }
         ]
     },
     {
@@ -55,15 +55,15 @@ const phases = [
         subtitle: "Expansion",
         status: "upcoming",
         items: [
-            "CEX Listings: Gate.io, MEXC, KuCoin targets",
-            "10,000+ Active SCARAB Nodes Deployed",
+            "Compliance-First Exchange Expansion",
+            "2,500+ Active SCARAB Nodes Deployed",
             "Hardware v2.0 R&D (Miniaturization)",
             "ESG Fund & Carbon Credit Partnerships"
         ],
         kpis: [
-            { label: "Active Devices", value: "10,000+", color: "text-beetle-gold" },
-            { label: "Target Market Cap", value: "$50M+", color: "text-white" },
-            { label: "CEX Listings", value: "3+", color: "text-beetle-green" }
+            { label: "Active Devices", value: "2,500+", color: "text-beetle-gold" },
+            { label: "Exchange Strategy", value: "Tier 1", color: "text-white" },
+            { label: "B2B Pilots", value: "3+", color: "text-beetle-green" }
         ]
     },
     {
@@ -71,15 +71,15 @@ const phases = [
         subtitle: "Global Scale",
         status: "upcoming",
         items: [
-            "100,000+ Devices Across 50+ Countries",
+            "50,000+ Devices Across 50+ Countries",
             "Carbon Credit Marketplace Integration",
             "Multi-Chain Expansion (Polygon, Arbitrum)",
             "Community Land Acquisitions (Resilience Hubs)"
         ],
         kpis: [
-            { label: "Global Devices", value: "100K+", color: "text-beetle-gold" },
+            { label: "Global Devices", value: "50K+", color: "text-beetle-gold" },
             { label: "Countries", value: "50+", color: "text-white" },
-            { label: "Network Value", value: "$500M+", color: "text-beetle-green" }
+            { label: "Network Value", value: "Maturing", color: "text-beetle-green" }
         ]
     }
 ];

@@ -823,7 +823,7 @@ export default function Documentation() {
                                 <h3 className="font-black text-white text-xl">Phase 2: Decentralization & Liquidity (Q3-Q4)</h3>
                                 <ul className="list-disc list-inside mt-2 text-sm space-y-1 text-gray-400">
                                     <li>Initial DEX Liquidity: ~$300K on PancakeSwap (Locked min. 12 months).</li>
-                                    <li>CEX Listings Target: Gate.io, MEXC, KuCoin.</li>
+                                    <li>Compliance-First Exchange Expansion.</li>
                                     <li>Polygon / Arbitrum cross-chain data availability bridge.</li>
                                     <li>DAO Parameter Voting enabled for token holders.</li>
                                 </ul>

@@ -34,7 +34,7 @@ export default function ValueProposition() {
                         <ValueProp
                             icon={<TrendingUp size={28} />}
                             title="Early Investors"
-                            description="Asset-backed token with an intrinsic floor price that rises mathematically with every new hardware deployment."
+                            description="Utility token with a mathematically supported treasury ratio that rises with every new hardware deployment."
                         />
                         <ValueProp
                             icon={<Leaf size={28} />}
