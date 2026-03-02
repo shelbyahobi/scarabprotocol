@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Pickaxe, Sprout, UserPlus, ChevronRight, CheckCircle, Zap, Shield, Database, Sun, Recycle, MapPin, Scan, Coins } from 'lucide-react';
+import { BookOpen, Pickaxe, Sprout, UserPlus, ChevronRight, CheckCircle, Zap, Shield, Database, Sun, Recycle, MapPin, Scan, Coins, PieChart, TrendingUp, Vault, Scale, ArrowDownRight, ArrowUpRight, BarChart3, Lock } from 'lucide-react';
 import Navbar from './Navbar';
 
 export default function Documentation() {
@@ -14,6 +14,7 @@ export default function Documentation() {
         { id: 'overview', icon: <BookOpen size={18} />, label: 'Platform Overview' },
         { id: 'architecture', icon: <Database size={18} />, label: 'Protocol Architecture' },
         { id: 'mining', icon: <Pickaxe size={18} />, label: 'How to Mine SCARAB' },
+        { id: 'tokenomics', icon: <PieChart size={18} />, label: 'Asset-Backed Tokenomics' },
         { id: 'emissions', icon: <Zap size={18} />, label: 'Emission & Monetary Policy' },
         { id: 'soil', icon: <Sprout size={18} />, label: 'The Farmer & Closed Loop' },
         { id: 'onboarding', icon: <UserPlus size={18} />, label: 'Onboarding Process' },
@@ -298,6 +299,133 @@ export default function Documentation() {
                                     <li><strong className="text-white">Parameter Bounds:</strong> Hardcoded safety limits (e.g., emissions cannot be voted up more than 10% per cycle).</li>
                                     <li><strong className="text-white">Timelock:</strong> 48-Hour delay on all treasury/marketing expenditures for absolute transparency.</li>
                                 </ul>
+                            </div>
+                        </div>
+                    </motion.div>
+                );
+            case 'tokenomics':
+                return (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
+                        <div className="mb-12">
+                            <h2 className="text-3xl font-black text-white mb-4">
+                                Asset-Backed Tokenomics
+                            </h2>
+                            <p className="text-gray-400 text-lg">
+                                1 Billion Fixed Supply. No Inflation Design.<br />
+                                <span className="text-beetle-gold">Utility-First Distribution.</span>
+                            </p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
+                            <div className="relative flex justify-center">
+                                <div className="w-80 h-80 rounded-full relative shadow-[0_0_50px_rgba(0,240,255,0.1)] transition-transform duration-500 ease-out" style={{
+                                    background: `conic-gradient(
+                                        #D4A843 0deg 108deg,
+                                        #3DDB5A 108deg 216deg,
+                                        #4D9FFF 216deg 306deg,
+                                        #A855F7 306deg 342deg,
+                                        #4B5563 342deg 360deg
+                                    )`
+                                }}>
+                                    <div className="absolute inset-4 bg-[#050a05] rounded-full flex flex-col items-center justify-center z-10">
+                                        <span className="text-5xl font-black text-white">1B</span>
+                                        <span className="text-sm text-gray-500 uppercase tracking-widest font-bold mt-2">Fixed Supply</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="space-y-4 mb-10">
+                                    {[
+                                        { label: "Seed Sale (R&D)", value: 30, color: "bg-beetle-gold", desc: "Funding Hardware R&D & Mfg" },
+                                        { label: "Regeneration Pool", value: 30, color: "bg-beetle-green", desc: "Mining Rewards for verified output" },
+                                        { label: "Liquidity Pool", value: 25, color: "bg-beetle-electric", desc: "Locked for 12 Months" },
+                                        { label: "Marketing & Scale", value: 10, color: "bg-purple-500", desc: "Global Expansion" },
+                                        { label: "Team (Vested)", value: 5, color: "bg-gray-600", desc: "24-Month Linear Vesting" },
+                                    ].map((item, index) => (
+                                        <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-white/5 hover:bg-white/5 transition-colors">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-3 h-3 rounded-full ${item.color} shadow-[0_0_8px_currentColor]`}></div>
+                                                <div>
+                                                    <div className="text-white font-bold">{item.label}</div>
+                                                    <div className="text-xs text-gray-500">{item.desc}</div>
+                                                </div>
+                                            </div>
+                                            <div className="font-mono text-beetle-gold font-bold">{item.value}%</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                                    <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                                        <Zap className="text-beetle-electric" size={18} /> Transaction Economics
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-4 bg-black/40 rounded-xl border border-white/5 text-center">
+                                            <div className="text-gray-400 text-xs uppercase tracking-widest mb-1">Buy Tax</div>
+                                            <div className="text-3xl font-black text-beetle-green">0%</div>
+                                            <div className="text-[10px] text-gray-500 mt-1">Frictionless Entry</div>
+                                        </div>
+                                        <div className="p-4 bg-black/40 rounded-xl border border-white/5 text-center">
+                                            <div className="text-gray-400 text-xs uppercase tracking-widest mb-1">Sell Tax</div>
+                                            <div className="text-3xl font-black text-red-400">5%</div>
+                                            <div className="text-[10px] text-gray-500 mt-1">3% Mktg / 2% Hardware</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 bg-black/40 border border-white/10 rounded-2xl p-8 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-beetle-green/10 rounded-full blur-[80px]"></div>
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-12 h-12 bg-beetle-green/10 border border-beetle-green/30 rounded-xl flex items-center justify-center">
+                                        <Scale className="text-beetle-green w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black text-white">The Scaling Flywheel</h3>
+                                        <p className="text-gray-400">Yield Compression vs. Value Appreciation</p>
+                                    </div>
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-8 mb-6">
+                                    <div>
+                                        <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                                            <ArrowDownRight className="text-red-400" size={18} /> 1. Yield Compression
+                                        </h4>
+                                        <p className="text-gray-400 text-sm">
+                                            The protocol emits a <strong className="text-white">fixed</strong> daily overall pool of SCARAB. As we add <strong>different types of nodes</strong>, they all share this exact same fixed pool. If 1,000 new Solar nodes join, the daily quantity of SCARAB earned by existing Bokashi nodes decreases. Early adopters earn the highest token quantities.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                                            <ArrowUpRight className="text-beetle-gold" size={18} /> 2. Value Appreciation
+                                        </h4>
+                                        <p className="text-gray-400 text-sm">
+                                            While individual token <em>quantity</em> drops, token <em>value</em> rises. 10,000 nodes generate 100x more real-world revenue than 100 nodes. All that revenue flows directly into the Liquidity Vault, driving the <strong className="text-beetle-gold">Intrinsic Floor Price</strong> upward.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 bg-[#0a1a0f] border border-green-500/20 rounded-2xl p-8 relative overflow-hidden">
+                            <h3 className="text-2xl font-black text-white mb-2">The Ecosystem Subscription (ROI Example)</h3>
+                            <p className="text-gray-400 mb-6">
+                                To earn SCARAB from an active Bokashi Node, users must maintain an active <strong>$9 USDT/month</strong> hardware supply subscription. Here is how the Vault Floor mathematically guarantees profitability over time:
+                            </p>
+                            <div className="grid md:grid-cols-3 gap-6 text-center">
+                                <div className="bg-black/40 p-6 rounded-xl border border-white/5">
+                                    <div className="text-3xl font-black text-white">100</div>
+                                    <div className="text-sm text-gray-500 mt-1">SCARAB / Month<br />(Example Yield)</div>
+                                </div>
+                                <div className="bg-black/40 p-6 rounded-xl border border-white/5">
+                                    <div className="text-3xl font-black text-red-400">$9</div>
+                                    <div className="text-sm text-gray-500 mt-1">Monthly Cost<br />(Bokashi Bran)</div>
+                                </div>
+                                <div className="bg-black/40 p-6 rounded-xl border border-green-500/20 relative shadow-[0_0_30px_rgba(34,197,94,0.1)]">
+                                    <div className="absolute top-0 right-0 bg-green-500 text-black text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl">GUARANTEED ROI</div>
+                                    <div className="text-3xl font-black text-green-400">$0.09</div>
+                                    <div className="text-sm text-gray-500 mt-1">Required Floor Price<br />to Break Even</div>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
