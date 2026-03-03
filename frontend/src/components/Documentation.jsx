@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Pickaxe, Sprout, UserPlus, ChevronRight, CheckCircle, Zap, Shield, Database, Sun, Recycle, MapPin, Scan, Coins, PieChart, TrendingUp, Vault, Scale, ArrowDownRight, ArrowUpRight, BarChart3, Lock } from 'lucide-react';
+import { BookOpen, Pickaxe, Sprout, UserPlus, ChevronRight, CheckCircle, Zap, Shield, Database, Sun, Recycle, MapPin, Scan, Coins, PieChart, TrendingUp, TrendingDown, Vault, Scale, ArrowDownRight, ArrowUpRight, BarChart3, Lock } from 'lucide-react';
 import Navbar from './Navbar';
 
 export default function Documentation() {
@@ -10,24 +10,37 @@ export default function Documentation() {
         window.scrollTo(0, 0);
     }, [activeTab]);
 
-    const TABS = [
-        { id: 'overview', icon: <BookOpen size={18} />, label: 'Platform Overview' },
-        { id: 'architecture', icon: <Database size={18} />, label: 'Protocol Architecture' },
-        { id: 'mining', icon: <Pickaxe size={18} />, label: 'How to Mine SCARAB' },
-        { id: 'tokenomics', icon: <PieChart size={18} />, label: 'Asset-Backed Tokenomics' },
-        { id: 'emissions', icon: <Zap size={18} />, label: 'Emission & Monetary Policy' },
-        { id: 'soil', icon: <Sprout size={18} />, label: 'The Farmer & Closed Loop' },
-        { id: 'onboarding', icon: <UserPlus size={18} />, label: 'Onboarding Process' },
-        { id: 'utility', icon: <Recycle size={18} />, label: 'SCARAB Token Utility' },
-        { id: 'treasury', icon: <Database size={18} />, label: 'Treasury Strategy' },
-        { id: 'governance', icon: <Shield size={18} />, label: 'Governance Mechanics' },
-        { id: 'transparency', icon: <CheckCircle size={18} />, label: 'Transparency & Reporting' },
-        { id: 'risks', icon: <Shield size={18} />, label: 'Risk & Security Disclosure' },
-        { id: 'roadmap', icon: <ChevronRight size={18} />, label: 'Roadmap & Milestones' },
-        { id: 'team', icon: <UserPlus size={18} />, label: 'Team & Contributors' },
-        { id: 'faq', icon: <BookOpen size={18} />, label: 'FAQ (Skeptics Guide)' },
-        { id: 'legal', icon: <BookOpen size={18} />, label: 'Legal & Compliance' }
+    const CATEGORIES = [
+        {
+            name: 'Core Engineering',
+            items: [
+                { id: 'overview', icon: <BookOpen size={18} />, label: 'Platform Overview' },
+                { id: 'architecture', icon: <Database size={18} />, label: 'Protocol Architecture' },
+                { id: 'mining', icon: <Pickaxe size={18} />, label: 'Hardware Specs' },
+                { id: 'ops-security', icon: <Lock size={18} />, label: 'Operational Security' },
+                { id: 'risks', icon: <Shield size={18} />, label: 'Risk & Countermeasures' }
+            ]
+        },
+        {
+            name: 'Protocol Economics',
+            items: [
+                { id: 'tokenomics', icon: <PieChart size={18} />, label: 'Tokenomics Strategy' },
+                { id: 'emissions', icon: <Zap size={18} />, label: 'Monetary Policy' },
+                { id: 'governance', icon: <Scale size={18} />, label: 'Governance Mechanics' },
+                { id: 'treasury', icon: <Vault size={18} />, label: 'Treasury Strategy' }
+            ]
+        },
+        {
+            name: 'Regenerative Science',
+            items: [
+                { id: 'carbon-methodology', icon: <Sprout size={18} />, label: 'Carbon Methodology' },
+                { id: 'soil', icon: <MapPin size={18} />, label: 'Soil-as-a-Service' },
+                { id: 'transparency', icon: <CheckCircle size={18} />, label: 'Verification & Transparency' }
+            ]
+        }
     ];
+
+    const ALL_TABS = CATEGORIES.flatMap(cat => cat.items);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -69,34 +82,98 @@ export default function Documentation() {
                 return (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
                         <div>
-                            <h2 className="text-3xl font-black text-white mb-4">How to Mine SCARAB</h2>
-                            <p className="mb-4">
-                                "Eco-Mining" requires active participation. You are providing tangible value to the network, and the decentralized Oracle distributes SCARAB proportional to the verified data.
-                            </p>
-                            <div className="mb-4 text-sm bg-beetle-gold/10 border border-beetle-gold/30 p-4 rounded-xl text-beetle-gold/80">
-                                <strong className="text-beetle-gold block mb-1">Dynamic Halving Cycles</strong>
-                                To protect against inflation and exponentially reward early adopters, the SCARAB hardware emissions algorithm mathematically halves the payout rate every 50,000 successful network verifications.
+                            <h2 className="text-3xl font-black text-white mb-4">Hardware Specifications</h2>
+                            <p className="mb-6 text-gray-400">Institutional-grade hardware designed for high-fidelity ecological data capture.</p>
+                        </div>
+                        <div className="space-y-6">
+                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><Sun size={48} /></div>
+                                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2 text-beetle-electric"><Zap size={20} /> Solar Sentinel Node</h3>
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">Compute & Auth</div>
+                                            <div className="text-sm">ESP32-S3 @ 240MHz + ATECC608A Secure Element</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">Sensing Array</div>
+                                            <div className="text-sm">INA226 (High-Side Current/Power) | ±0.1% Precision</div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">Capability</div>
+                                            <div className="text-sm">2,400 BRU / Year (1kWh/day baseline)</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">MSRP</div>
+                                            <div className="text-sm text-beetle-electric font-bold">$349.00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><Recycle size={48} /></div>
+                                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2 text-beetle-gold"><Sprout size={20} /> Smart Bokashi Kit (Home)</h3>
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">Compute & Auth</div>
+                                            <div className="text-sm">ESP32-C3 (RISC-V) + ATECC608A Secure Element</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">Sensing Array</div>
+                                            <div className="text-sm">HX711 (Load Cell 50kg) | MQ-135 (Gas) | DS18B20 (Temp)</div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">Capability</div>
+                                            <div className="text-sm">650 BRU / Year (Verified Carbon Sequestration)</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs uppercase text-gray-500 font-bold mb-1">MSRP</div>
+                                            <div className="text-sm text-beetle-gold font-bold">$89.00 + $12/mo Subscription</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div className="space-y-6">
-                            <div className="border border-beetle-electric/20 bg-beetle-electric/5 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Sun className="text-beetle-electric" /> Solar Sentinel Node (2,400 BRU/yr)</h3>
-                                <p className="mb-4 text-sm">Hardware cost: $349. Users plug the SCARAB Node directly between their solar inverter and the grid. Assumes an average of 1 kWh/day output.</p>
-                                <ul className="space-y-2 text-sm text-gray-400">
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Reward Calculation: Nodes earn Base Regenerative Units (BRU) proportionate to their net grid displacement.</li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Yield: Proportional share of the daily emission budget (calculated per 30-day epoch).</li>
-                                </ul>
+                    </motion.div>
+                );
+            case 'carbon-methodology':
+                return (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
+                        <div>
+                            <h2 className="text-3xl font-black text-white mb-4">Carbon Methodology (v0.1)</h2>
+                            <p className="mb-6 text-gray-400">Scientific framework for quantifying avoided methane emissions and soil organic carbon (SOC) sequestration.</p>
+                        </div>
+                        <div className="bg-[#0a1a0f] border border-beetle-green/20 p-8 rounded-2xl">
+                            <h3 className="text-xl font-bold text-white mb-6">Avoided Methane Mechanism</h3>
+                            <div className="grid md:grid-cols-2 gap-8 mb-8">
+                                <div className="space-y-4">
+                                    <div className="p-4 bg-black/40 border border-white/5 rounded-xl">
+                                        <div className="text-beetle-green font-bold mb-1">Baseline (MCF 1.0)</div>
+                                        <p className="text-xs text-gray-500 font-mono">L₀ = MCF × DOC × DOC_f × F × 16/12</p>
+                                        <p className="text-sm mt-2">Diverting food waste from anaerobic landfills avoids 1.9 kg CO₂-eq per kg of waste.</p>
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="p-4 bg-black/40 border border-white/5 rounded-xl">
+                                        <div className="text-beetle-gold font-bold mb-1">SCARAB Offset (v0.1)</div>
+                                        <p className="text-xs text-gray-500 font-mono">Net = Baseline - Leakage - Transport</p>
+                                        <p className="text-sm mt-2">Applying a 20% uncertainty buffer to all calculated avoidance for institutional conservatism.</p>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div className="border border-beetle-gold/20 bg-beetle-gold/5 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Recycle className="text-beetle-gold" /> Smart Bokashi Kit (650 BRU/yr)</h3>
-                                <p className="mb-4 text-sm">Hardware cost: $89 + $12/mo SaaS Subscription.</p>
-                                <ul className="space-y-2 text-sm text-gray-400">
-                                    <li className="flex items-start gap-2"><CheckCircle size={14} className="text-green-400 mt-1" /> <span><strong className="text-white">Why are we measuring mass?</strong> Rewards dual-impact verification. (1) Avoids methane emissions vs landfills. (2) Sequesters carbon into the soil via the Fertility Handshake.</span></li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Requirements: Maintain 35-42°C temp profile, 800+ ppm gas production, and verifiable weight loss.</li>
-                                    <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-400" /> Geolocalized Bonus: Transferring prep-compost to a verified local farmer (0-20km) applies up to a 1.3x multiplier to the earned BRU.</li>
-                                </ul>
+                            <div className="border-t border-white/5 pt-6">
+                                <h4 className="font-bold text-white mb-4">Validation Hierarchy</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="text-sm"><CheckCircle size={14} className="inline text-beetle-green mr-2" /> Mass Verification (HX711)</div>
+                                    <div className="text-sm"><CheckCircle size={14} className="inline text-beetle-green mr-2" /> Bio-Fingerprint (Temp Profile)</div>
+                                    <div className="text-sm"><CheckCircle size={14} className="inline text-beetle-green mr-2" /> Presence Proof (Handshake)</div>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
@@ -209,97 +286,113 @@ export default function Documentation() {
                         </section>
                     </motion.div>
                 );
-            case 'onboarding':
-                return (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">Onboarding Process</h2>
-                            <p className="mb-4">
-                                SCARAB removes web3 friction from the physical experience. The process is designed to be as simple as ordering an appliance online.
-                            </p>
-                        </div>
-
-                        <div className="space-y-6">
-                            <div className="p-5 border border-white/10 rounded-2xl bg-white/5">
-                                <h4 className="text-lg font-bold text-white mb-2">Step 1: Obtain Hardware</h4>
-                                <p className="text-sm">Purchase a Solar Node or Smart Bokashi Kit from the SCARAB online store. The hardware ships with the embedded cryptographic chip pre-configured.</p>
-                            </div>
-
-                            <div className="p-5 border border-white/10 rounded-2xl bg-white/5">
-                                <h4 className="text-lg font-bold text-white mb-2">Step 2: Smartphone App Activation (No Seed Phrases)</h4>
-                                <p className="text-sm">Download the SCARAB mobile companion app. You log in using a social account (Google/Apple) via Account Abstraction. A secure smart contract wallet is instantly deployed for you in the background.</p>
-                            </div>
-
-                            <div className="p-5 border border-beetle-gold/20 rounded-2xl bg-beetle-gold/5">
-                                <h4 className="text-lg font-bold text-beetle-gold mb-2">Step 3: The Bran Subscription & QR Cryptography</h4>
-                                <p className="text-sm">For Bokashi users, a $12/month active subscription ensures steady delivery of organic inoculant bran. <strong className="text-white">To start a mining cycle</strong>, you must scan the single-use QR code printed on the physical bran bag using the SCARAB app. This mathematically guarantees physical interaction and prevents simulated data.</p>
-                            </div>
-
-                            <div className="p-5 border border-green-500/20 rounded-2xl bg-green-500/5">
-                                <h4 className="text-lg font-bold text-green-400 mb-2">Step 4: Earn & Manage</h4>
-                                <p className="text-sm">Once the cycle finishes and the verification oracle confirms the conditions via the device sensors, SCARAB tokens are allocated directly to your smart wallet for claiming.</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                );
             case 'architecture':
                 return (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
                         <div>
                             <h2 className="text-3xl font-black text-white mb-4">Protocol Architecture</h2>
-                            <p className="mb-6">SCARAB is not a product; it is a multi-layered cryptographic protocol designed to guarantee zero-trust physical data verification.</p>
+                            <p className="mb-6 text-gray-400">SCARAB is a multi-layered cryptographic protocol engineered to enable cryptographically
+                                verifiable physical production data. The architecture minimizes trust requirements through hardware-level
+                                security, decentralized validation, and algorithmic emission control.</p>
                         </div>
                         <div className="space-y-6">
                             <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
                                 <h3 className="text-xl font-bold text-white mb-3 text-beetle-gold">Layer 1: Physical Infrastructure</h3>
-                                <ul className="list-disc list-inside space-y-2 text-sm ml-2">
-                                    <li><strong className="text-white">Solar Nodes:</strong> Edge computing devices passing through inverter telemetry.</li>
-                                    <li><strong className="text-white">Bokashi Kits:</strong> Sensor-equipped fermentation units monitoring temperature, gas, and mass.</li>
-                                    <li><strong className="text-white">Future Extensions:</strong> Water purification sensors, biogas digester telemetry.</li>
+                                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                    <div className="bg-white/5 p-4 rounded-xl">
+                                        <div className="text-beetle-gold font-bold mb-2">Solar Sentinel</div>
+                                        <ul className="text-xs space-y-1 text-gray-400">
+                                            <li>MCU: ESP32-S3</li>
+                                            <li>Sensor: INA226 (I2C)</li>
+                                            <li>Sampling: 10s intervals</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-white/5 p-4 rounded-xl">
+                                        <div className="text-beetle-gold font-bold mb-2">Bokashi Kit</div>
+                                        <ul className="text-xs space-y-1 text-gray-400">
+                                            <li>MCU: ESP32-C3</li>
+                                            <li>Sensors: DS18B20, HX711, MQ-135</li>
+                                            <li>Sampling: 5m intervals</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-gray-500 italic">All devices operate on battery power with &lt;1W average consumption.</p>
+                            </div>
+                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
+                                <h3 className="text-xl font-bold text-white mb-3 text-beetle-gold">Layer 2: Embedded Cryptographic Security</h3>
+                                <ul className="list-disc list-inside space-y-2 text-sm ml-2 mb-4">
+                                    <li><strong className="text-white">ATECC608A Secure Element:</strong> ECC P-256 cryptographic coprocessor with hardware-protected unextractable private keys.</li>
+                                    <li><strong className="text-white">Monotonic Counters:</strong> Increments on each signature to detect and flag replay or tampering attempts.</li>
+                                    <li><strong className="text-white">Firmware Attestation:</strong> Telemetry payloads include firmware version hashes signed by the secure element.</li>
                                 </ul>
                             </div>
                             <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-3 text-beetle-gold">Layer 2: Embedded Secure Element</h3>
+                                <h3 className="text-xl font-bold text-white mb-3 text-beetle-electric">Layer 3: Data Validation & Oracle Network</h3>
+                                <p className="text-sm text-gray-400 mb-4">Currently transitioning from a Federated Oracle (Phase 1) to an EigenLayer AVS decentralized network (Targeted Q2 2027).</p>
                                 <ul className="list-disc list-inside space-y-2 text-sm ml-2">
-                                    <li><strong className="text-white">ATECC608A Chip:</strong> Factory-provisioned cryptographic coprocessor.</li>
-                                    <li><strong className="text-white">Device Keypair:</strong> Private keys are physically locked inside the hardware and cannot be extracted.</li>
-                                    <li><strong className="text-white">Anti-Tamper:</strong> Any deviation in hardware casing immediately invalidates the node's hash signature.</li>
-                                </ul>
-                            </div>
-                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-3 text-beetle-electric">Layer 3: Data Validation Layer</h3>
-                                <ul className="list-disc list-inside space-y-2 text-sm ml-2">
-                                    <li><strong className="text-white">Oracle Mechanism:</strong> Off-chain aggregators verify the ECDSA signatures against the `DeviceRegistry.sol` whitelist.</li>
-                                    <li><strong className="text-white">Signed Telemetry:</strong> Every payload (e.g., `10 kWh produced`) is signed by the hardware private key.</li>
-                                    <li><strong className="text-white">IPFS Logging:</strong> Raw sensor data is hashed and stored on IPFS for decentralized audibility.</li>
+                                    <li><strong className="text-white">Oracle Integrity:</strong> Whitelist verification against <code>DeviceRegistry.sol</code> via factory-signed certificate chains.</li>
+                                    <li><strong className="text-white">Damage Ceiling:</strong> On-chain immutable global daily emission caps bound maximum loss from oracle collusion.</li>
+                                    <li><strong className="text-white">Auditability:</strong> Raw telemetry hashed and pinned to IPFS for permanent independent verification.</li>
                                 </ul>
                             </div>
                             <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
                                 <h3 className="text-xl font-bold text-white mb-3 text-beetle-green">Layer 4: Smart Contract Layer</h3>
                                 <ul className="list-disc list-inside space-y-2 text-sm ml-2 mb-6">
-                                    <li><strong className="text-white">Emission Controller:</strong> Calculates token generation strictly bound to verified telemetry.</li>
-                                    <li><strong className="text-white">Decay Mechanism:</strong> Immutable `e^(-λt)` lambda decay curve controlling macro inflation, where `t` is measured in days.</li>
-                                    <li><strong className="text-white">Efficiency Cap:</strong> Programmatic limits preventing overproduction from exploiting the treasury.</li>
+                                    <li><strong className="text-white">Emission Controller:</strong> Calculates token generation using the official 40-year decay curve.</li>
+                                    <li><strong className="text-white">Immutable Math:</strong> <code>λ = 0.00020518</code> Daily Decay | <code>D₀ = 61,554 SCARAB</code> Base.</li>
+                                    <li><strong className="text-white">Efficiency Scaling:</strong> Rewards are scaled by the BRU (Base Regenerative Unit) capability of each hardware tier.</li>
                                 </ul>
+                            </div>
 
-                                <div className="bg-white/5 border border-white/10 rounded-xl p-4 font-mono text-xs">
-                                    <h4 className="font-bold text-gray-400 mb-2 font-sans uppercase">Official Mainnet Contracts (Pending Final Deployment)</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-gray-300">
-                                        <div className="truncate">SCARABToken:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
-                                        <div className="truncate">EmissionController:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
-                                        <div className="truncate">DeviceRegistry:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
-                                        <div className="truncate">TeamVesting:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
-                                    </div>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 font-mono text-xs">
+                                <h4 className="font-bold text-gray-400 mb-2 font-sans uppercase">Official Mainnet Contracts (Pending Final Deployment)</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-gray-300">
+                                    <div className="truncate">SCARABToken:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
+                                    <div className="truncate">EmissionController:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
+                                    <div className="truncate">DeviceRegistry:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
+                                    <div className="truncate">TreasuryVault:<br /><a href="#" className="text-beetle-gold hover:underline">0xMAINNET_ADDRESS_HERE</a></div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
+                            <h3 className="text-xl font-bold text-white mb-3 text-beetle-green">Layer 5: Transparency & Data Availability</h3>
+                            <ul className="list-disc list-inside space-y-2 text-sm ml-2">
+                                <li><strong className="text-white">Real-Time Dashboards:</strong> All emissions and device registrations logged via immutable events.</li>
+                                <li><strong className="text-white">Bokashi Carbon Methodology v0.1:</strong> Diversion math based on IPCC landfill methane coefficients.</li>
+                                <li><strong className="text-white">Public Audits:</strong> Open-source repositories for firmware and contract audits.</li>
+                            </ul>
+                        </div>
+                    </motion.div >
+                );
+            case 'ops-security':
+                return (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
+                        <div>
+                            <h2 className="text-3xl font-black text-white mb-4">Operational Security: Root CA & Provisioning</h2>
+                            <p className="mb-6 text-gray-400">SCARAB implements institutional-grade hardware security to ensure the integrity of the protocol's root of trust.</p>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-6">
                             <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="text-xl font-bold text-white mb-3 text-beetle-green">Layer 5: Governance & Treasury</h3>
-                                <ul className="list-disc list-inside space-y-2 text-sm ml-2">
-                                    <li><strong className="text-white">DAO Treasury:</strong> On-chain vault controlled by token-holder voting.</li>
-                                    <li><strong className="text-white">Parameter Bounds:</strong> Hardcoded safety limits (e.g., emissions cannot be voted up more than 10% per cycle).</li>
-                                    <li><strong className="text-white">Timelock:</strong> 48-Hour delay on all treasury/marketing expenditures for absolute transparency.</li>
-                                </ul>
+                                <h4 className="text-beetle-gold font-bold mb-3 flex items-center gap-2"><Lock size={16} /> Offline Root CA</h4>
+                                <p className="text-xs text-gray-500">Stored on air-gapped HSMs in secure physical vaults. Signs intermediate certs once every 2 years with M-of-N Shamir backups.</p>
                             </div>
+                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
+                                <h4 className="text-beetle-gold font-bold mb-3 flex items-center gap-2"><Shield size={16} /> Cloud KMS (L1)</h4>
+                                <p className="text-xs text-gray-500">AWS/GCP HSMs restricted via hardware-authenticated IAM (YubiKeys). Signs individual device certificates during factory provisioning.</p>
+                            </div>
+                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
+                                <h4 className="text-beetle-gold font-bold mb-3 flex items-center gap-2"><Database size={16} /> ATECC608A</h4>
+                                <p className="text-xs text-gray-500">Embedded ECC P-256 coprocessor. Generates unique private keys internally that never leave the silicon.</p>
+                            </div>
+                        </div>
+                        <div className="bg-green-500/5 border border-green-500/20 p-6 rounded-2xl">
+                            <h3 className="text-lg font-bold text-white mb-3">Provisioning Workflow</h3>
+                            <ol className="list-decimal list-inside space-y-2 text-sm text-gray-400">
+                                <li>Device generates internal ECC keypair during fabrication.</li>
+                                <li>Provisioning station sends CSR to Intermediate CA.</li>
+                                <li>Intermediate CA signs and pushes public key to DeviceRegistry.sol.</li>
+                                <li>JTAG/SWD debug ports are physically blown to prevent firmware extraction.</li>
+                            </ol>
                         </div>
                     </motion.div>
                 );
@@ -585,36 +678,6 @@ export default function Documentation() {
                         </div>
                     </motion.div>
                 );
-            case 'utility':
-                return (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">SCARAB Token Utility</h2>
-                            <p className="mb-6">The SCARAB token is the utilitarian lifeblood of the protocol, driving governance, infrastructure access, and internal network economies.</p>
-                            <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl mb-8">
-                                <p className="text-red-400 font-bold text-sm text-center">LEGAL DISCLAIMER: SCARAB DOES NOT REPRESENT EQUITY, PROFIT SHARE, OR A GUARANTEED RETURN ON INVESTMENT. IT IS A UTILITY & GOVERNANCE TOKEN.</p>
-                            </div>
-                        </div>
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="font-bold text-white mb-2 text-lg">🏛️ Protocol Governance</h3>
-                                <p className="text-sm">Holders vote on critical protocol parameters including emission decay rates, hardware whitelists, and treasury grants.</p>
-                            </div>
-                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="font-bold text-white mb-2 text-lg">🛒 Hardware Discounts</h3>
-                                <p className="text-sm">SCARAB can be used to purchase future Solar Nodes and Bokashi kits at a significant discount directly through the SCARAB web-store.</p>
-                            </div>
-                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="font-bold text-white mb-2 text-lg">🚀 Priority Access</h3>
-                                <p className="text-sm">Due to silicon supply limits on the ATECC608A chips, hardware batches are limited. Top SCARAB holders receive priority queue access for new inventory.</p>
-                            </div>
-                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <h3 className="font-bold text-white mb-2 text-lg">🌾 Sink Node Staking</h3>
-                                <p className="text-sm">In Phase 2, Farmers ("Sink Nodes") must stake a minimum amount of SCARAB to receive the "Processing Fee" subsidy, creating a sink that deters malicious actors.</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                );
             case 'treasury':
                 return (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
@@ -800,156 +863,6 @@ export default function Documentation() {
                         </div>
                     </motion.div>
                 );
-            case 'roadmap':
-                return (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">Roadmap & Milestones</h2>
-                            <p className="mb-6">Measurable execution targets over the next 18 months.</p>
-                        </div>
-                        <div className="space-y-6 border-l-2 border-beetle-green/30 ml-4 pl-6 relative">
-                            <div className="relative">
-                                <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-beetle-green shadow-[0_0_10px_#08EBA4]"></div>
-                                <h3 className="font-black text-white text-xl">Phase 1: Foundation (Q1-Q2)</h3>
-                                <ul className="list-disc list-inside mt-2 text-sm space-y-1">
-                                    <li>Smart contract audits completely finalized.</li>
-                                    <li>Mainnet BSC Deployment.</li>
-                                    <li>First 1,000 SCARAB Solar Nodes deployed in targeted grids.</li>
-                                    <li>Live Transparency Dashboard activated.</li>
-                                </ul>
-                            </div>
-                            <div className="relative mt-8">
-                                <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white/20 border-2 border-white/50"></div>
-                                <h3 className="font-black text-white text-xl">Phase 2: Decentralization & Liquidity (Q3-Q4)</h3>
-                                <ul className="list-disc list-inside mt-2 text-sm space-y-1 text-gray-400">
-                                    <li>Initial DEX Liquidity: ~$300K on PancakeSwap (Locked min. 12 months).</li>
-                                    <li>Compliance-First Exchange Expansion.</li>
-                                    <li>Polygon / Arbitrum cross-chain data availability bridge.</li>
-                                    <li>DAO Parameter Voting enabled for token holders.</li>
-                                </ul>
-                            </div>
-                            <div className="relative mt-8">
-                                <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white/20 border-2 border-white/50"></div>
-                                <h3 className="font-black text-white text-xl">Phase 3: Decentralization (Year 2)</h3>
-                                <ul className="list-disc list-inside mt-2 text-sm space-y-1 text-gray-400">
-                                    <li>Oracle decentralization via EigenLayer AVS.</li>
-                                    <li>Introduction of Water Purification tracking modules.</li>
-                                    <li>Targeting 50,000 active nodes globally.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </motion.div>
-                );
-            case 'team':
-                return (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">Core Team & Contributors</h2>
-                            <p className="mb-6">SCARAB is built by a dedicated team of hardware engineers, smart contract developers, and ecological scientists committed to building an institutional-grade DePIN.</p>
-                        </div>
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-16 h-16 bg-beetle-green/20 border border-beetle-green/50 rounded-full flex items-center justify-center text-3xl">👤</div>
-                                    <div>
-                                        <h3 className="font-bold text-white text-lg">Shelby Ahobi</h3>
-                                        <p className="text-beetle-gold text-sm">Founder & Protocol Architect</p>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-400 mb-4">Leading the vision for SCARAB. Extensive background in blockchain systems and decentralized physical infrastructure design. Focused on cryptoeconomic security and verifiable edge computing.</p>
-                                <div className="flex gap-4 text-gray-500">
-                                    <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
-                                    <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Twitter</a>
-                                </div>
-                            </div>
-
-                            <div className="bg-white/5 border border-white/5 border-dashed p-6 rounded-2xl flex flex-col items-center justify-center text-center min-h-[220px]">
-                                <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-gray-400 mb-3"><UserPlus size={20} /></div>
-                                <p className="text-sm text-gray-400">Core Contributor Bios<br />Pending Final Legal Review for Mainnet.</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                );
-            case 'faq':
-                return (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">FAQ (Skeptics Guide)</h2>
-                            <p className="mb-6">Addressing the most critical questions head-on.</p>
-                        </div>
-                        <div className="space-y-4">
-                            <details className="bg-black/40 border border-white/10 p-5 rounded-xl group cursor-pointer">
-                                <summary className="font-bold text-white flex justify-between items-center outline-none">
-                                    How is SCARAB different from Helium/Render/Filecoin?
-                                    <ChevronRight size={16} className="group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <div className="mt-4 text-sm text-gray-400 space-y-2">
-                                    <p><strong>Helium:</strong> Wireless coverage (no environmental impact).</p>
-                                    <p><strong>Render:</strong> GPU compute (energy-intensive).</p>
-                                    <p><strong>Filecoin:</strong> Data storage (no physical output).</p>
-                                    <p><strong>SCARAB:</strong> Measurable sustainability (kWh, Liters, kg verified on-chain).</p>
-                                    <p className="mt-2 pt-2 border-t border-white/5"><strong className="text-beetle-gold">Our moat:</strong> Hardware-level cryptographic verification via ATECC608A. Competitors rely on self-reporting or centralized validation.</p>
-                                </div>
-                            </details>
-                            <details className="bg-black/40 border border-white/10 p-5 rounded-xl group cursor-pointer">
-                                <summary className="font-bold text-white flex justify-between items-center outline-none">
-                                    How is this different from Helium's emission model?
-                                    <ChevronRight size={16} className="group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <p className="mt-4 text-sm text-gray-400">Helium rewarded users for simply providing an RF signal, regardless of whether anyone used it, leading to inflation without utility. SCARAB only emits tokens when a mathematically verified ecological action occurs (e.g., 10 kWh pushed to grid). No demand/action = No emission.</p>
-                            </details>
-                            <details className="bg-black/40 border border-white/10 p-5 rounded-xl group cursor-pointer">
-                                <summary className="font-bold text-white flex justify-between items-center outline-none">
-                                    Can someone fake production with a Raspberry Pi?
-                                    <ChevronRight size={16} className="group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <p className="mt-4 text-sm text-gray-400">No. Every SCARAB node is embedded with an ATECC608A cryptographic secure element. The payload requires an ECDSA signature generated by this chip. The private key never leaves the chip. Unless they physically steal the chip and rig custom wiring to fake the sensors (which our anomaly detection flags), software spoofing is mathematically impossible.</p>
-                            </details>
-                            <details className="bg-black/40 border border-white/10 p-5 rounded-xl group cursor-pointer">
-                                <summary className="font-bold text-white flex justify-between items-center outline-none">
-                                    What happens when the emissions decay via the 0.0019 daily rate?
-                                    <ChevronRight size={16} className="group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <p className="mt-4 text-sm text-gray-400">As base block rewards halve over the years, the network transitions to a transaction-fee economy. Third-party carbon credit buyers and ecological analysts will pay fees in SCARAB to access the verified data stream, subsidizing the nodes entirely through organic demand.</p>
-                            </details>
-                            <details className="bg-black/40 border border-white/10 p-5 rounded-xl group cursor-pointer">
-                                <summary className="font-bold text-white flex justify-between items-center outline-none">
-                                    Why build on BSC Testnet/Mainnet instead of Ethereum?
-                                    <ChevronRight size={16} className="group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <p className="mt-4 text-sm text-gray-400">IoT telemetry generates high-frequency data matrices. Executing proof verification logic on Ethereum L1 is cost-prohibitive. BSC offers the EVM compatibility required for our complex hardware-registry smart contracts while keeping gas fees sub-cent for end-users claiming rewards.</p>
-                            </details>
-                        </div>
-                    </motion.div>
-                );
-            case 'legal':
-                return (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 text-gray-400 text-sm leading-relaxed p-6 bg-black/60 rounded-2xl border border-white/5">
-                        <h2 className="text-2xl font-black text-white mb-6">Legal & Compliance</h2>
-
-                        <p className="uppercase font-bold text-white mt-4 border-t border-white/10 pt-4">Securities Law Compliance (Howey Test Analysis)</p>
-                        <p className="mb-2">SCARAB is designed strictly as a utility token under the Howey Test framework:</p>
-                        <ul className="list-none space-y-2 mb-4 bg-black/40 p-4 rounded-xl border border-white/5">
-                            <li><span className="text-red-400">❌</span> <strong className="text-gray-300">Investment of money:</strong> Users purchase hardware (a physical product with real-world utility), not financial securities.</li>
-                            <li><span className="text-red-400">❌</span> <strong className="text-gray-300">Common enterprise:</strong> It is a decentralized network of independent node operators, not a company pooling profits.</li>
-                            <li><span className="text-red-400">❌</span> <strong className="text-gray-300">Expectation of profits:</strong> Rewards are not passive; they require the active, ongoing operation and physical maintenance of devices.</li>
-                            <li><span className="text-red-400">❌</span> <strong className="text-gray-300">Efforts of others:</strong> Users deploy and maintain their own hardware to earn compensation.</li>
-                        </ul>
-                        <p className="mb-4"><strong>Conclusion:</strong> SCARAB rewards are "work-based compensation" analogous to physical mining, not passive investment returns. <em className="text-gray-500">Disclaimer: This framework is provided for informational purposes only. Consult qualified counsel.</em></p>
-
-                        <p className="uppercase font-bold text-white mt-4 border-t border-white/10 pt-4">1. Token Classification</p>
-                        <p className="mb-4">The SCARAB Token ($ROLL) functions solely as a cryptographic utility and governance token within the SCARAB network. It is designed to coordinate decentralized physical infrastructure networks (DePIN) by verifying hardware data logic. It is not intended to be, and should not be construed as, an investment, equity, share, or security in any jurisdiction.</p>
-
-                        <p className="uppercase font-bold text-white">2. No Expectation of Profit</p>
-                        <p className="mb-4">Users participating in the SCARAB ecosystem (i.e., operating a Node) do so to participate in verifiable ecological regeneration and data provision. There is absolutely no promise, guarantee, or expectation of financial profit, capital appreciation, or passive income from the purchase or operation of SCARAB hardware or tokens.</p>
-
-                        <p className="uppercase font-bold text-white">3. Hardware Liability & Data Compliance</p>
-                        <p className="mb-4">SCARAB hardware nodes pass CE and FCC requirements under standard IoT telemetry classifications. All telemetry generated by users is strictly environmental (kWh, temperature, mass) and anonymized via cryptographic hashing to ensure complete compliance with global privacy standards including GDPR and CCPA. No personally identifiable information (PII) is stored on-chain.</p>
-
-                        <p className="uppercase font-bold text-white mt-8 border-t border-white/10 pt-4">Jurisdiction</p>
-                        <p>The SCARAB Foundation protocol is coordinated by a decentralized association. Further entity structuring for hardware liability protection is ongoing within favorable Web3 jurisdictions.</p>
-                    </motion.div>
-                );
             default: return null;
         }
     };
@@ -961,56 +874,28 @@ export default function Documentation() {
             <div className="pt-32 pb-24 px-4 md:px-8 max-w-[1400px] mx-auto flex flex-col md:flex-row gap-8">
                 {/* Sidebar Navigation */}
                 <aside className="md:w-72 shrink-0">
-                    <div className="sticky top-32 space-y-1">
-                        <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-3 mt-4">Core Concepts</div>
-                        {TABS.slice(0, 4).map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
-                                    ? 'bg-beetle-green/20 text-green-400 border border-beetle-green/30 shadow-sm'
-                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className={activeTab === tab.id ? 'text-green-400' : 'text-gray-500'}>{tab.icon}</span>
-                                    {tab.label}
+                    <div className="sticky top-32 space-y-4">
+                        {CATEGORIES.map((category) => (
+                            <div key={category.name}>
+                                <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-3 mt-4">{category.name}</div>
+                                <div className="space-y-1">
+                                    {category.items.map((tab) => (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setActiveTab(tab.id)}
+                                            className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
+                                                ? 'bg-beetle-green/10 text-green-400 border border-beetle-green/20'
+                                                : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <span className={activeTab === tab.id ? 'text-green-400' : 'text-gray-500'}>{tab.icon}</span>
+                                                {tab.label}
+                                            </div>
+                                        </button>
+                                    ))}
                                 </div>
-                            </button>
-                        ))}
-
-                        <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-3 mt-6">Hardware & Ecosystem</div>
-                        {TABS.slice(4, 6).map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
-                                    ? 'bg-beetle-gold/20 text-beetle-gold border border-beetle-gold/30 shadow-sm'
-                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className={activeTab === tab.id ? 'text-beetle-gold' : 'text-gray-500'}>{tab.icon}</span>
-                                    {tab.label}
-                                </div>
-                            </button>
-                        ))}
-
-                        <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-3 mt-6">Institutional Intelligence</div>
-                        {TABS.slice(6).map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
-                                    ? 'bg-white/10 text-white border border-white/20 shadow-sm'
-                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className={activeTab === tab.id ? 'text-white' : 'text-gray-500'}>{tab.icon}</span>
-                                    {tab.label}
-                                </div>
-                            </button>
+                            </div>
                         ))}
                     </div>
                 </aside>
