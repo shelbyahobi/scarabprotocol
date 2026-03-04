@@ -225,12 +225,20 @@ export default function Documentation() {
                                     </div>
                                 </div>
 
-                                {/* Reward Breakdown */}
+                                {/* Reward Breakdown & Scaling Logic */}
                                 <div className="bg-black/60 rounded-2xl p-8 border border-beetle-green/30 max-w-4xl mx-auto mb-20 shadow-[0_0_30px_rgba(74,222,128,0.05)]">
                                     <h3 className="text-xl font-bold text-white mb-8 text-center">
-                                        Settlement Economics
+                                        Settlement Economics & Scaling Logic
                                     </h3>
-                                    <div className="grid md:grid-cols-3 gap-8">
+
+                                    <div className="mb-10 text-center">
+                                        <p className="text-sm text-gray-400 max-w-2xl mx-auto">
+                                            The following rewards represent the <strong className="text-white">Phase 1 Baseline (Illustrative Example)</strong>.
+                                            Actual rewards are dynamic, determined by the ratio of individual production to total network participation.
+                                        </p>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-3 gap-8 mb-12">
                                         <RewardCard
                                             amount="15 SCARAB"
                                             recipient="User"
@@ -250,9 +258,52 @@ export default function Documentation() {
                                             color="beetle-electric"
                                         />
                                     </div>
-                                    <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-center">
-                                        <p className="text-xs text-gray-500 font-medium">
-                                            All rewards scale dynamically with total network efficiency to preserve monetary stability.
+
+                                    {/* Yield Compression Table */}
+                                    <div className="bg-black/40 rounded-xl border border-white/5 overflow-hidden mb-8">
+                                        <div className="p-4 border-b border-white/5 bg-white/5">
+                                            <h4 className="text-sm font-bold text-white">Yield Compression Reality (Fixed Block Share)</h4>
+                                        </div>
+                                        <table className="w-full text-left text-xs">
+                                            <thead className="text-gray-500 uppercase font-bold border-b border-white/5">
+                                                <tr>
+                                                    <th className="p-4">Network BRU Total</th>
+                                                    <th className="p-4">Daily Emission E(t)</th>
+                                                    <th className="p-4">Your Node BRU</th>
+                                                    <th className="p-4 text-beetle-gold">Your Reward</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-gray-300 font-mono">
+                                                <tr className="border-b border-white/5">
+                                                    <td className="p-4">10,000</td>
+                                                    <td className="p-4">60,000</td>
+                                                    <td className="p-4">10</td>
+                                                    <td className="p-4 text-white">60.00 SCARAB</td>
+                                                </tr>
+                                                <tr className="border-b border-white/5 bg-white/5">
+                                                    <td className="p-4">100,000</td>
+                                                    <td className="p-4">60,000</td>
+                                                    <td className="p-4">10</td>
+                                                    <td className="p-4 text-white">6.00 SCARAB</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="p-4">1,000,000</td>
+                                                    <td className="p-4">60,000</td>
+                                                    <td className="p-4">10</td>
+                                                    <td className="p-4 text-white">0.60 SCARAB</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div className="space-y-4 text-sm text-gray-400">
+                                        <p>
+                                            <strong className="text-beetle-green">Self-Balancing Mechanism:</strong> The system is mathematically self-balancing.
+                                            If network participation reduces (nodes go offline), the relative reward share for remaining active nodes <strong>automatically increases</strong>,
+                                            providing an incentive to maintain protocol security during market volatility.
+                                        </p>
+                                        <p className="italic text-xs border-t border-white/5 pt-4 text-center">
+                                            "The protocol does not promise increasing token price. It enforces decreasing per-unit emissions as network production increases."
                                         </p>
                                     </div>
                                 </div>
@@ -476,7 +527,7 @@ export default function Documentation() {
                                     </div>
                                     <div>
                                         <h3 className="text-2xl font-black text-white">The Scaling Flywheel</h3>
-                                        <p className="text-gray-400">Yield Compression vs. Value Appreciation</p>
+                                        <p className="text-gray-400">Institutional Dynamics: Yield vs. Fundamentals</p>
                                     </div>
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-8 mb-6">
@@ -485,17 +536,24 @@ export default function Documentation() {
                                             <ArrowDownRight className="text-red-400" size={18} /> 1. Yield Compression
                                         </h4>
                                         <p className="text-gray-400 text-sm">
-                                            The protocol emits a <strong className="text-white">fixed</strong> daily overall pool of SCARAB. As we add <strong>different types of nodes</strong>, they all share this exact same fixed pool. If 1,000 new Solar nodes join, the daily quantity of SCARAB earned by existing Bokashi nodes decreases. Early adopters earn the highest token quantities.
+                                            The protocol emits block rewards according to a fixed decay schedule. As total network participation (BRU) grows,
+                                            the per-unit reward decreases. This prevents hyper-inflation and ensures that early infrastructure builders
+                                            capture the highest token flow before the network matures.
                                         </p>
                                     </div>
                                     <div>
                                         <h4 className="text-white font-bold mb-3 flex items-center gap-2">
-                                            <ArrowUpRight className="text-beetle-gold" size={18} /> 2. Value Appreciation
+                                            <ArrowUpRight className="text-beetle-gold" size={18} /> 2. Potential Value Accrual
                                         </h4>
                                         <p className="text-gray-400 text-sm">
-                                            While individual token <em>quantity</em> drops, token <em>value</em> rises. 10,000 nodes generate 100x more real-world revenue than 100 nodes. All that revenue flows directly into the Liquidity Vault, driving the <strong className="text-beetle-gold">Intrinsic Floor Price</strong> upward.
+                                            While individual token volume may diminish, the underlying platform fundamentals might strengthen.
+                                            A larger node network enhances data credibility and enterprise dataset value, which <strong>may</strong> increase
+                                            Treasury revenue and the Intrinsic Floor Price within the Liquidity Vault.
                                         </p>
                                     </div>
+                                </div>
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center italic text-xs text-gray-500">
+                                    "The protocol does not promise increasing token price. It enforces decreasing per-unit emissions as network production increases."
                                 </div>
                             </div>
                         </div>
@@ -551,34 +609,42 @@ export default function Documentation() {
 
                             <div className="bg-black/40 border border-white/10 rounded-xl p-6 mb-6">
                                 <h3 className="text-lg font-bold text-white mb-4">
-                                    Decay Model: e^(-λt)
+                                    Production-Based Scaling Formula
                                 </h3>
+
+                                <div className="p-6 bg-black border border-beetle-gold/20 rounded-xl mb-6 text-center">
+                                    <div className="text-beetle-gold font-mono text-xl mb-2">
+                                        Rᵢ(t) = [E₀e⁻ᴸᵗ × BRUᵢ] / ∑BRUₜₒₜₐₗ(t)
+                                    </div>
+                                    <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">The Monetary Equilibrium Law</p>
+                                </div>
 
                                 <div className="space-y-4">
                                     <div className="bg-black/80 rounded-lg p-5 border border-white/5">
                                         <div className="text-sm font-bold text-white mb-4">
-                                            Emission Pool Depletion Schedule:
+                                            Emission Pool Depletion Schedule (300M Pool Cap):
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="bg-[#111] rounded-lg p-4 border border-white/5">
-                                                <div className="text-xs text-gray-500 mb-1">Year 1</div>
+                                                <div className="text-xs text-gray-500 mb-1">Year 1 Projection</div>
                                                 <div className="text-2xl font-bold text-beetle-gold mb-1">~21.6M</div>
                                                 <div className="text-xs text-gray-500">SCARAB Emitted</div>
                                             </div>
                                             <div className="bg-[#111] rounded-lg p-4 border border-white/5">
-                                                <div className="text-xs text-gray-500 mb-1">Year 10</div>
+                                                <div className="text-xs text-gray-500 mb-1">Year 10 (Halfway)</div>
                                                 <div className="text-2xl font-bold text-amber-500 mb-1">~158.5M</div>
                                                 <div className="text-xs text-gray-500">Cumulative Emitted (53%)</div>
                                             </div>
                                             <div className="bg-[#111] rounded-lg p-4 border border-white/5">
-                                                <div className="text-xs text-gray-500 mb-1">Year 20</div>
-                                                <div className="text-2xl font-bold text-orange-500 mb-1">~233.1M</div>
-                                                <div className="text-xs text-gray-500">Cumulative Emitted (77%)</div>
+                                                <div className="text-xs text-gray-500 mb-1">Regeneration Pool Cap</div>
+                                                <div className="text-2xl font-bold text-orange-500 mb-1">300.0M</div>
+                                                <div className="text-xs text-gray-500">Fixed Supply Bound</div>
                                             </div>
-                                            <div className="bg-[#111] rounded-lg p-4 border border-white/5">
-                                                <div className="text-xs text-gray-500 mb-1">Year 40</div>
-                                                <div className="text-2xl font-bold text-red-500/80 mb-1">~285.3M</div>
-                                                <div className="text-xs text-gray-500">Cumulative Emitted (95%)</div>
+                                            <div className="bg-[#111] rounded-lg p-4 border border-white/5 flex items-center justify-center p-6 border-dashed border-beetle-green/30">
+                                                <div className="text-center">
+                                                    <div className="text-xs text-beetle-green font-bold uppercase tracking-widest mb-1">Emission Reality</div>
+                                                    <div className="text-sm text-gray-400">Fixed Supply. Dynamic Distribution.</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
