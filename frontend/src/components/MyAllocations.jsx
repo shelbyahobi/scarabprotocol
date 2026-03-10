@@ -9,9 +9,9 @@ const SEED_SALE_ADDRESS = CONFIG.SEED_SALE_ADDRESS;
 const TOKENS_PER_BNB = 8000000;
 
 const SEED_SALE_ABI = [
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "softCap", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [], "name": "raisedAmount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "saleFinalized", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "claimTokens", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     { "inputs": [], "name": "claimRefund", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
@@ -22,15 +22,15 @@ export default function MyAllocations() {
 
     const formattedAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
 
-    // 1. READ USER DEPOSIT (Aggressive Polling) - Using 'contributions'
+    // 1. READ USER DEPOSIT (Aggressive Polling)
     const { data: depositData, refetch: refetchDeposit, isFetching } = useReadContract({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
-        functionName: 'contributions',
+        functionName: 'deposits',
         args: [address],
         query: {
             enabled: isConnected && !!address,
-            refetchInterval: 2000,
+            refetchInterval: 5000,
         }
     });
 
@@ -43,7 +43,7 @@ export default function MyAllocations() {
     const { data: raisedData } = useReadContract({
         address: SEED_SALE_ADDRESS,
         abi: SEED_SALE_ABI,
-        functionName: 'totalRaised',
+        functionName: 'raisedAmount',
     });
     const { data: finalizedData } = useReadContract({
         address: SEED_SALE_ADDRESS,

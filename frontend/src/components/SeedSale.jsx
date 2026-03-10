@@ -283,28 +283,6 @@ export default function SeedSale() {
                     </div>
                 )}
 
-                {/* MY POSITION CARD */}
-                {userBnB > 0 && (
-                    <div className="bg-beetle-gold/10 border border-beetle-gold/30 rounded-2xl p-6 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-beetle-gold/20 rounded-full blur-[40px] pointer-events-none"></div>
-                        <p className="text-xs text-beetle-gold uppercase tracking-widest mb-4 font-bold flex items-center gap-2">
-                            <Wallet size={14} /> Your Position
-                        </p>
-                        <div className="grid grid-cols-2 gap-8 relative z-10">
-                            <div>
-                                <p className="text-xs text-gray-400 mb-1">Contributed</p>
-                                <p className="text-2xl font-black text-white">{userBnB.toFixed(4)} BNB</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-gray-400 mb-1">Reserved SCARAB</p>
-                                <p className="text-2xl font-black text-beetle-gold">
-                                    {(userBnB * TOKENS_PER_BNB).toLocaleString()}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 {/* Round 1 (Live) */}
                 <div className="w-full bg-gradient-to-br from-beetle-green/20 to-black border border-beetle-gold/50 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)]">
                     <div className="absolute top-0 right-0 bg-beetle-gold text-black font-bold px-4 py-2 rounded-bl-xl z-20">

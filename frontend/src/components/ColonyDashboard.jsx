@@ -21,8 +21,8 @@ const ERC20_ABI = [
 
 // ABI for SeedSale contributions
 const SEED_SALE_ABI = [
-    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "contributions", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [], "name": "totalRaised", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "deposits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+    { "inputs": [], "name": "raisedAmount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
 const EMISSION_CONTROLLER_ABI = [
@@ -127,13 +127,13 @@ export default function ColonyDashboard() {
             {
                 address: SEED_SALE_ADDRESS,
                 abi: SEED_SALE_ABI,
-                functionName: 'contributions',
+                functionName: 'deposits',
                 args: [address],
             },
             {
                 address: SEED_SALE_ADDRESS,
                 abi: SEED_SALE_ABI,
-                functionName: 'totalRaised',
+                functionName: 'raisedAmount',
             },
             {
                 address: CONFIG.EMISSION_CONTROLLER_ADDRESS,
