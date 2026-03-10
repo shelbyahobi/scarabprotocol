@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target } from 'lucide-react';
+import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target, Users } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
