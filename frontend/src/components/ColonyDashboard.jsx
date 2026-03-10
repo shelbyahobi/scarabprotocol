@@ -42,6 +42,18 @@ const EMISSION_CONTROLLER_ABI = [
 
 const SEED_SALE_ADDRESS = CONFIG.SEED_SALE_ADDRESS;
 const TOKEN_ADDRESS = CONFIG.ROLL_TOKEN_ADDRESS;
+const HARDWARE_PREORDER_ADDRESS = CONFIG.HARDWARE_PREORDER_ADDRESS;
+const MOCK_USDC_ADDRESS = CONFIG.MOCK_USDC_ADDRESS;
+
+const HARDWARE_PREORDER_ABI = [
+    { "inputs": [{ "internalType": "uint256", "name": "quantity", "type": "uint256" }], "name": "preorderBokashiHome", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+    { "inputs": [{ "internalType": "uint256", "name": "quantity", "type": "uint256" }], "name": "preorderBokashiPro", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+    { "inputs": [{ "internalType": "uint256", "name": "quantity", "type": "uint256" }], "name": "preorderSolar", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+];
+
+const USDC_ABI = [
+    { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }
+];
 
 export default function ColonyDashboard() {
     const { address, isConnected } = useAccount();
@@ -56,6 +68,12 @@ export default function ColonyDashboard() {
     const [scanResult, setScanResult] = useState(null);
     const [scanError, setScanError] = useState(null);
     const [isScanningActive, setIsScanningActive] = useState(false);
+
+    // Hardware Pre-order Flow State
+    const [isPreorderModalOpen, setIsPreorderModalOpen] = useState(false);
+    const [preorderStep, setPreorderStep] = useState('shipping'); // 'shipping' | 'approve' | 'confirm'
+    const [shippingDetails, setShippingDetails] = useState({ name: '', address: '', city: '', postal: '', country: '', email: '' });
+
 
     // Mock Active Nodes for the Professional Mining UX
     const [mockNodes, setMockNodes] = useState([
@@ -188,15 +206,26 @@ export default function ColonyDashboard() {
             preordered: 42
         },
         {
-            id: 'bokashi',
-            name: "Smart Bokashi Kit",
+            id: 'bokashi_home',
+            name: "Bokashi Home",
             deposit: "25 USDC",
-            totalCost: "$89 USD",
+            totalCost: "~$299 USD (Retail)",
             image: "♻️",
-            features: ["IoT Sensored Lid", "Bluetooth Proximity Comm", "650 BRU/yr Base Ratio"],
+            features: ["Affordable Scaling", "Temp & Weight Telemetry", "0.90x Base BRU Cap"],
             minTier: "Guest",
-            maxSupply: 2000,
+            maxSupply: 1000,
             preordered: 154
+        },
+        {
+            id: 'bokashi_pro',
+            name: "Bokashi Pro",
+            deposit: "50 USDC",
+            totalCost: "~$499 USD (Retail)",
+            image: "🔬",
+            features: ["Institutional Precision", "CH4 & VOC Telemetry", "1.05x Potential BRU Bonus"],
+            minTier: "Guest",
+            maxSupply: 250,
+            preordered: 42
         }
     ];
 
@@ -228,6 +257,66 @@ export default function ColonyDashboard() {
     const handleBuy = (product) => {
         if (tier === 'Guest') return;
         setSelectedProduct(product);
+    };
+
+    const openPreorderModal = (product) => {
+        setSelectedProduct(product);
+        setIsPreorderModalOpen(true);
+        setPreorderStep('shipping');
+    };
+
+    const closePreorderModal = () => {
+        setIsPreorderModalOpen(false);
+        setPreorderStep('shipping');
+    };
+
+    const handlePreorderApprove = async () => {
+        setIsSubmitting(true);
+        try {
+            // Get deposit amount in USDC (6 decimals)
+            const depositStr = selectedProduct.deposit.split(' ')[0]; // e.g. "25"
+            // Note: Standard USDC uses 6 decimals. For MOCK_USDC if it's 18 we would parseUnits(..., 18).
+            const amount = BigInt(parseInt(depositStr) * 10 ** 6);
+
+            const txHash = await writeContractAsync({
+                address: MOCK_USDC_ADDRESS,
+                abi: USDC_ABI,
+                functionName: 'approve',
+                args: [HARDWARE_PREORDER_ADDRESS, amount],
+            });
+            console.log("Approval tx:", txHash);
+            alert("Approval transaction sent! Waiting for confirmation...");
+            setPreorderStep('confirm');
+        } catch (error) {
+            console.error("Approval failed", error);
+            alert(`Approval failed: ${error.shortMessage || error.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handlePreorderConfirm = async () => {
+        setIsSubmitting(true);
+        try {
+            let fnCall = "preorderSolar";
+            if (selectedProduct.id === 'bokashi_home') fnCall = "preorderBokashiHome";
+            if (selectedProduct.id === 'bokashi_pro') fnCall = "preorderBokashiPro";
+
+            const txHash = await writeContractAsync({
+                address: HARDWARE_PREORDER_ADDRESS,
+                abi: HARDWARE_PREORDER_ABI,
+                functionName: fnCall,
+                args: [1n], // quantity 1
+            });
+            console.log("Pre-order tx:", txHash);
+            alert(`✅ Success! Your Hardware Pre-order is confirmed!\n\nTxHash: ${txHash}\nShipping physical goods to: ${shippingDetails.address}`);
+            closePreorderModal();
+        } catch (error) {
+            console.error("Preorder failed", error);
+            alert(`Preorder execution failed: ${error.shortMessage || error.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleMockScan = () => {
@@ -494,11 +583,11 @@ export default function ColonyDashboard() {
                                                 <button
                                                     onClick={() => {
                                                         if (!isConnected) alert("Please connect wallet first");
-                                                        else alert(`Mock: Sending ${product.deposit} to HardwarePreorder.sol...`);
+                                                        else openPreorderModal(product);
                                                     }}
-                                                    className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                                                    className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
                                                 >
-                                                    Secure Pre-order Allocation
+                                                    Secure Refundable Reservation
                                                 </button>
                                             </div>
                                         </div>
@@ -793,6 +882,103 @@ export default function ColonyDashboard() {
                             <a href={selectedProduct.link} target="_blank" className="block w-full bg-beetle-gold text-black font-bold py-3 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2">
                                 Go to Partner Store <ExternalLink size={18} />
                             </a>
+                        </motion.div>
+                    </div>
+                )}
+
+                {/* Hardware Preorder Modal */}
+                {isPreorderModalOpen && selectedProduct && !selectedProduct.code && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closePreorderModal}>
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-[#0a1a0f] border border-beetle-gold/50 p-8 rounded-2xl max-w-lg w-full relative shadow-[0_0_50px_rgba(212,175,55,0.2)]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button onClick={closePreorderModal} className="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+
+                            <h3 className="text-2xl font-black text-white mb-2 tracking-tighter text-center">{selectedProduct.name} Pre-order</h3>
+
+                            {/* Step Indicator */}
+                            <div className="flex justify-center items-center gap-4 mb-8 text-sm">
+                                <span className={preorderStep === 'shipping' ? 'text-beetle-gold font-bold' : 'text-gray-500'}>1. Shipping</span>
+                                <span className="text-white/20">→</span>
+                                <span className={preorderStep === 'approve' ? 'text-beetle-gold font-bold' : 'text-gray-500'}>2. Deposit</span>
+                                <span className="text-white/20">→</span>
+                                <span className={preorderStep === 'confirm' ? 'text-beetle-gold font-bold' : 'text-gray-500'}>3. Confirm</span>
+                            </div>
+
+                            {preorderStep === 'shipping' && (
+                                <div className="space-y-4">
+                                    <p className="text-gray-400 text-sm text-center mb-6">Enter your physical address for hardware delivery.</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <input type="text" placeholder="Full Name" className="bg-black/50 border border-white/10 rounded-lg p-3 text-white w-full" value={shippingDetails.name} onChange={e => setShippingDetails({ ...shippingDetails, name: e.target.value })} />
+                                        <input type="email" placeholder="Email" className="bg-black/50 border border-white/10 rounded-lg p-3 text-white w-full" value={shippingDetails.email} onChange={e => setShippingDetails({ ...shippingDetails, email: e.target.value })} />
+                                    </div>
+                                    <input type="text" placeholder="Street Address" className="bg-black/50 border border-white/10 rounded-lg p-3 text-white w-full" value={shippingDetails.address} onChange={e => setShippingDetails({ ...shippingDetails, address: e.target.value })} />
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <input type="text" placeholder="City" className="col-span-1 border border-white/10 bg-black/50 rounded-lg p-3 text-white w-full" value={shippingDetails.city} onChange={e => setShippingDetails({ ...shippingDetails, city: e.target.value })} />
+                                        <input type="text" placeholder="State/Prov" className="col-span-1 border border-white/10 bg-black/50 rounded-lg p-3 text-white w-full" />
+                                        <input type="text" placeholder="Postal / Zip" className="col-span-1 border border-white/10 bg-black/50 rounded-lg p-3 text-white w-full" value={shippingDetails.postal} onChange={e => setShippingDetails({ ...shippingDetails, postal: e.target.value })} />
+                                    </div>
+                                    <div className="flex justify-end mt-6">
+                                        <button
+                                            onClick={() => setPreorderStep('approve')}
+                                            disabled={!shippingDetails.name || !shippingDetails.address}
+                                            className="bg-beetle-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-white transition-all disabled:opacity-50"
+                                        >
+                                            Next: Approve Deposit →
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {preorderStep === 'approve' && (
+                                <div className="text-center">
+                                    <div className="w-16 h-16 bg-beetle-gold/20 border border-beetle-gold/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Lock className="text-beetle-gold w-8 h-8" />
+                                    </div>
+                                    <h4 className="text-xl font-bold text-white mb-4">Escrow Deposit Approval</h4>
+                                    <p className="text-gray-400 text-sm mb-6 max-w-sm mx-auto">
+                                        You are pre-ordering 1x {selectedProduct.name}. The protocol requires an ERC20 approval to escrow your {selectedProduct.deposit} USDC deposit securely on-chain.
+                                    </p>
+
+                                    <div className="bg-black/50 border border-white/10 p-4 rounded-xl flex justify-between items-center mb-6">
+                                        <span className="text-gray-500 font-bold">Total Deposit:</span>
+                                        <span className="text-white font-mono font-bold">{selectedProduct.deposit}</span>
+                                    </div>
+
+                                    <button
+                                        onClick={handlePreorderApprove}
+                                        disabled={isSubmitting}
+                                        className="w-full bg-beetle-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] disabled:opacity-50"
+                                    >
+                                        {isSubmitting ? 'Approving in Wallet...' : `Approve ${selectedProduct.deposit}`}
+                                    </button>
+                                </div>
+                            )}
+
+                            {preorderStep === 'confirm' && (
+                                <div className="text-center">
+                                    <div className="w-16 h-16 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <CheckCircle className="text-green-500 w-8 h-8" />
+                                    </div>
+                                    <h4 className="text-xl font-bold text-white mb-4">Deposit Approved</h4>
+                                    <p className="text-gray-400 text-sm mb-6">
+                                        Your USDC deposit is approved. Finalize the transaction to lock in your allocation. Deposits are fully refundable until manufacturing begins.
+                                    </p>
+
+                                    <button
+                                        onClick={handlePreorderConfirm}
+                                        disabled={isSubmitting}
+                                        className="w-full bg-beetle-green text-black font-bold py-3 px-6 rounded-xl hover:brightness-110 transition-all disabled:opacity-50"
+                                    >
+                                        {isSubmitting ? 'Confirming...' : 'Secure Reservation via Web3'}
+                                    </button>
+                                </div>
+                            )}
+
                         </motion.div>
                     </div>
                 )}

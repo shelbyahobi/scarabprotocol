@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IDeviceRegistry {
-    enum DeviceType { Solar, Water, Biogas, Hydroponics, Bokashi, Other }
+    enum DeviceType { Solar, Water, Biogas, Hydroponics, Bokashi_Home, Bokashi_Pro, Other }
     struct Device {
         string   deviceId;
         address  owner;
@@ -144,7 +144,11 @@ contract SoilTransferValidator is AccessControl {
             require(deviceRegistry.isDeviceValid(userDeviceId), "Invalid user device");
             // Fetch owner bypassing full struct mapping payload memory exhaustion
             address userOwner = deviceRegistry.getDevice(userDeviceId).owner;
-            require(deviceRegistry.getDevice(userDeviceId).deviceType == IDeviceRegistry.DeviceType.Bokashi, "Not a Bokashi device");
+            require(
+                deviceRegistry.getDevice(userDeviceId).deviceType == IDeviceRegistry.DeviceType.Bokashi_Home ||
+                deviceRegistry.getDevice(userDeviceId).deviceType == IDeviceRegistry.DeviceType.Bokashi_Pro,
+                "Not a Bokashi device"
+            );
 
             emissionController.recordBRU(userOwner, (effectiveBru * 70) / 100);
             emissionController.recordBRU(registeredFarmers[farmerNodeId].wallet, (effectiveBru * 30) / 100);

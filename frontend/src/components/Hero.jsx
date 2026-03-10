@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Rocket, FileText, Shield, Lock, CheckCircle, Zap, DollarSign } from 'lucide-react';
 import ScarabLogo from './ScarabLogo';
 
-export default function Hero({ onOpenBlueprint }) {
+export default function Hero() {
     return (
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
             {/* Background Gradient Mesh */}
@@ -60,13 +60,13 @@ export default function Hero({ onOpenBlueprint }) {
                             <Rocket className="group-hover:translate-x-1 transition-transform" />
                             JOIN ARCHITECT ROUND
                         </Link>
-                        <button
-                            onClick={onOpenBlueprint}
+                        <Link
+                            to="/docs"
                             className="bg-black/40 backdrop-blur-md text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:border-beetle-gold/50 hover:text-beetle-gold transition-all flex items-center justify-center gap-2"
                         >
                             <FileText size={18} />
-                            Read Blueprint
-                        </button>
+                            Read Technical Docs
+                        </Link>
                     </div>
 
                     {/* Layer 1: Transparency Visual (PoPA) */}

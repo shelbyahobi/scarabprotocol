@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IDeviceRegistry {
-    enum DeviceType { Solar, Water, Biogas, Hydroponics, Bokashi, Other }
+    enum DeviceType { Solar, Water, Biogas, Hydroponics, Bokashi_Home, Bokashi_Pro, Other }
     struct Device {
         string   deviceId;
         address  owner;
@@ -106,7 +106,11 @@ contract BokashiValidator is AccessControl {
     function startCycle(bytes32 deviceIdHash, string calldata branNonce, bytes calldata signature) external {
         require(deviceRegistry.isDeviceValid(deviceIdHash), "BokashiValidator: Invalid device");
         IDeviceRegistry.Device memory device = deviceRegistry.getDevice(deviceIdHash);
-        require(device.deviceType == IDeviceRegistry.DeviceType.Bokashi, "BokashiValidator: Not a Bokashi device");
+        require(
+            device.deviceType == IDeviceRegistry.DeviceType.Bokashi_Home || 
+            device.deviceType == IDeviceRegistry.DeviceType.Bokashi_Pro, 
+            "BokashiValidator: Not a Bokashi device"
+        );
         require(msg.sender == device.owner || hasRole(ORACLE_ROLE, msg.sender), "BokashiValidator: Not authorized");
 
         if (address(subscriptions) != address(0)) {
@@ -158,7 +162,11 @@ contract BokashiValidator is AccessControl {
     ) external onlyRole(ORACLE_ROLE) {
         require(deviceRegistry.isDeviceValid(deviceIdHash), "BokashiValidator: Invalid device");
         IDeviceRegistry.Device memory device = deviceRegistry.getDevice(deviceIdHash);
-        require(device.deviceType == IDeviceRegistry.DeviceType.Bokashi, "BokashiValidator: Not a Bokashi device");
+        require(
+            device.deviceType == IDeviceRegistry.DeviceType.Bokashi_Home ||
+            device.deviceType == IDeviceRegistry.DeviceType.Bokashi_Pro, 
+            "BokashiValidator: Not a Bokashi device"
+        );
 
         require(cycleHadValidSubscription[deviceIdHash], "BokashiValidator: No active subscription at start");
 
@@ -174,7 +182,8 @@ contract BokashiValidator is AccessControl {
             return;
         }
 
-        uint256 qualityScore = calculateQualityScore(peakTemperature, gasPPM, startWeight - endWeight, startWeight, lidOpenings, averageFillWeight);
+        bool isPro = (device.deviceType == IDeviceRegistry.DeviceType.Bokashi_Pro);
+        uint256 qualityScore = calculateQualityScore(peakTemperature, gasPPM, startWeight - endWeight, startWeight, lidOpenings, averageFillWeight, isPro);
         
         // If quality score is extremely low (e.g. padding numbers), flag it for manual review.
         if (qualityScore < 5000) { 
@@ -248,7 +257,8 @@ contract BokashiValidator is AccessControl {
         uint256 weightLoss,
         uint256 startWeight,
         uint256 lidOpenings,
-        uint256 averageFillWeight
+        uint256 averageFillWeight,
+        bool isPro
     ) public pure returns (uint256) {
         // Critical Slash
         if (lidOpenings > 25) {
@@ -266,11 +276,18 @@ contract BokashiValidator is AccessControl {
             score += 2000;
         }
         
-        // 2. Gas production check (30% weight = max 3000 pts) -> 800+ ppm CO2/VOC
-        if (gasPPM >= 800) {
-            score += 3000;
-        } else if (gasPPM >= 400 && gasPPM < 800) {
-            score += 1500;
+        // 2. Gas production check (30% weight initially, but scales to 35% for Pro bonus)
+        if (isPro) {
+            if (gasPPM >= 1000) {
+                score += 3500; // Potential 1.05x bonus for high-precision Pro reading
+            } else if (gasPPM >= 800) {
+                score += 3000;
+            } else if (gasPPM >= 400 && gasPPM < 800) {
+                score += 1500;
+            }
+        } else {
+            // Home devices lack a methane sensor. Assumed baseline performance caps at 0.90x total multiplier
+            score += 2000; 
         }
         
         // 3. Weight loss check (30% weight = max 3000 pts) -> 8-15% ideal

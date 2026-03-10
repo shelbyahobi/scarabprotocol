@@ -32,6 +32,8 @@ import ValueProposition from './components/ValueProposition';
 import HowItWorks from './components/HowItWorks';
 import SoilAsAServiceTeaser from './components/SoilAsAServiceTeaser';
 import SimplifiedTokenomics from './components/SimplifiedTokenomics';
+import InvestorsPage from './components/InvestorsPage';
+import ProductsPage from './components/ProductsPage';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 
@@ -39,16 +41,13 @@ const Documentation = lazy(() => import('./components/Documentation'));
 
 const queryClient = new QueryClient();
 
-
-
-
-function LandingPage({ onOpenBlueprint }) {
+function LandingPage() {
     return (
         <>
-            <Navbar onOpenBlueprint={onOpenBlueprint} isLanding={true} />
+            <Navbar isLanding={true} />
             <main className="pt-20">
                 {/* 1. HERO */}
-                <Hero onOpenBlueprint={onOpenBlueprint} />
+                <Hero />
 
                 {/* 2. VALUE PROPOSITION (New) */}
                 <ValueProposition />
@@ -100,12 +99,12 @@ function LandingPage({ onOpenBlueprint }) {
                                 >
                                     Invest Now <Rocket size={20} />
                                 </Link>
-                                <button
-                                    onClick={onOpenBlueprint}
+                                <Link
+                                    to="/docs"
                                     className="bg-black border-2 border-white/20 text-white font-bold px-8 py-4 rounded-xl hover:border-white hover:bg-white/5 transition-all text-lg flex items-center justify-center gap-2"
                                 >
-                                    Read Blueprint <BookOpen size={20} />
-                                </button>
+                                    Read Technical Docs <BookOpen size={20} />
+                                </Link>
                             </div>
 
                             {/* Trust Signals */}
@@ -198,27 +197,6 @@ function DAppPage() {
     );
 }
 
-function InvestorsPage() {
-    return (
-        <div className="min-h-screen bg-[#050a05] text-white">
-            <div className="fixed top-0 left-0 w-full z-50 bg-[#0a1a0f] border-b border-white/5 shadow-xl">
-                <Ticker />
-                <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                    <Link to="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
-                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-bold">Back to Home</span>
-                    </Link>
-                    <span className="text-green-400 font-black tracking-tighter text-lg">$SCARAB <span className="text-white font-normal text-sm">Investor Overview</span></span>
-                </div>
-            </div>
-            <main className="pt-36">
-                <InvestorRoadmap />
-            </main>
-            <Footer />
-        </div>
-    );
-}
-
 function ProofOfReservesPage() {
     return (
         <div className="min-h-screen bg-[#050a05] text-white">
@@ -285,8 +263,6 @@ function Footer() {
 }
 
 function App() {
-    const [showBlueprint, setShowBlueprint] = useState(false);
-
     return (
         <ErrorBoundary>
             <WagmiProvider config={wagmiConfig}>
@@ -300,8 +276,6 @@ function App() {
                     })}>
                         <Router>
                             <div className="min-h-screen bg-black text-white font-sans selection:bg-beetle-gold selection:text-black relative overflow-hidden flex flex-col">
-                                <BlueprintModal isOpen={showBlueprint} onClose={() => setShowBlueprint(false)} />
-
                                 {/* Global Background */}
                                 <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#050a05] via-[#0a1a0f] to-black pointer-events-none"></div>
                                 <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-beetle-green/20 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
@@ -309,16 +283,27 @@ function App() {
                                 {/* Content */}
                                 <div className="relative z-10">
                                     <Routes>
-                                        <Route path="/" element={<LandingPage onOpenBlueprint={() => setShowBlueprint(true)} />} />
+                                        <Route path="/" element={<LandingPage />} />
                                         <Route path="/app" element={<DAppPage />} />
-                                        <Route path="/strategy" element={<StrategyPage />} />
-                                        <Route path="/transparency" element={<ProofOfReservesPage />} />
+                                        <Route path="/products" element={<ProductsPage />} />
                                         <Route path="/investors" element={<InvestorsPage />} />
+                                        <Route path="/transparency" element={<ProofOfReservesPage />} />
                                         <Route path="/docs" element={
                                             <Suspense fallback={<div className="min-h-screen bg-[#050A05] flex items-center justify-center text-green-400">Loading Docs...</div>}>
                                                 <Documentation />
                                             </Suspense>
                                         } />
+                                        <Route path="/docs/:section" element={
+                                            <Suspense fallback={<div className="min-h-screen bg-[#050A05] flex items-center justify-center text-green-400">Loading Docs...</div>}>
+                                                <Documentation />
+                                            </Suspense>
+                                        } />
+
+                                        {/* Redirects */}
+                                        <Route path="/blueprint" element={<Navigate to="/docs" replace />} />
+                                        <Route path="/strategy" element={<Navigate to="/investors" replace />} />
+                                        <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />
+
                                         <Route path="*" element={<Navigate to="/" replace />} />
                                     </Routes>
                                 </div>

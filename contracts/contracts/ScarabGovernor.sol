@@ -12,9 +12,13 @@ contract ScarabGovernor is Governor, GovernorSettings, GovernorCountingSimple, G
     
     constructor(IVotes _token, TimelockController _timelock)
         Governor("ScarabGovernor")
-        GovernorSettings(1 days, 1 weeks, 100e18) // Voting Delay, Period, Threshold
+        GovernorSettings(
+            2 days,      // Voting Delay: Time for community to review
+            7 days,      // Voting Period
+            10000000e18  // Proposal Threshold: 10M SCARAB (1% of Total Supply)
+        )
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4) // 4% Quorum
+        GovernorVotesQuorumFraction(10) // 10% Quorum: Protects against small whale capture
         GovernorTimelockControl(_timelock)
     {}
 

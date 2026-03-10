@@ -131,6 +131,9 @@ contract ScarabSubscriptions is AccessControl {
 
     function setTreasury(address _newTreasury) external onlyRole(ADMIN_ROLE) {
         require(_newTreasury != address(0), "Invalid treasury address");
+        treasury = _newTreasury;
+    }
+
     function setRouter(address _newRouter) external onlyRole(ADMIN_ROLE) {
         require(_newRouter != address(0), "Invalid router address");
         dexRouter = IUniswapV2Router02(_newRouter);
