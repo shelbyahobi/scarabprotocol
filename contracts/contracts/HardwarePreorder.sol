@@ -1,161 +1,159 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * @title HardwarePreorder
- * @notice Handles USDC deposits for pre-ordering SCARAB mining hardware.
- *         Ensures strict supply caps and routes funds directly to the R&D vault.
+ * @dev Professionalized UUPS Upgradeable contract for DePIN hardware preorders.
+ * Includes manufacturing lock-in logic, stakeholder discounts, and on-chain shipping proof.
  */
-contract HardwarePreorder is AccessControl, ReentrancyGuard {
-    using SafeERC20 for IERC20;
+contract HardwarePreorder is 
+    Initializable, 
+    AccessControlUpgradeable, 
+    ReentrancyGuardUpgradeable, 
+    PausableUpgradeable, 
+    UUPSUpgradeable 
+{
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
 
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-
-    IERC20 public usdc;
-    address public rdWallet;
-
-    uint256 public constant BOKASHI_HOME_DEPOSIT = 25 * 10**6; // 25 USDC
-    uint256 public constant BOKASHI_PRO_DEPOSIT = 50 * 10**6;  // 50 USDC
-    uint256 public constant SOLAR_DEPOSIT = 100 * 10**6; // 100 USDC
-
-    uint256 public constant MAX_BOKASHI_HOME_UNITS = 1000;
-    uint256 public constant MAX_BOKASHI_PRO_UNITS = 250;
-    uint256 public constant MAX_SOLAR_UNITS = 1000;
-
-    uint256 public totalBokashiHomePreordered;
-    uint256 public totalBokashiProPreordered;
-    uint256 public totalSolarPreordered;
-
-    uint256 public refundableUntil;
-    bool public manufacturingLocked = false;
-
-    enum NodeType { Bokashi_Home, Bokashi_Pro, Solar }
-
-    mapping(address => mapping(NodeType => uint256)) public userPreorders;
-
-    event PreorderPlaced(address indexed user, NodeType nodeType, uint256 quantity, uint256 amountPaid);
-    event PreorderRefunded(address indexed user, NodeType nodeType, uint256 quantity, uint256 amountRefunded);
-    event ManufacturingLocked(uint256 amountTransferred);
-    event RDWalletUpdated(address newWallet);
-
-    /**
-     * @param _usdc USDC contract address for deposits
-     * @param _rdWallet Research & Development multisig for hardware manufacturing
-     */
-    constructor(address _usdc, address _rdWallet) {
-        require(_usdc != address(0), "Invalid USDC address");
-        require(_rdWallet != address(0), "Invalid R&D wallet address");
-
-        usdc = IERC20(_usdc);
-        rdWallet = _rdWallet;
-        refundableUntil = block.timestamp + 90 days;
-
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(ADMIN_ROLE, msg.sender);
+    struct ProductConfig {
+        uint256 depositAmount;
+        uint256 fullPrice;
+        uint256 manufacturingThreshold;
+        uint256 currentPreorders;
+        bool manufacturingStarted;
+        bool active;
     }
 
-    /**
-     * @notice Place a pre-order reservation for Smart Bokashi Home Kits.
-     */
-    function preorderBokashiHome(uint256 quantity) external nonReentrant {
-        require(quantity > 0, "Zero quantity");
-        require(!manufacturingLocked, "Manufacturing already locked");
-        require(totalBokashiHomePreordered + quantity <= MAX_BOKASHI_HOME_UNITS, "Exceeds max Home units");
-
-        uint256 cost = quantity * BOKASHI_HOME_DEPOSIT;
-        usdc.safeTransferFrom(msg.sender, address(this), cost);
-
-        totalBokashiHomePreordered += quantity;
-        userPreorders[msg.sender][NodeType.Bokashi_Home] += quantity;
-
-        emit PreorderPlaced(msg.sender, NodeType.Bokashi_Home, quantity, cost);
+    struct Preorder {
+        uint256 amountPaid;
+        bytes32 shippingDataHash;
+        uint256 timestamp;
+        bool refunded;
+        bool holderDiscountApplied;
     }
 
-    /**
-     * @notice Place a pre-order reservation for Smart Bokashi Pro Kits.
-     */
-    function preorderBokashiPro(uint256 quantity) external nonReentrant {
-        require(quantity > 0, "Zero quantity");
-        require(!manufacturingLocked, "Manufacturing already locked");
-        require(totalBokashiProPreordered + quantity <= MAX_BOKASHI_PRO_UNITS, "Exceeds max Pro units");
+    IERC20Upgradeable public usdc;
+    IERC20Upgradeable public scarab;
 
-        uint256 cost = quantity * BOKASHI_PRO_DEPOSIT;
-        usdc.safeTransferFrom(msg.sender, address(this), cost);
+    mapping(string => ProductConfig) public products;
+    mapping(string => mapping(address => Preorder)) public userPreorders;
+    
+    uint256 public constant HOLDER_DISCOUNT_BPS = 1000; // 10%
+    uint256 public holderDiscountThreshold; // e.g., 1000 * 10**18
 
-        totalBokashiProPreordered += quantity;
-        userPreorders[msg.sender][NodeType.Bokashi_Pro] += quantity;
+    event PreorderPlaced(address indexed user, string productId, uint256 amount);
+    event RefundIssued(address indexed user, string productId, uint256 amount);
+    event ManufacturingStarted(string productId);
 
-        emit PreorderPlaced(msg.sender, NodeType.Bokashi_Pro, quantity, cost);
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
     }
 
-    /**
-     * @notice Place a pre-order reservation for Solar Sentinel Nodes.
-     */
-    function preorderSolar(uint256 quantity) external nonReentrant {
-        require(quantity > 0, "Zero quantity");
-        require(!manufacturingLocked, "Manufacturing already locked");
-        require(totalSolarPreordered + quantity <= MAX_SOLAR_UNITS, "Exceeds max Solar units");
+    function initialize(
+        address _usdc,
+        address _scarab,
+        uint256 _holderThreshold,
+        address _admin
+    ) public initializer {
+        __AccessControl_init();
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
 
-        uint256 cost = quantity * SOLAR_DEPOSIT;
-        usdc.safeTransferFrom(msg.sender, address(this), cost);
+        usdc = IERC20Upgradeable(_usdc);
+        scarab = IERC20Upgradeable(_scarab);
+        holderDiscountThreshold = _holderThreshold;
 
-        totalSolarPreordered += quantity;
-        userPreorders[msg.sender][NodeType.Solar] += quantity;
-
-        emit PreorderPlaced(msg.sender, NodeType.Solar, quantity, cost);
+        _grantRole(DEFAULT_ADMIN_ROLE, _admin);
+        _grantRole(UPGRADER_ROLE, _admin);
+        _grantRole(MANAGER_ROLE, _admin);
     }
 
-    /**
-     * @notice Refund a pre-order reservation before manufacturing locks.
-     */
-    function refundPreorder(NodeType nodeType, uint256 quantity) external nonReentrant {
-        require(!manufacturingLocked, "Manufacturing is locked, deposits are non-refundable");
-        require(block.timestamp <= refundableUntil, "Refund period has expired");
-        require(userPreorders[msg.sender][nodeType] >= quantity, "Insufficient preorders");
+    function setProduct(
+        string memory productId,
+        uint256 deposit,
+        uint256 fullPrice,
+        uint256 threshold,
+        bool active
+    ) external onlyRole(MANAGER_ROLE) {
+        products[productId] = ProductConfig({
+            depositAmount: deposit,
+            fullPrice: fullPrice,
+            manufacturingThreshold: threshold,
+            currentPreorders: products[productId].currentPreorders, 
+            manufacturingStarted: products[productId].manufacturingStarted,
+            active: active
+        });
+    }
 
-        uint256 refundAmount;
-        if (nodeType == NodeType.Bokashi_Home) {
-            refundAmount = quantity * BOKASHI_HOME_DEPOSIT;
-            totalBokashiHomePreordered -= quantity;
-        } else if (nodeType == NodeType.Bokashi_Pro) {
-            refundAmount = quantity * BOKASHI_PRO_DEPOSIT;
-            totalBokashiProPreordered -= quantity;
-        } else if (nodeType == NodeType.Solar) {
-            refundAmount = quantity * SOLAR_DEPOSIT;
-            totalSolarPreordered -= quantity;
+    function placePreorder(string memory productId, bytes32 shippingHash) external nonReentrant whenNotPaused {
+        ProductConfig storage prod = products[productId];
+        require(prod.active, "Product not active");
+        require(userPreorders[productId][msg.sender].amountPaid == 0, "Already preordered");
+
+        uint256 deposit = prod.depositAmount;
+        bool applyDiscount = false;
+
+        if (scarab.balanceOf(msg.sender) >= holderDiscountThreshold) {
+            deposit = deposit - (deposit * HOLDER_DISCOUNT_BPS / 10000);
+            applyDiscount = true;
         }
 
-        userPreorders[msg.sender][nodeType] -= quantity;
-        usdc.safeTransfer(msg.sender, refundAmount);
+        require(usdc.transferFrom(msg.sender, address(this), deposit), "Transfer failed");
 
-        emit PreorderRefunded(msg.sender, nodeType, quantity, refundAmount);
-    }
+        userPreorders[productId][msg.sender] = Preorder({
+            amountPaid: deposit,
+            shippingDataHash: shippingHash,
+            timestamp: block.timestamp,
+            refunded: false,
+            holderDiscountApplied: applyDiscount
+        });
 
-    /**
-     * @notice DAO locks manufacturing and routes accumulated USDC directly to the R&D vault.
-     */
-    function lockManufacturing() external onlyRole(ADMIN_ROLE) {
-        require(!manufacturingLocked, "Already locked");
-        manufacturingLocked = true;
-        
-        uint256 balance = usdc.balanceOf(address(this));
-        if (balance > 0) {
-            usdc.safeTransfer(rdWallet, balance);
+        prod.currentPreorders++;
+
+        if (prod.currentPreorders >= prod.manufacturingThreshold && !prod.manufacturingStarted) {
+            prod.manufacturingStarted = true;
+            emit ManufacturingStarted(productId);
         }
+
+        emit PreorderPlaced(msg.sender, productId, deposit);
+    }
+
+    function refundPreorder(string memory productId) external nonReentrant {
+        ProductConfig storage prod = products[productId];
+        require(!prod.manufacturingStarted, "Manufacturing started, non-refundable");
         
-        emit ManufacturingLocked(balance);
+        Preorder storage order = userPreorders[productId][msg.sender];
+        require(order.amountPaid > 0, "No preorder found");
+        require(!order.refunded, "Already refunded");
+
+        uint256 amount = order.amountPaid;
+        order.refunded = true;
+        order.amountPaid = 0;
+        prod.currentPreorders--;
+
+        require(usdc.transfer(msg.sender, amount), "Transfer failed");
+        emit RefundIssued(msg.sender, productId, amount);
     }
 
-    // --- Admin Settings ---
-
-    function setRDWallet(address _newWallet) external onlyRole(ADMIN_ROLE) {
-        require(_newWallet != address(0), "Invalid address");
-        rdWallet = _newWallet;
-        emit RDWalletUpdated(_newWallet);
+    function getPreorderProgress(string memory productId) external view returns (uint256 current, uint256 threshold, bool started) {
+        ProductConfig storage prod = products[productId];
+        return (prod.currentPreorders, prod.manufacturingThreshold, prod.manufacturingStarted);
     }
+
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+
+    // Admin Tools
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) { _pause(); }
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) { _unpause(); }
+    function setHolderThreshold(uint256 _new) external onlyRole(MANAGER_ROLE) { holderDiscountThreshold = _new; }
 }

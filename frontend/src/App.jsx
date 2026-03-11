@@ -34,6 +34,7 @@ import SoilAsAServiceTeaser from './components/SoilAsAServiceTeaser';
 import SimplifiedTokenomics from './components/SimplifiedTokenomics';
 import InvestorsPage from './components/InvestorsPage';
 import Marketplace from './components/Marketplace';
+import ProductsPage from './components/ProductsPage';
 import DAOPage from './components/DAOPage';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
 import { lazy, Suspense } from 'react';

@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
-import { Vote, Users, FileText, CheckCircle, XCircle, Clock, ArrowRight } from 'lucide-react';
+import { Vote, Users, FileText, CheckCircle, XCircle, Clock, ArrowRight, TrendingUp, Percent } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../config';
 
 const ROLL_TOKEN_ADDRESS = CONFIG.ROLL_TOKEN_ADDRESS;
-const GOVERNOR_ADDRESS = CONFIG.GOVERNOR_ADDRESS;
 
 const ROLL_ABI = [
     { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "getVotes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-    { "inputs": [{ "internalType": "address", "name": "delegatee", "type": "address" }], "name": "delegate", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
-];
-
-const GOVERNOR_ABI = [
-    { "inputs": [{ "internalType": "address[]", "name": "targets", "type": "address[]" }, { "internalType": "uint256[]", "name": "values", "type": "uint256[]" }, { "internalType": "bytes[]", "name": "calldatas", "type": "bytes[]" }, { "internalType": "string", "name": "description", "type": "string" }], "name": "propose", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" },
-    { "inputs": [{ "internalType": "uint256", "name": "proposalId", "type": "uint256" }, { "internalType": "uint8", "name": "support", "type": "uint8" }], "name": "castVote", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" },
-    { "inputs": [{ "internalType": "uint256", "name": "proposalId", "type": "uint256" }], "name": "state", "outputs": [{ "internalType": "enum IGovernor.ProposalState", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }
+    { "inputs": [{ "internalType": "address", "name": "delegatee", "type": "address" }], "name": "delegate", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+    { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
 ];
 
 const GovernanceDashboard = () => {
@@ -24,22 +18,25 @@ const GovernanceDashboard = () => {
     const [delegatee, setDelegatee] = useState('');
     const [proposalDescription, setProposalDescription] = useState('');
 
-    // Read Voting Power
+    // Read Balance & Voting Power
     const { data: votingPower } = useReadContract({
         address: ROLL_TOKEN_ADDRESS,
         abi: ROLL_ABI,
         functionName: 'getVotes',
         args: [address],
-        query: {
-            enabled: isConnected
-        }
+        query: { enabled: isConnected }
+    });
+
+    const { data: balance } = useReadContract({
+        address: ROLL_TOKEN_ADDRESS,
+        abi: ROLL_ABI,
+        functionName: 'balanceOf',
+        args: [address],
+        query: { enabled: isConnected }
     });
 
     // Delegate Config
     const { writeContract: delegate, isPending: isDelegating } = useWriteContract();
-
-    // Initial simple mockup for Proposal List (would need event indexing for real history)
-    const [activeTab, setActiveTab] = useState('vote');
 
     const handleDelegate = () => {
         if (!delegatee.startsWith('0x')) return;
@@ -51,119 +48,139 @@ const GovernanceDashboard = () => {
         });
     }
 
+    // Circulating Supply (Mock for now, would be from an API or contract in prod)
+    const CIRCULATING_SUPPLY = 47300000;
+    const share = balance ? (Number(formatEther(balance)) / CIRCULATING_SUPPLY) * 100 : 0;
+
     return (
-        <section className="py-20 bg-black text-white relative overflow-hidden" id="governance">
-            <div className="container mx-auto px-4 relative z-10">
+        <div className="space-y-12">
+            {/* Voting Power Calculator (Audit Requirement) */}
+            <div className="grid md:grid-cols-3 gap-6">
+                <StatCard
+                    label="Your Voting Power"
+                    value={votingPower ? Number(formatEther(votingPower)).toLocaleString() : '0'}
+                    unit="Votes"
+                    color="text-beetle-electric"
+                    icon={<Vote size={20} />}
+                />
+                <StatCard
+                    label="Total Circulating"
+                    value={CIRCULATING_SUPPLY.toLocaleString()}
+                    unit="SCARAB"
+                    color="text-white"
+                    icon={<Users size={20} />}
+                />
+                <StatCard
+                    label="Your Protocol Share"
+                    value={share.toFixed(4)}
+                    unit="%"
+                    color="text-beetle-gold"
+                    icon={<Percent size={20} />}
+                />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+                {/* Delegation Control */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    className="bg-black/40 border border-white/10 rounded-3xl p-8"
                 >
-                    <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                        DAO Governance
-                    </h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto">
-                        The Beetle Roll DAO allows token holders to steer the future of the ecosystem.
-                        Delegate your voting power or create proposals to influence funding and development.
-                    </p>
-                </motion.div>
+                    <div className="flex items-center gap-3 mb-8">
+                        <TrendingUp className="text-beetle-electric" />
+                        <h3 className="text-2xl font-black text-white">Delegation</h3>
+                    </div>
 
-                <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                    {/* Voting Power & Delegation */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-8"
-                    >
-                        <div className="flex items-center gap-3 mb-6">
-                            <Vote className="w-8 h-8 text-blue-400" />
-                            <h3 className="text-2xl font-bold">Your Voice</h3>
-                        </div>
-
-                        <div className="bg-gray-800/50 rounded-xl p-6 mb-6">
-                            <p className="text-sm text-gray-400 mb-1">Current Voting Power</p>
-                            <div className="text-3xl font-bold text-white">
-                                {votingPower ? formatEther(votingPower) : '0'} <span className="text-blue-400 text-lg">Votes</span>
+                    <div className="bg-white/5 border border-white/5 rounded-2xl p-6 mb-8">
+                        <p className="text-xs text-gray-500 uppercase tracking-widest mb-4">Activation Status</p>
+                        {votingPower > 0n ? (
+                            <div className="flex items-center gap-2 text-beetle-green font-bold">
+                                <CheckCircle size={16} /> Voting Power Active
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">
-                                1 ROLL = 1 Vote. You must delegate to yourself to vote.
-                            </p>
-                        </div>
-
-                        <div className="space-y-4">
-                            <label className="block text-sm font-medium text-gray-300">Delegate Votes via Address</label>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="0x..."
-                                    className="flex-1 bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-                                    value={delegatee}
-                                    onChange={(e) => setDelegatee(e.target.value)}
-                                />
-                                <button
-                                    onClick={handleDelegate}
-                                    disabled={!delegate || isDelegating || !delegatee}
-                                    className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 text-white px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2"
-                                >
-                                    {isDelegating ? "Delegating..." : "Delegate"}
-                                </button>
+                        ) : (
+                            <div className="flex items-center gap-2 text-yellow-500 font-bold">
+                                <Clock size={16} /> Activation Required
                             </div>
+                        )}
+                        <p className="text-[10px] text-gray-500 mt-4 leading-relaxed">
+                            To vote on proposals, you must first delegate your balance to an address (including your own).
+                            This "wakes up" your voting power for snapshots.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                placeholder="Delegate Address (0x...)"
+                                className="flex-1 bg-black border border-white/10 rounded-xl px-4 py-3 text-white focus:border-beetle-electric outline-none"
+                                value={delegatee}
+                                onChange={(e) => setDelegatee(e.target.value)}
+                            />
                             <button
-                                onClick={() => {
-                                    setDelegatee(address);
-                                }}
-                                className="text-xs text-blue-400 hover:text-blue-300 underline"
+                                onClick={handleDelegate}
+                                disabled={isDelegating || !delegatee}
+                                className="bg-beetle-electric text-black px-6 rounded-xl font-bold hover:bg-beetle-electric/90 disabled:opacity-50"
                             >
-                                Delegate to myself (Activate my voting power)
+                                {isDelegating ? "..." : "Delegate"}
                             </button>
                         </div>
-                    </motion.div>
+                        <button
+                            onClick={() => setDelegatee(address)}
+                            className="text-xs text-beetle-electric hover:underline"
+                        >
+                            Activate my own balance (Self-Delegate)
+                        </button>
+                    </div>
+                </motion.div>
 
-                    {/* Proposals */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-8"
-                    >
-                        <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center gap-3">
-                                <FileText className="w-8 h-8 text-emerald-400" />
-                                <h3 className="text-2xl font-bold">Active Proposals</h3>
-                            </div>
-                            <span className="bg-emerald-500/10 text-emerald-400 text-xs px-3 py-1 rounded-full border border-emerald-500/20">
-                                Live
-                            </span>
+                {/* Active Proposals Placeholder */}
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    className="bg-black/40 border border-white/10 rounded-3xl p-8 flex flex-col"
+                >
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                            <FileText className="text-beetle-gold" />
+                            <h3 className="text-2xl font-black text-white">The Open Queue</h3>
                         </div>
+                        <span className="text-[10px] font-bold text-gray-500 border border-white/10 px-3 py-1 rounded-full uppercase">
+                            No Active Votes
+                        </span>
+                    </div>
 
-                        {/* Placeholder for no proposals */}
-                        <div className="text-center py-12 border border-dashed border-gray-800 rounded-xl">
-                            <div className="bg-gray-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Clock className="w-8 h-8 text-gray-500" />
-                            </div>
-                            <h4 className="text-lg font-medium text-gray-300 mb-2">No Active Proposals</h4>
-                            <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">
-                                The DAO is currently quiet. Be the first to start a discussion.
-                            </p>
+                    <div className="flex-1 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
+                        <Clock className="text-gray-600 mb-4" size={40} />
+                        <h4 className="text-white font-bold mb-2">Council is Adjourned</h4>
+                        <p className="text-xs text-gray-500 max-w-[200px]">
+                            There are currently no active proposals requiring stakeholder signature.
+                        </p>
+                    </div>
 
-                            {/* Simple Proposal Form Mockup */}
-                            <div className="mt-6 pt-6 border-t border-gray-800">
-                                <h5 className="text-left text-sm font-medium text-gray-300 mb-3">Create Proposal (Requires 100k Votes)</h5>
-                                <textarea
-                                    className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 h-24 text-sm mb-3"
-                                    placeholder="Proposal Description..."
-                                    value={proposalDescription}
-                                    onChange={(e) => setProposalDescription(e.target.value)}
-                                />
-                                <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all">
-                                    Submit Proposal (Simulated)
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
+                    <button className="w-full mt-6 bg-white/5 border border-white/10 text-white/50 py-4 rounded-xl text-sm font-bold cursor-not-allowed">
+                        Create Proposal (Requires 100k Votes)
+                    </button>
+                </motion.div>
             </div>
-        </section>
+        </div>
     );
 };
+
+function StatCard({ label, value, unit, color, icon }) {
+    return (
+        <div className="bg-black/60 border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
+            <div className={`absolute top-0 left-0 w-1 h-full ${color.replace('text-', 'bg-')} opacity-50`}></div>
+            <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">{label}</span>
+                <span className={`${color} opacity-40 group-hover:opacity-100 transition-opacity`}>{icon}</span>
+            </div>
+            <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-black text-white tracking-tighter">{value}</span>
+                <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">{unit}</span>
+            </div>
+        </div>
+    );
+}
 
 export default GovernanceDashboard;
