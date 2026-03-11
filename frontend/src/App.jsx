@@ -33,7 +33,8 @@ import HowItWorks from './components/HowItWorks';
 import SoilAsAServiceTeaser from './components/SoilAsAServiceTeaser';
 import SimplifiedTokenomics from './components/SimplifiedTokenomics';
 import InvestorsPage from './components/InvestorsPage';
-import ProductsPage from './components/ProductsPage';
+import Marketplace from './components/Marketplace';
+import DAOPage from './components/DAOPage';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 
@@ -286,6 +287,8 @@ function App() {
                                         <Route path="/" element={<LandingPage />} />
                                         <Route path="/app" element={<DAppPage />} />
                                         <Route path="/products" element={<ProductsPage />} />
+                                        <Route path="/marketplace" element={<Marketplace />} />
+                                        <Route path="/dao" element={<DAOPage />} />
                                         <Route path="/investors" element={<InvestorsPage />} />
                                         <Route path="/transparency" element={<ProofOfReservesPage />} />
                                         <Route path="/docs" element={
