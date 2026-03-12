@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ShoppingCart, Zap, Globe, ShieldCheck, Tag, ExternalLink, ArrowRight, Leaf, Toolbox, Star, Shield } from 'lucide-react';
+import { ShoppingCart, Zap, Globe, ShieldCheck, Tag, ExternalLink, ArrowRight, Leaf, Toolbox, Star, Shield, CheckCircle } from 'lucide-react';
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
 import { useAccount, useReadContract } from 'wagmi';
