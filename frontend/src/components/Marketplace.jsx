@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { parseUnits } from 'viem';
-import {
-    Lock, Star, ExternalLink, CheckCircle, ShieldCheck,
+import { 
+    Lock, Star, ExternalLink, ShieldCheck, 
     Zap, Droplet, Sprout, Radio, Shield,
-    Filter, Search, TrendingUp, ShoppingCart, ArrowRight
+    Filter, Search, ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
+import ProductCard from './ProductCard';
 import { CONFIG } from '../config';
 import { MARKETPLACE_CATEGORIES, MARKETPLACE_PRODUCTS } from '../data/marketplaceProducts';
 
@@ -238,160 +239,8 @@ export default function Marketplace() {
                             </Link>
                         </div>
                     </motion.div>
-
                 </div>
             </div>
         </div>
-    );
-}
-
-function ProductCard({ product, isHolder }) {
-    const {
-        name,
-        brand,
-        image,
-        price,
-        holderRebate,
-        partnerUrl,
-        features,
-        isPriority,
-        scarabProduct
-    } = product;
-
-    const rebateAmount = isHolder && holderRebate ? price * holderRebate : 0;
-    const finalPrice = isHolder && holderRebate ? price - rebateAmount : price;
-
-    const Icon = CATEGORY_ICONS[product.category] || Zap;
-
-    return (
-        <motion.div
-            whileHover={{ y: -5 }}
-            className={`
-                bg-black/40 border rounded-[3rem] overflow-hidden transition-all group flex flex-col h-full
-                ${isPriority
-                    ? 'border-beetle-gold/20 shadow-[0_0_50px_rgba(212,175,67,0.05)]'
-                    : 'border-white/5'
-                }
-                hover:border-beetle-electric/30 hover:shadow-[0_0_60px_rgba(0,240,255,0.1)]
-            `}
-        >
-
-            {/* Image Placeholder / Visual */}
-            <div className="relative aspect-[4/3] bg-gradient-to-br from-[#0c120e] to-black overflow-hidden border-b border-white/5 flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
-
-                {scarabProduct ? (
-                    <div className="text-center p-8 group-hover:scale-110 transition-transform duration-700">
-                        <Icon size={120} className="text-beetle-green opacity-40 mx-auto" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <h4 className="text-4xl font-black text-white/10 tracking-widest uppercase">SCARAB R&D</h4>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="text-center p-8 group-hover:scale-110 transition-transform duration-700">
-                        <Icon size={80} className="text-beetle-gold opacity-20 mx-auto mb-4" />
-                        <div className="text-white/40 font-black uppercase tracking-widest text-lg">{brand}</div>
-                        <div className="text-white/20 font-mono text-xs mt-2">{name}</div>
-                    </div>
-                )}
-
-                {/* Badges */}
-                <div className="absolute top-8 left-8 flex flex-col gap-2">
-                    {scarabProduct && (
-                        <div className="bg-beetle-green text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
-                            Native Hardware
-                        </div>
-                    )}
-                    {isPriority && !scarabProduct && (
-                        <div className="bg-beetle-gold text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
-                            Priority Partner
-                        </div>
-                    )}
-                    {isHolder && holderRebate && (
-                        <div className="bg-beetle-electric text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                            {(holderRebate * 100).toFixed(0)}% Rebate Unlocked
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-10 flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] text-gray-600 font-black uppercase tracking-[0.3em]">
-                        {brand}
-                    </span>
-                    {isPriority && <Star size={16} className="text-beetle-gold fill-beetle-gold" />}
-                </div>
-
-                <h3 className="text-2xl font-black text-white mb-6 leading-tight min-h-[4rem]">
-                    {name}
-                </h3>
-
-                {/* Features */}
-                <div className="space-y-3 mb-10 flex-1">
-                    {features.slice(0, 4).map((feature, idx) => (
-                        <div key={idx} className="flex items-start gap-3 text-sm text-gray-500">
-                            <CheckCircle size={16} className="text-beetle-green mt-0.5 shrink-0" />
-                            <span className="leading-snug">{feature}</span>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Pricing & CTA */}
-                <div className="pt-8 border-t border-white/5 mt-auto">
-                    <div className="flex items-end justify-between mb-8">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-gray-700 uppercase tracking-widest mb-1">Price</span>
-                            <div className="flex items-baseline gap-3">
-                                {isHolder && holderRebate ? (
-                                    <>
-                                        <span className="text-3xl font-black text-white">
-                                            ${finalPrice.toLocaleString()}
-                                        </span>
-                                        <span className="text-gray-600 line-through text-sm font-bold">
-                                            ${price.toLocaleString()}
-                                        </span>
-                                    </>
-                                ) : (
-                                    <span className="text-3xl font-black text-white">
-                                        ${price.toLocaleString()}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                        {isHolder && holderRebate && (
-                            <div className="text-[10px] font-black text-beetle-gold bg-beetle-gold/10 px-3 py-1.5 rounded-lg uppercase tracking-tight">
-                                Save ${(price * holderRebate).toLocaleString()}
-                            </div>
-                        )}
-                    </div>
-
-                    <a
-                        href={partnerUrl}
-                        target={scarabProduct ? "_self" : "_blank"}
-                        rel={scarabProduct ? "" : "noopener noreferrer"}
-                        className={`
-                            block w-full py-5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs text-center transition-all
-                            ${scarabProduct
-                                ? 'bg-beetle-green text-black hover:bg-beetle-green/90 shadow-[0_10px_30px_rgba(74,222,128,0.2)]'
-                                : 'bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black'
-                            }
-                        `}
-                    >
-                        <div className="flex items-center justify-center gap-3">
-                            {scarabProduct ? 'Secure Pre-Order' : 'View Partner Site'}
-                            <ExternalLink size={16} />
-                        </div>
-                    </a>
-
-                    {!isHolder && holderRebate && (
-                        <Link to="/app" className="block text-center mt-6 text-[10px] font-bold text-beetle-gold hover:text-white transition-colors">
-                            Stake 1,000 SCARAB to unlock {(holderRebate * 100).toFixed(0)}% Stakeholder Rebate
-                        </Link>
-                    )}
-                </div>
-            </div>
-        </motion.div>
     );
 }
