@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { parseUnits } from 'viem';
 import {
-    Lock, Star, ExternalLink, CheckCircle,
+    Lock, Star, ExternalLink, CheckCircle, ShieldCheck,
     Zap, Droplet, Sprout, Radio, Shield,
     Filter, Search, TrendingUp, ShoppingCart, ArrowRight
 } from 'lucide-react';
