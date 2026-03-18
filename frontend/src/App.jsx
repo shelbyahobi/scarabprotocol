@@ -308,6 +308,10 @@ function App() {
                                         <Route path="/strategy" element={<Navigate to="/investors" replace />} />
                                         <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />
 
+import LegalPage from './components/LegalPage';
+
+// ... inside the App component routes ...
+                                        <Route path="/legal/*" element={<LegalPage />} />
                                         <Route path="*" element={<Navigate to="/" replace />} />
                                     </Routes>
                                 </div>

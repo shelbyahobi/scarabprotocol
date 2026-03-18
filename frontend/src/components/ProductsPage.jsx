@@ -29,6 +29,7 @@ export default function ProductsPage() {
     const [preorderStep, setPreorderStep] = useState('none'); // 'none' | 'shipping' | 'approve' | 'confirm'
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [shippingDetails, setShippingDetails] = useState({ name: '', address: '', email: '' });
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     // Check holder status (≥1000 SCARAB)
     const { data: scarabBalance } = useReadContract({
@@ -78,6 +79,7 @@ export default function ProductsPage() {
         }
         setSelectedProduct(product);
         setPreorderStep('shipping');
+        setAgreedToTerms(false); // Reset terms agreement
     };
 
     const handlePreorderApprove = async () => {
@@ -256,10 +258,24 @@ export default function ProductsPage() {
                                             value={shippingDetails.address}
                                             onChange={(e) => setShippingDetails({ ...shippingDetails, address: e.target.value })}
                                         />
+                                        
+                                        {/* Legal Checkbox */}
+                                        <div className="flex items-start gap-3 mt-6 p-4 bg-white/5 border border-white/10 rounded-xl">
+                                            <input
+                                                type="checkbox"
+                                                id="terms-checkbox"
+                                                className="mt-1 w-5 h-5 bg-black border border-white/30 rounded focus:ring-beetle-electric focus:ring-2 focus:ring-offset-2 focus:ring-offset-black accent-beetle-electric transition-all cursor-pointer"
+                                                checked={agreedToTerms}
+                                                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                            />
+                                            <label htmlFor="terms-checkbox" className="text-sm text-gray-400 leading-relaxed cursor-pointer select-none">
+                                                I have read and agree to the <a href="/legal/hardware" target="_blank" rel="noopener noreferrer" className="text-white font-bold hover:text-beetle-electric transition-colors underline">Hardware Purchase Agreement</a> and <a href="/legal/tos" target="_blank" rel="noopener noreferrer" className="text-white font-bold hover:text-beetle-electric transition-colors underline">Terms of Service</a>. I understand this is a non-refundable deposit once manufacturing begins.
+                                            </label>
+                                        </div>
                                     </div>
                                     <button
                                         onClick={() => setPreorderStep('approve')}
-                                        disabled={!shippingDetails.address || !shippingDetails.name}
+                                        disabled={!shippingDetails.address || !shippingDetails.name || !agreedToTerms}
                                         className="w-full bg-beetle-electric text-black font-black py-4 rounded-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
                                         Continue to Wallet Approval

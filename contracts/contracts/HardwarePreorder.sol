@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
@@ -16,7 +16,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 contract HardwarePreorder is 
     Initializable, 
     AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable, 
+    ReentrancyGuard, 
     PausableUpgradeable, 
     UUPSUpgradeable 
 {
@@ -40,11 +40,13 @@ contract HardwarePreorder is
         bool holderDiscountApplied;
     }
 
-    IERC20Upgradeable public usdc;
-    IERC20Upgradeable public scarab;
+    IERC20 public usdc;
+    IERC20 public scarab;
 
     mapping(string => ProductConfig) public products;
     mapping(string => mapping(address => Preorder)) public userPreorders;
+    
+    address public revenueSplitter;
     
     uint256 public constant HOLDER_DISCOUNT_BPS = 1000; // 10%
     uint256 public holderDiscountThreshold; // e.g., 1000 * 10**18
@@ -65,12 +67,10 @@ contract HardwarePreorder is
         address _admin
     ) public initializer {
         __AccessControl_init();
-        __ReentrancyGuard_init();
         __Pausable_init();
-        __UUPSUpgradeable_init();
 
-        usdc = IERC20Upgradeable(_usdc);
-        scarab = IERC20Upgradeable(_scarab);
+        usdc = IERC20(_usdc);
+        scarab = IERC20(_scarab);
         holderDiscountThreshold = _holderThreshold;
 
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
@@ -148,6 +148,18 @@ contract HardwarePreorder is
     function getPreorderProgress(string memory productId) external view returns (uint256 current, uint256 threshold, bool started) {
         ProductConfig storage prod = products[productId];
         return (prod.currentPreorders, prod.manufacturingThreshold, prod.manufacturingStarted);
+    }
+
+    function setRevenueSplitter(address _splitter) external onlyRole(MANAGER_ROLE) {
+        revenueSplitter = _splitter;
+    }
+
+    /**
+     * @dev Sweeps locked funds to the ScarabRevenueSplitter to prove PoPW traction.
+     */
+    function sweepToSplitter(uint256 amount) external onlyRole(MANAGER_ROLE) {
+        require(revenueSplitter != address(0), "Splitter not set");
+        require(usdc.transfer(revenueSplitter, amount), "Sweep failed");
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
