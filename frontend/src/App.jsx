@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LegalPage from './components/LegalPage';
 import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider, darkTheme, ConnectButton } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -37,7 +38,6 @@ import Marketplace from './components/Marketplace';
 import ProductsPage from './components/ProductsPage';
 import DAOPage from './components/DAOPage';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
-import { lazy, Suspense } from 'react';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -307,10 +307,7 @@ function App() {
                                         <Route path="/blueprint" element={<Navigate to="/docs" replace />} />
                                         <Route path="/strategy" element={<Navigate to="/investors" replace />} />
                                         <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />
-
-import LegalPage from './components/LegalPage';
-
-// ... inside the App component routes ...
+                                        {/* Legal */}
                                         <Route path="/legal/*" element={<LegalPage />} />
                                         <Route path="*" element={<Navigate to="/" replace />} />
                                     </Routes>
