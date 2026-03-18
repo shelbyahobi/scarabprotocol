@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import LegalPage from './components/LegalPage';
 import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider, darkTheme, ConnectButton } from '@rainbow-me/rainbowkit';
