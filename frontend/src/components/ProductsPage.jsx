@@ -57,18 +57,29 @@ export default function ProductsPage() {
             retailPrice: 349,
             image: "☀️",
             features: ["ATECC608A Cryptography", "Real-time Power Telemetry", "DAO Governance Rights"],
-            milestone: { current: 42, target: 100, label: "Batch 01 Manufacturing" }
+            milestone: { current: 42, target: 100, label: "Batch 01" }
+        },
+        {
+            id: 'bokashi_home',
+            name: "Home Bioreactor",
+            description: "Consumer-grade smart Bokashi bin. Cryptographically verifies official SCARAB bran to unlock token emissions.",
+            depositAmount: 50,
+            depositCurrency: "USDC",
+            retailPrice: 289,
+            image: "♻️",
+            features: ["NFC/SD Card Bran Auth", "Weight & Temp Telemetry", "Stainless Steel Dual-Bucket"],
+            milestone: { current: 12, target: 50, label: "Beta Tester Batch" }
         },
         {
             id: 'bokashi_pro',
-            name: "Bokashi Pro Node",
-            description: "High-precision waste transformation. Measures CH4 displacement with industrial-grade accuracy.",
-            depositAmount: 50,
+            name: "Pro Bioreactor",
+            description: "High-precision commercial waste transformation. 200L capacity with industrial validation for Canteens/Restaurants.",
+            depositAmount: 500,
             depositCurrency: "USDC",
-            retailPrice: 499,
-            image: "♻️",
-            features: ["Multi-gas Sensor Suite", "Weight & Moisture Telemetry", "P2P Data Relay"],
-            milestone: { current: 18, target: 50, label: "Alpha Tester Batch" }
+            retailPrice: 4995,
+            image: "🏭",
+            features: ["Cellular (LTE) Backhaul", "4x Industrial Load Cells", "Motorized Auger Mixing"],
+            milestone: { current: 4, target: 20, label: "Institutional Pilot" }
         }
     ];
 

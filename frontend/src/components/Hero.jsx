@@ -1,147 +1,115 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Rocket, FileText, Shield, Lock, CheckCircle, Zap, DollarSign } from 'lucide-react';
+import { ArrowRight, Cpu, Network, ShieldCheck, PlayCircle } from 'lucide-react';
 import ScarabLogo from './ScarabLogo';
 
 export default function Hero() {
     return (
-        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
-            {/* Background Gradient Mesh */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-beetle-green/20 via-black to-black z-0"></div>
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-24 bg-black">
+            {/* Minimalist Grid Overlay for Hardware Vibe */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] z-0 pointer-events-none" />
+            
+            {/* Subtle Ambient Studio Lighting */}
+            <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-zinc-600/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[0%] w-[600px] h-[600px] bg-beetle-gold/5 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 
-            {/* Grid Pattern Overlay */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-0 mix-blend-overlay"></div>
-
-            {/* Dynamic Background Effects */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-beetle-green/20 rounded-full blur-[120px] mix-blend-screen animate-pulse"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-beetle-electric/10 rounded-full blur-[100px] mix-blend-screen"></div>
-            </div>
-
-            <div className="z-10 container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
-
-                {/* Text Content */}
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
+            <div className="z-10 container mx-auto px-6 max-w-7xl flex flex-col items-center">
+                
+                {/* Institutional Eyebrow */}
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
-                    className="flex-1 text-center md:text-left"
+                    className="mb-8 hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
                 >
-                    {/* Eyebrow */}
-                    <div className="mb-6 flex items-center justify-center md:justify-start gap-2">
-                        <div className="h-px w-8 bg-gradient-to-r from-transparent to-beetle-gold" />
-                        <span className="text-xs uppercase tracking-[0.3em] text-beetle-gold/80">
-                            Ancient Symbol • Modern Protocol
-                        </span>
-                        <div className="h-px w-8 bg-gradient-to-l from-transparent to-beetle-gold" />
-                    </div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-mono tracking-widest text-zinc-300 uppercase">
+                        Protocol Mainnet Live • Version 2.0
+                    </span>
+                </motion.div>
 
-                    {/* Main headline */}
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[0.9] tracking-tighter">
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-beetle-gold via-yellow-200 to-beetle-gold">
-                            SCARAB
-                        </span>
-                        <span className="block text-white/90 text-4xl md:text-6xl font-light mt-2">
-                            Regeneration Reimagined
+                {/* Core Typographic Stack */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="text-center w-full max-w-4xl"
+                >
+                    <h1 className="text-6xl md:text-8xl font-medium tracking-tight text-white mb-6 leading-[1.05]">
+                        Ecological Data,
+                        <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-zinc-400 to-zinc-600 font-bold">
+                            Cryptographically Proven.
                         </span>
                     </h1>
 
-                    {/* Subheadline */}
-                    <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                        The ancient scarab beetle transformed waste into sustenance.
-                        Today, the SCARAB Protocol transforms <strong>Capital into Productive Assets</strong>.
-                        <span className="block mt-3 text-white font-semibold">
-                            The Institutional-Grade DePIN for the Regenerative Economy.
-                        </span>
+                    <p className="text-lg md:text-xl text-zinc-400 font-light mb-12 max-w-2xl mx-auto leading-relaxed">
+                        The institutional-grade DePIN for the regenerative economy. We deploy physical network infrastructure to map and verify the world's most critical ecological metrics.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-12">
-                        <Link to="/app" className="group bg-beetle-gold text-black px-8 py-4 rounded-xl font-black text-lg hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] flex items-center justify-center gap-2">
-                            <Rocket className="group-hover:translate-x-1 transition-transform" />
-                            JOIN ARCHITECT ROUND
-                        </Link>
-                        <Link
-                            to="/docs"
-                            className="bg-black/40 backdrop-blur-md text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:border-beetle-gold/50 hover:text-beetle-gold transition-all flex items-center justify-center gap-2"
+                    {/* Primary CTAs */}
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                        <Link 
+                            to="/hardware" 
+                            className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-semibold text-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"
                         >
-                            <FileText size={18} />
-                            Read Technical Docs
+                            Reserve Hardware <ArrowRight size={18} />
+                        </Link>
+                        <Link 
+                            to="/docs" 
+                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-zinc-700 text-white rounded-full font-medium text-lg hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2"
+                        >
+                            <PlayCircle size={18} className="text-zinc-400"/> Watch Tech Demo
                         </Link>
                     </div>
+                </motion.div>
 
-                    {/* Layer 1: Transparency Visual (PoPA) */}
-                    <div className="mt-10 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                        <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3 text-center md:text-left">
-                            Proof of Productive Asset (PoPA)
+                {/* Sub-Feature Glass Pane */}
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1.2, delay: 0.2 }}
+                    className="w-full max-w-5xl rounded-3xl border border-zinc-800 bg-zinc-950/50 backdrop-blur-xl p-8 shadow-2xl overflow-hidden relative"
+                >
+                    {/* Inner subtle glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                        
+                        <div className="flex flex-col gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+                                <Cpu size={24} />
+                            </div>
+                            <h3 className="text-lg font-semibold text-white">ATECC608A Integration</h3>
+                            <p className="text-sm text-zinc-500 leading-relaxed">
+                                Every device features a dedicated secure element chip, guaranteeing hardware-level elliptic-curve signature validity on all telemetry.
+                            </p>
                         </div>
-                        <div className="flex flex-col md:flex-row items-center gap-4 text-xs font-mono text-gray-300">
 
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-beetle-gold/20 flex items-center justify-center text-beetle-gold">
-                                    <DollarSign size={14} />
-                                </div>
-                                <span className="opacity-80">Capital</span>
+                        <div className="flex flex-col gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+                                <ShieldCheck size={24} />
                             </div>
-
-                            <div className="h-4 w-px md:w-8 md:h-px bg-white/20"></div>
-
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-beetle-electric/20 flex items-center justify-center text-beetle-electric">
-                                    <Zap size={14} />
-                                </div>
-                                <span className="opacity-80">Hardware</span>
-                            </div>
-
-                            <div className="h-4 w-px md:w-8 md:h-px bg-white/20"></div>
-
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-beetle-green/20 flex items-center justify-center text-beetle-green">
-                                    <Shield size={14} />
-                                </div>
-                                <span className="opacity-80">Verified Output</span>
-                            </div>
-
-                            <div className="h-4 w-px md:w-8 md:h-px bg-white/20"></div>
-
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 border border-amber-500/50">
-                                    <Rocket size={14} />
-                                </div>
-                                <span className="text-white font-bold">Token Reward</span>
-                            </div>
-
+                            <h3 className="text-lg font-semibold text-white">Sybil-Resilient Oracles</h3>
+                            <p className="text-sm text-zinc-500 leading-relaxed">
+                                Physical infrastructure cost mechanics combined with cryptographically unique keypairs eliminate standard blockchain oracle manipulation.
+                            </p>
                         </div>
+
+                        <div className="flex flex-col gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+                                <Network size={24} />
+                            </div>
+                            <h3 className="text-lg font-semibold text-white">Automated Treasury</h3>
+                            <p className="text-sm text-zinc-500 leading-relaxed">
+                                Verifiable fiat off-ramping powers the on-chain Buy & Burn engine. Real hardware revenue autonomously scales total network deflation.
+                            </p>
+                        </div>
+
                     </div>
                 </motion.div>
-
-                {/* 3D Visual — SVG Coin Mark */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, delay: 0.2 }}
-                    className="flex-1 relative hidden md:flex items-center justify-center"
-                >
-                    {/* Outer glow ring */}
-                    <div className="absolute w-[340px] h-[340px] rounded-full border border-beetle-gold/20 animate-pulse" />
-                    <div className="absolute w-[280px] h-[280px] rounded-full border border-beetle-green/10" />
-                    {/* Ambient glow blobs */}
-                    <div className="absolute w-[320px] h-[320px] bg-beetle-gold/10 rounded-full blur-[80px]" />
-                    <div className="absolute w-[200px] h-[200px] bg-beetle-green/10 rounded-full blur-[60px]" />
-                    {/* Coin mark — floating */}
-                    <motion.div
-                        animate={{ y: [0, -10, 0] }}
-                        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                        className="relative z-10"
-                    >
-                        <ScarabLogo variant="coin" size={240} />
-                        {/* Token label */}
-                        <div className="text-center mt-4">
-                            <div className="text-sm font-mono font-bold text-beetle-gold tracking-[0.3em]">$SCARAB</div>
-                            <div className="text-xs text-gray-500 tracking-widest mt-1">Proof of Productive Asset</div>
-                        </div>
-                    </motion.div>
-                </motion.div>
+                
             </div>
-        </section >
-    )
+        </section>
+    );
 }
