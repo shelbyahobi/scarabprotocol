@@ -37,6 +37,7 @@ import InvestorsPage from './components/InvestorsPage';
 import Marketplace from './components/Marketplace';
 import ProductsPage from './components/ProductsPage';
 import DAOPage from './components/DAOPage';
+import QuantumResistance from './components/QuantumResistance';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
 
 const Documentation = lazy(() => import('./components/Documentation'));
@@ -68,7 +69,10 @@ function LandingPage() {
                     <Transparency />
                 </div>
 
-                {/* 7. TOKENOMICS (Simplified) */}
+                {/* 7. QUANTUM RESISTANCE (New) */}
+                <QuantumResistance />
+
+                {/* 8. TOKENOMICS (Simplified) */}
                 <SimplifiedTokenomics />
 
                 {/* 8. ROADMAP */}
