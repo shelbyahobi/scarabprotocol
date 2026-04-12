@@ -63,7 +63,7 @@ contract BokashiValidator is AccessControl {
 
     mapping(bytes32 => BokashiCycle[]) public bokashiCycles; // deviceIdHash => cycles
     mapping(bytes32 => uint256) public lastCycleCompletionTime;
-    mapping(string => bool) public usedBranNonces;
+    mapping(bytes32 => bool) public usedBranNonces; // keccak256(deviceIdHash || branNonce)
     mapping(bytes32 => uint256) public activeCycleStartTime;
     mapping(bytes32 => bool) public cycleHadValidSubscription;
 
@@ -120,7 +120,9 @@ contract BokashiValidator is AccessControl {
             cycleHadValidSubscription[deviceIdHash] = true; // If no subscription contract set
         }
 
-        require(!usedBranNonces[branNonce], "BokashiValidator: Bran code already used");
+        // Replay Protection: hash(deviceId || nonce) for efficient pruning
+        bytes32 nonceRegistryHash = keccak256(abi.encodePacked(deviceIdHash, branNonce));
+        require(!usedBranNonces[nonceRegistryHash], "BokashiValidator: Bran code already used");
         require(activeCycleStartTime[deviceIdHash] == 0, "BokashiValidator: Cycle already active");
         
         // Enforce cooldown (approx 14 days minimum between cycles for a device)
@@ -133,7 +135,7 @@ contract BokashiValidator is AccessControl {
         
         require(hasRole(BRAN_ISSUER_ROLE, recoveredSigner), "BokashiValidator: Invalid signature");
 
-        usedBranNonces[branNonce] = true;
+        usedBranNonces[nonceRegistryHash] = true;
         activeCycleStartTime[deviceIdHash] = block.timestamp;
 
         emit CycleStarted(deviceIdHash, branNonce, block.timestamp);
