@@ -101,7 +101,8 @@ async function submitBatchToBlockchain(batch) {
     const batchId = ethers.utils.id(JSON.stringify(batch));
 
     // 4. Idempotency Lock: Prevent Double Submissions if worker restarts
-    const isLocked = await redisClient.setNX(`lock:batch:${batchId}`, "processing");
+    // Includes a 5-minute TTL (EX: 300) so a crashed worker doesn't permanently deadlock the batch
+    const isLocked = await redisClient.set(`lock:batch:${batchId}`, "processing", { NX: true, EX: 300 });
     if (!isLocked) {
         console.warn(`⚠️ Batch ${batchId} is already locked by another worker.`);
         return;
