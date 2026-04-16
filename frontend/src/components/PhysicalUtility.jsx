@@ -44,7 +44,7 @@ export default function PhysicalUtility() {
                                 <span className="text-white font-bold text-xl">$349</span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                                <span className="text-gray-400">Est. Returns</span>
+                                <span className="text-gray-400">Est. Protocol Rewards*</span>
                                 <span className="text-beetle-electric font-mono font-bold">~2,920 SCARAB/yr <span className="text-xs text-gray-500 font-normal">(1.0x Base)</span></span>
                             </div>
                             <div className="flex justify-between items-center">
@@ -87,7 +87,7 @@ export default function PhysicalUtility() {
                                 <span className="text-white font-bold text-xl">$89 <span className="text-xs font-normal text-gray-500">+ $12/mo sub</span></span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                                <span className="text-gray-400">Est. Returns</span>
+                                <span className="text-gray-400">Est. Protocol Rewards*</span>
                                 <span className="text-beetle-gold font-mono font-bold">~1,200 SCARAB/yr</span>
                             </div>
                             <div className="flex justify-between items-center">
@@ -109,7 +109,7 @@ export default function PhysicalUtility() {
 
                 <div className="text-center">
                     <p className="text-gray-500 text-sm">
-                        *By Year 2, the protocol will expand horizontally to handle Water Purification, Graywater Recycling, and Vertical Farming nodes.
+                        *Illustrative only. Rewards are variable and depend on protocol parameters, validation outcomes, and governance decisions.
                     </p>
                 </div>
             </div>

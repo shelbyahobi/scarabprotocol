@@ -103,8 +103,8 @@ export default function SoilAsAService() {
 
                 <div className="mt-16 text-center">
                     <p className="text-gray-400 max-w-2xl mx-auto text-sm italic">
-                        "Every successful transfer is a Proof of Sequestration. The DAO sells these as Soil Carbon Credits to corporations,
-                        funneling 100% of USDC back into the Liquidity Backing Vault to relentlessly raise the token floor price."
+                        "Every successful transfer is a Proof of Sequestration. The DAO may route related USDC revenue into the Liquidity Backing Vault,
+                        strengthening treasury backing metrics over time subject to governance and legal constraints."
                     </p>
                 </div>
 

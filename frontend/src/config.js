@@ -10,7 +10,11 @@ export const CONFIG = {
     RPC_URL_MAINNET: import.meta.env.VITE_RPC_URL_MAINNET || 'https://bsc-rpc.publicnode.com',
 
     // Contract Addresses (Fallbacks to the ones known from previous chats)
-    ROLL_TOKEN_ADDRESS: import.meta.env.VITE_ROLL_TOKEN_ADDRESS || '0x9A5AAA7663A829e3d9F9Dd9E39E746b67f3F8CBA', // SCARAB Token
+    /** BEP-20 SCARAB token. Prefer VITE_SCARAB_TOKEN_ADDRESS; VITE_ROLL_TOKEN_ADDRESS kept for existing Vercel envs. */
+    SCARAB_TOKEN_ADDRESS:
+        import.meta.env.VITE_SCARAB_TOKEN_ADDRESS ||
+        import.meta.env.VITE_ROLL_TOKEN_ADDRESS ||
+        '0x9A5AAA7663A829e3d9F9Dd9E39E746b67f3F8CBA',
     SEED_SALE_ADDRESS: import.meta.env.VITE_SEED_SALE_ADDRESS || '0xA9Cbd585263b36e9236C49cBb7254DFE055c0083', // Phase 1 Sale
     GOVERNOR_ADDRESS: import.meta.env.VITE_GOVERNOR_ADDRESS || '0xC15Ba632581DA4d347Ebb2235Ce44F4AB80e8dA9',
     TIMELOCK_ADDRESS: import.meta.env.VITE_TIMELOCK_ADDRESS || '0x79247eb866A4297800d984cf63A824A456C98305',

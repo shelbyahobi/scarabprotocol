@@ -123,7 +123,7 @@ export default function HardwareEcosystem() {
                          <div className="bg-black/50 border border-white/10 p-6 rounded-2xl flex flex-col items-center text-center mt-8">
                             <Zap className="text-beetle-gold mb-3" size={28} />
                             <div className="font-bold text-white text-sm mb-1">Logic Layer</div>
-                            <div className="text-xs text-gray-500">DePIN Oracles</div>
+                            <div className="text-xs text-gray-500">DePIN SQS Fan-out Layer</div>
                          </div>
                      </div>
                 </div>

@@ -49,7 +49,7 @@ export default function Ecoloop() {
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">3. Verification</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            Sensors oracle the data to the blockchain. <span className="text-beetle-gold">Physical Proof of Work</span> unlocks rewards.
+                            Sensors relay the data via SQS to the blockchain. <span className="text-beetle-gold">Physical Proof of Work</span> unlocks rewards.
                         </p>
                     </div>
 
@@ -60,7 +60,7 @@ export default function Ecoloop() {
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">4. Value Accrual</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                            Profits buy back $ROLL tokens. The more waste processed, the scarcer the token becomes.
+                            Protocol revenue can be allocated by governance to treasury operations, including optional buyback-and-burn mechanisms.
                         </p>
                     </div>
                 </div>

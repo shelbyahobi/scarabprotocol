@@ -1,5 +1,5 @@
 // scripts/fund_emission_controller.js
-// Excludes EmissionController from wallet limits, then transfers 300M ROLL (Regen Pool)
+// Excludes EmissionController from wallet limits, then transfers 300M SCARAB (Regen Pool)
 // Run: npx hardhat run scripts/fund_emission_controller.js --network bscTestnet
 
 const { ethers } = require("hardhat");
@@ -45,8 +45,8 @@ async function main() {
     // Step 2: Check balances
     const deployerBal = await token.balanceOf(deployer.address);
     const ecBal = await token.balanceOf(EMISSION_CONTROLLER);
-    console.log("\nDeployer balance:       ", ethers.formatEther(deployerBal), "ROLL");
-    console.log("EmissionController bal: ", ethers.formatEther(ecBal), "ROLL");
+    console.log("\nDeployer balance:       ", ethers.formatEther(deployerBal), "SCARAB");
+    console.log("EmissionController bal: ", ethers.formatEther(ecBal), "SCARAB");
 
     if (ecBal >= REGEN_POOL_AMOUNT) {
         console.log("✅ Already funded — nothing to do.");
@@ -54,13 +54,13 @@ async function main() {
     }
 
     // Step 3: Transfer
-    console.log("\n📋 Step 2: Transferring", ethers.formatEther(REGEN_POOL_AMOUNT), "ROLL...");
+    console.log("\n📋 Step 2: Transferring", ethers.formatEther(REGEN_POOL_AMOUNT), "SCARAB...");
     const tx = await token.transfer(EMISSION_CONTROLLER, REGEN_POOL_AMOUNT);
     console.log("   Tx:", tx.hash);
     await tx.wait();
 
     const newBal = await token.balanceOf(EMISSION_CONTROLLER);
-    console.log("\n✅ Done! EmissionController balance:", ethers.formatEther(newBal), "ROLL");
+    console.log("\n✅ Done! EmissionController balance:", ethers.formatEther(newBal), "SCARAB");
     console.log("📝 Note: On mainnet, use a mintable ScarabToken with MINTER_ROLE.");
 }
 

@@ -8,7 +8,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
     if (!isOpen) return null;
 
     const [copied, setCopied] = useState(false);
-    const contractAddress = CONFIG.ROLL_TOKEN_ADDRESS;
+    const contractAddress = CONFIG.SCARAB_TOKEN_ADDRESS;
 
     const handleCopy = async () => {
         try {
@@ -116,19 +116,19 @@ export default function BlueprintModal({ isOpen, onClose }) {
                                         <tr className="bg-black/40 hover:bg-white/5 transition-colors">
                                             <td className="p-4 text-gray-400 font-mono">I</td>
                                             <td className="p-4 text-white font-bold">Scout</td>
-                                            <td className="p-4 text-beetle-blue font-mono">100,000 $ROLL</td>
+                                            <td className="p-4 text-beetle-blue font-mono">100,000 $SCARAB</td>
                                             <td className="p-4 text-gray-300 text-sm">Base access to the Off-Grid Shop + 5% Global Discount.</td>
                                         </tr>
                                         <tr className="bg-black/40 hover:bg-white/5 transition-colors">
                                             <td className="p-4 text-gray-400 font-mono">II</td>
                                             <td className="p-4 text-white font-bold">Guardian</td>
-                                            <td className="p-4 text-beetle-blue font-mono">1,000,000 $ROLL</td>
+                                            <td className="p-4 text-beetle-blue font-mono">1,000,000 $SCARAB</td>
                                             <td className="p-4 text-gray-300 text-sm">Priority Shipping + 15% Discount on Solar & Water Systems.</td>
                                         </tr>
                                         <tr className="bg-black/40 hover:bg-white/5 transition-colors">
                                             <td className="p-4 text-beetle-gold font-mono font-bold">III</td>
                                             <td className="p-4 text-beetle-gold font-bold">Elder</td>
-                                            <td className="p-4 text-beetle-gold font-mono font-bold">5,000,000 $ROLL</td>
+                                            <td className="p-4 text-beetle-gold font-mono font-bold">5,000,000 $SCARAB</td>
                                             <td className="p-4 text-white font-bold text-sm shadow-glow">25% Discount + Governance Rights on Colony Land Acquisitions.</td>
                                         </tr>
                                     </tbody>
@@ -149,7 +149,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
                                         <ul className="text-gray-400 text-sm mt-1 space-y-1 list-disc list-inside">
                                             <li><strong>Max Reward Caps:</strong> Hard-coded limits per device type prevent firmware spoofing.</li>
                                             <li><strong>Geographic Anomaly Detection:</strong> GPS/IP cross-referencing to prevent "server farm" simulations.</li>
-                                            <li><strong>Weather Oracle Verification:</strong> Solar output validated against Chainlink local weather data.</li>
+                                            <li><strong>SQS Fan-out Relay:</strong> Solar output validated against Chainlink local weather data via scalable message queuing.</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
                                             <li>
                                                 <div className="flex items-center gap-2">
                                                     <strong>Contract Address:</strong>
-                                                    <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">
+                                                    <a href={`https://testnet.bscscan.com/address/${CONFIG.SCARAB_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">
                                                         <ExternalLink size={20} />
                                                     </a>
                                                 </div>
@@ -224,7 +224,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
 
                         {/* VI. Roadmap */}
                         <section>
-                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">VI. Roadmap: The Great Roll</h3>
+                            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-beetle-gold pl-4">VI. Roadmap: Network rollout</h3>
                             <div className="space-y-4">
                                 <div className="flex gap-4">
                                     <div className="font-mono text-beetle-gold font-bold whitespace-nowrap">Phase 1</div>
@@ -236,7 +236,7 @@ export default function BlueprintModal({ isOpen, onClose }) {
                                 <div className="flex gap-4">
                                     <div className="font-mono text-gray-500 font-bold whitespace-nowrap">Phase 2</div>
                                     <div>
-                                        <h4 className="text-white font-bold">The First Roll</h4>
+                                        <h4 className="text-white font-bold">Liquidity & marketplace</h4>
                                         <p className="text-gray-400 text-sm">DEX Launch, 1-Year Liquidity Lock, and first Marketplace Beta release.</p>
                                     </div>
                                 </div>
@@ -257,13 +257,12 @@ export default function BlueprintModal({ isOpen, onClose }) {
                         <div className="mb-4">
                             <span className="text-gray-500 text-sm uppercase tracking-widest mr-2">Verified Contract:</span>
                             <code className="text-beetle-gold bg-beetle-gold/10 px-2 py-1 rounded text-sm cursor-pointer hover:bg-beetle-gold/20 transition-colors"
-                                onClick={() => navigator.clipboard.writeText(import.meta.env.VITE_ROLL_TOKEN_ADDRESS)}>
-                                0x4D9c...8c9f 📋
-                                {import.meta.env.VITE_ROLL_TOKEN_ADDRESS} 📋
+                                onClick={() => navigator.clipboard.writeText(contractAddress)}>
+                                {contractAddress} 📋
                             </code>
                         </div>
                         <a
-                            href="https://github.com/shelbyahobi/roll-token-official-"
+                            href="https://github.com/shelbyahobi/scarabprotocol"
                             target="_blank"
                             className="inline-flex items-center gap-2 text-white hover:text-beetle-gold transition-colors font-bold text-sm"
                         >

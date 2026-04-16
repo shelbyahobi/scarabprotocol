@@ -24,8 +24,12 @@ export default function Hero() {
                 >
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-xs font-mono tracking-widest text-zinc-300 uppercase">
-                        Protocol Mainnet Live • Version 2.0
+                        BSC Testnet Deployment • Version 2.0
                     </span>
+                    <a href={`https://testnet.bscscan.com/address/${import.meta.env.VITE_SCARAB_TOKEN_ADDRESS || '0x9A5AAA7663A829e3d9F9Dd9E39E746b67f3F8CBA'}`} target="_blank" rel="noopener noreferrer" className="ml-2 pl-2 border-l border-white/20 text-xs font-bold text-beetle-gold hover:text-white transition-colors flex items-center gap-1">
+                        <img src="https://cryptologos.cc/logos/bnb-bnb-logo.svg" alt="BSC" className="w-3 h-3" />
+                        Built on BSC
+                    </a>
                 </motion.div>
 
                 {/* Core Typographic Stack */}
@@ -35,32 +39,38 @@ export default function Hero() {
                     transition={{ duration: 1, ease: "easeOut" }}
                     className="text-center w-full max-w-4xl"
                 >
-                    <h1 className="text-6xl md:text-8xl font-medium tracking-tight text-white mb-6 leading-[1.05]">
-                        Ecological Data,
+                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.05]">
+                        Earn from your land.
                         <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-zinc-400 to-zinc-600 font-bold">
-                            Cryptographically Proven.
+                            Verified by hardware.
                         </span>
                     </h1>
 
-                    <p className="text-lg md:text-xl text-zinc-400 font-light mb-12 max-w-2xl mx-auto leading-relaxed">
-                        The institutional-grade DePIN for the regenerative economy. We deploy physical network infrastructure to map and verify the world's most critical ecological metrics.
-                    </p>
-
                     {/* Primary CTAs */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6 w-full max-w-2xl mx-auto">
                         <Link 
-                            to="/hardware" 
-                            className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-semibold text-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"
+                            to="/onboard/farmer" 
+                            className="w-full sm:w-auto px-8 py-4 bg-[#1D9E75] text-white rounded-xl font-bold text-lg hover:bg-[#15805e] transition-colors flex flex-col items-center justify-center flex-1"
                         >
-                            Reserve Hardware <ArrowRight size={18} />
+                            <span>Join as a Farmer</span>
+                            <span className="text-xs font-normal text-white/80 mt-1">No crypto knowledge needed</span>
                         </Link>
                         <Link 
-                            to="/docs" 
-                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-zinc-700 text-white rounded-full font-medium text-lg hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2"
+                            to="/onboard/node" 
+                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/5 transition-colors flex flex-col items-center justify-center flex-1"
                         >
-                            <PlayCircle size={18} className="text-zinc-400"/> Watch Tech Demo
+                            <span>Connect as Node Operator</span>
+                            <span className="text-xs font-normal text-zinc-400 mt-1">MetaMask / WalletConnect</span>
                         </Link>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-400 font-medium mb-16 px-4 text-center">
+                        <span>Built on BSC</span>
+                        <span>·</span>
+                        <span>Hardware-attested data</span>
+                        <span>·</span>
+                        <span>Open-source contracts</span>
                     </div>
                 </motion.div>
 
@@ -82,7 +92,7 @@ export default function Hero() {
                             </div>
                             <h3 className="text-lg font-semibold text-white">ATECC608A Integration</h3>
                             <p className="text-sm text-zinc-500 leading-relaxed">
-                                Every device features a dedicated secure element chip, guaranteeing hardware-level elliptic-curve signature validity on all telemetry.
+                                Every device features a secure element chip that signs telemetry. This improves origin integrity, while sensor quality is validated separately by protocol checks.
                             </p>
                         </div>
 
@@ -90,9 +100,9 @@ export default function Hero() {
                             <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
                                 <ShieldCheck size={24} />
                             </div>
-                            <h3 className="text-lg font-semibold text-white">Sybil-Resilient Oracles</h3>
+                            <h3 className="text-lg font-semibold text-white">SQS Fan-out Relay</h3>
                             <p className="text-sm text-zinc-500 leading-relaxed">
-                                Physical infrastructure cost mechanics combined with cryptographically unique keypairs eliminate standard blockchain oracle manipulation.
+                                Physical infrastructure costs, unique keypairs, and our SQS fan-out architecture reduce Sybil risk and improve network integrity, but no system can eliminate manipulation risk entirely.
                             </p>
                         </div>
 

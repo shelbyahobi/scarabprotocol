@@ -36,7 +36,8 @@ describe.skip("SoilTransferValidator (SaaS 2.0)", function () {
         bokashiValidator = await BokashiValidator.deploy(
             deviceRegistry.target,
             emissionController.target,
-            ethers.ZeroAddress // No subscriptions for MVP test
+            ethers.ZeroAddress, // No subscriptions for MVP test
+            false // isTestnet
         );
 
         // 5. Soil Transfer Validator

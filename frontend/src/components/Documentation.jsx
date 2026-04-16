@@ -102,7 +102,7 @@ export default function Documentation() {
                                 { step: 1, title: 'Acquire SCARAB Infrastructure Allocation', text: 'To operate a node, users must secure hardware. During the current Seed Phase, acquiring SCARAB tokens guarantees prioritized hardware fulfillment.' },
                                 { step: 2, title: 'Hardware Delivery & Installation', text: 'Hardware is shipped globally. Embedded GPS latches the device to the initial activation timezone to prevent shipment spoofing.' },
                                 { step: 3, title: 'Activate Node (Burn Event)', text: 'Pairing the device to your Web3 Wallet requires executing the network activation function, burning 50 SCARAB indefinitely.' },
-                                { step: 4, title: 'Automated ROI Emission', text: 'Nodes run autonomously. The decentralized Oracle cross-validates telemetry, driving daily exponential-decay SCARAB rewards straight to your wallet.' }
+                                { step: 4, title: 'Automated ROI Emission', text: 'Nodes run autonomously. The decentralized SQS fan-out architecture cross-validates telemetry, driving daily exponential-decay SCARAB rewards straight to your wallet.' }
                             ].map(s => (
                                 <div key={s.step} className="flex gap-6 p-6 bg-white/5 border border-white/10 rounded-2xl">
                                     <div className="w-12 h-12 rounded-full bg-black border border-beetle-green text-beetle-green flex items-center justify-center font-black shrink-0 text-xl">{s.step}</div>
@@ -143,8 +143,8 @@ export default function Documentation() {
                             <div className="flex items-start gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-black border border-beetle-electric flex items-center justify-center text-beetle-electric font-bold">L2</div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Decentralized Oracle Validation</h3>
-                                    <p className="text-sm text-gray-400 leading-relaxed">Oracles intercept the signed payload before it hits the chain. They verify the signature against the registered public key, cross-check GPS metadata against known weather/satellite APIs, and calculate geographic consensus amongst clustered nodes.</p>
+                                    <h3 className="text-xl font-bold text-white mb-2">Decentralized SQS Fan-Out Validation</h3>
+                                    <p className="text-sm text-gray-400 leading-relaxed">The SQS fan-out relay intercepts the signed payload before it hits the chain. It verifies the signature against the registered public key, cross-checks GPS metadata against known weather/satellite APIs, and calculates geographic consensus amongst clustered nodes.</p>
                                 </div>
                             </div>
 
@@ -285,7 +285,7 @@ export default function Documentation() {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                                 <h4 className="font-bold text-beetle-gold mb-2 text-lg">Geographic Cluster Bonus (Up to +100%)</h4>
-                                <p className="text-sm text-gray-400">Nodes that activate in dense "Target Clusters" (e.g. 50+ nodes in a metro area) earn up to a 2.0x multiplier, as their data creates cross-validated, high-value institutional oracle webs.</p>
+                                <p className="text-sm text-gray-400">Nodes that activate in dense "Target Clusters" (e.g. 50+ nodes in a metro area) earn up to a 2.0x multiplier, as their data creates cross-validated, high-value institutional sensor webs.</p>
                             </div>
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                                 <h4 className="font-bold text-beetle-electric mb-2 text-lg">Voluntary SLA Staking (Up to +100%)</h4>
@@ -389,7 +389,7 @@ export default function Documentation() {
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
                                     <tr className="hover:bg-white/5"><td className="p-4 font-bold text-white">Cryptographic Signatures</td><td className="p-4 text-gray-400">ATECC608A Chip Native</td><td className="p-4 font-mono text-xs">Real-time RPC</td></tr>
-                                    <tr className="hover:bg-white/5"><td className="p-4 font-bold text-white">Geospatial Anomalies</td><td className="p-4 text-gray-400">MapBox Triangulation + Peer Oracles</td><td className="p-4 font-mono text-xs">DataMarket API</td></tr>
+                                    <tr className="hover:bg-white/5"><td className="p-4 font-bold text-white">Geospatial Anomalies</td><td className="p-4 text-gray-400">MapBox Triangulation + Peer Sensors</td><td className="p-4 font-mono text-xs">DataMarket API</td></tr>
                                     <tr className="hover:bg-white/5"><td className="p-4 font-bold text-white">Thermodynamic Bounds</td><td className="p-4 text-gray-400">DS18B20 Hard-coded Limits</td><td className="p-4 font-mono text-xs">IPFS Snapshot (24h)</td></tr>
                                     <tr className="hover:bg-white/5"><td className="p-4 font-bold text-white">Emission Distribution</td><td className="p-4 text-gray-400">Smart Contract Explorer</td><td className="p-4 font-mono text-xs">BSCScan</td></tr>
                                 </tbody>
@@ -402,9 +402,9 @@ export default function Documentation() {
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-gray-300 leading-relaxed">
                         <h2 className="text-3xl font-black text-white mb-4">Attack Vectors & Countermeasures</h2>
                         <div className="space-y-6">
-                            <FraudProtection method="Sybil Attack (Fake Nodes)" description="To spin up 1,000 fake AWS server nodes, an attacker must burn 50 SCARAB per node (50,000 SCARAB). Because they lack the hardware ATECC608A cryptographic identity chips, the Oracle immediately rejects their spoofed telemetry, permanently isolating and destroying their capital investment." />
+                            <FraudProtection method="Sybil Attack (Fake Nodes)" description="To spin up 1,000 fake AWS server nodes, an attacker must burn 50 SCARAB per node (50,000 SCARAB). Because they lack the hardware ATECC608A cryptographic identity chips, the SQS relay immediately rejects their spoofed telemetry, permanently isolating and destroying their capital investment." />
                             <FraudProtection method="Quantum Computing Decryption" description="Protocol is UUPS upgradeable and explicitly mapped to migrate to NIST's 2024 Post-Quantum standard (CRYSTALS-Dilithium) allowing hardware Edge-OTA updates well before the million-qubit threshold threatens ECDSA." />
-                            <FraudProtection method="Sensor Spoofing" description="If an attacker physically bypasses a sensor (e.g. heating a thermometer with a lighter to fake fermentation), Geographic Clustering Oracles compare it against peer nodes and standard physical thermodynamic duration curves, flagging manual manipulation anomalies." />
+                            <FraudProtection method="Sensor Spoofing" description="If an attacker physically bypasses a sensor (e.g. heating a thermometer with a lighter to fake fermentation), Geographic Clustering algorithms compare it against peer nodes and standard physical thermodynamic duration curves, flagging manual manipulation anomalies." />
                         </div>
                     </motion.div>
                 );

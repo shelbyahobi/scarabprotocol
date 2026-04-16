@@ -19,7 +19,7 @@ export default function EcoMiningExplainer() {
         {
             icon: <Server size={32} className="text-beetle-electric" />,
             title: "3. The Verification",
-            desc: "Our decentralized Oracle Network verifies the signature validity before passing it on-chain.",
+            desc: "Our SQS fan-out architecture verifies the signature validity before passing it on-chain.",
             color: "border-beetle-electric/30 bg-blue-900/10"
         },
         {

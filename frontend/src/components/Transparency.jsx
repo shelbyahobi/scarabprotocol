@@ -7,8 +7,8 @@ const pillars = [
         color: 'text-beetle-gold',
         bg: 'bg-beetle-gold/10',
         border: 'hover:border-beetle-gold/30',
-        title: '48‑Hour Timelock',
-        description: 'Every administrative action is delayed 2 days. You always know what is changing before it happens — no surprise rug vectors.',
+        title: 'Timelocked Governance',
+        description: 'Administrative actions are delayed by on-chain timelocks. Review the deployed contracts for exact delay values before each network claim.',
     },
     {
         icon: Cpu,
@@ -24,15 +24,15 @@ const pillars = [
         bg: 'bg-green-500/10',
         border: 'hover:border-green-500/30',
         title: 'Confidence Scoring',
-        description: 'Production reports are scored against weather API data. Flagged submissions enter a 7‑day escrow instead of reverting — honest operators are protected.',
+        description: 'Production reports are scored against weather API data. Lower-confidence submissions are escrowed per protocol parameters instead of immediate rejection.',
     },
     {
         icon: Vault,
         color: 'text-yellow-400',
         bg: 'bg-yellow-500/10',
         border: 'hover:border-yellow-500/30',
-        title: 'USDC Treasury Floor',
-        description: '$50 from every $349 node sale is locked as USDC in the Liquidity Backing Vault. Floor price = USDC reserve ÷ circulating supply.',
+        title: 'USDC Treasury Backing',
+        description: '$50 from each $349 node sale is earmarked to the treasury vault. Backing metric = USDC reserve ÷ circulating supply (non-guaranteed).',
     },
     {
         icon: TrendingUp,
@@ -40,7 +40,7 @@ const pillars = [
         bg: 'bg-purple-500/10',
         border: 'hover:border-purple-500/30',
         title: 'TWAP Buyback',
-        description: 'If market price stays below the floor for 48 hours, DAO executes an automatic buyback and burn — time-weighted to prevent flash-loan manipulation.',
+        description: 'If governance enables buyback logic, execution follows configured TWAP safeguards and timelock controls.',
     },
     {
         icon: Lock,
@@ -110,7 +110,7 @@ export default function Transparency() {
                                 <li>Price backed by hardware margin</li>
                                 <li>Treasury: USDC + buyback mechanism</li>
                                 <li>Revenue from hardware node sales</li>
-                                <li>Asset‑backed floor valuation</li>
+                                <li>Treasury-backed accounting metric</li>
                             </ul>
                         </div>
                     </div>

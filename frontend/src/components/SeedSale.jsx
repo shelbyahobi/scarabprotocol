@@ -468,7 +468,7 @@ export default function SeedSale() {
                             {!isConnected ? (
                                 <div className="bg-black border border-white/10 rounded-xl p-3 flex items-center gap-3 mb-4 opacity-70">
                                     <code className="text-gray-500 w-full truncate text-sm italic">
-                                        rolltoken.io/app?ref=0xYourWallet...
+                                        www.scarabprotocol.org/app?ref=0xYourWallet...
                                     </code>
                                     <span className="text-xs text-gray-500 shrink-0">Connect →</span>
                                 </div>

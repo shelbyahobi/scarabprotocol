@@ -48,6 +48,9 @@ contract BokashiValidator is AccessControl {
 
     uint256 public constant BASE_BOKASHI_REWARD = 50 * 1e18; // 50 SCARAB per cycle
 
+    uint256 public minCycleDuration;
+    uint256 public minCooldownDuration;
+
     struct BokashiCycle {
         uint256 startTime;
         uint256 startWeight;
@@ -70,13 +73,17 @@ contract BokashiValidator is AccessControl {
     event CycleSubmitted(bytes32 indexed deviceIdHash, uint256 cycleId, uint256 rewardAmount, uint256 qualityScore);
     event CycleFlagged(bytes32 indexed deviceIdHash, uint256 cycleId, string reason);
     event CycleStarted(bytes32 indexed deviceIdHash, string branNonce, uint256 startTime);
+    event TelemetryLogged(bytes32 indexed deviceIdHash, uint256 temperature, uint256 weight);
 
-    constructor(address _deviceRegistry, address _emissionController, address _subscriptions) {
+    constructor(address _deviceRegistry, address _emissionController, address _subscriptions, bool isTestnet) {
         deviceRegistry = IDeviceRegistry(_deviceRegistry);
         emissionController = IEmissionController(_emissionController);
         if (_subscriptions != address(0)) {
             subscriptions = IScarabSubscriptions(_subscriptions);
         }
+
+        minCycleDuration = isTestnet ? 0 : 1 days;
+        minCooldownDuration = isTestnet ? 0 : 14 days;
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
@@ -126,7 +133,7 @@ contract BokashiValidator is AccessControl {
         require(activeCycleStartTime[deviceIdHash] == 0, "BokashiValidator: Cycle already active");
         
         // Enforce cooldown (approx 14 days minimum between cycles for a device)
-        require(block.timestamp >= lastCycleCompletionTime[deviceIdHash] + 14 days, "BokashiValidator: Cooldown active");
+        require(block.timestamp >= lastCycleCompletionTime[deviceIdHash] + minCooldownDuration, "BokashiValidator: Cooldown active");
 
         // Verify the signature is from an authorized BRAN_ISSUER
         bytes32 messageHash = keccak256(abi.encodePacked(branNonce));
@@ -174,7 +181,7 @@ contract BokashiValidator is AccessControl {
 
         require(activeCycleStartTime[deviceIdHash] != 0, "BokashiValidator: No active cycle");
         require(startTime >= activeCycleStartTime[deviceIdHash], "BokashiValidator: Start time mismatch");
-        require(block.timestamp >= activeCycleStartTime[deviceIdHash] + 1 days, "BokashiValidator: Cycle too short");
+        require(block.timestamp >= activeCycleStartTime[deviceIdHash] + minCycleDuration, "BokashiValidator: Cycle too short");
 
         uint256 cycleId = bokashiCycles[deviceIdHash].length;
         
@@ -214,6 +221,11 @@ contract BokashiValidator is AccessControl {
         emissionController.accumulateReward(deviceIdHash, device.owner, (BASE_BOKASHI_REWARD * qualityScore) / 10000);
 
         emit CycleSubmitted(deviceIdHash, cycleId, (BASE_BOKASHI_REWARD * qualityScore) / 10000, qualityScore);
+    }
+
+    function logTelemetry(bytes32 deviceIdHash, uint256 temperature, uint256 weight) external onlyRole(ORACLE_ROLE) {
+        require(activeCycleStartTime[deviceIdHash] != 0, "BokashiValidator: No active cycle");
+        emit TelemetryLogged(deviceIdHash, temperature, weight);
     }
 
     function _flagCycle(

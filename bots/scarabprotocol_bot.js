@@ -4,26 +4,26 @@ const { Telegraf, Markup } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // --- CONSTANTS ---
-const WEB_APP_URL = "https://roll-token-official.vercel.app/";
-const COMMUNITY_GROUP = "https://t.me/rolltoken";
-const CONTRACT_ADDRESS = "0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f"; // SeedSale
-const TOKEN_ADDRESS = "Pending TGE"; // Placeholder until deployed
+const WEB_APP_URL = 'https://www.scarabprotocol.org/';
+const COMMUNITY_GROUP = 'https://t.me/ScarabCommunity';
+const CONTRACT_ADDRESS = '0x4D9c1cCA15fAB71FF56A51768DA2B85716b38c9f'; // SeedSale
+const TOKEN_ADDRESS = 'Pending TGE'; // Placeholder until deployed
 
 // --- START COMMAND ---
 bot.start((ctx) => {
     ctx.reply(
-        `🪲 *Welcome to the ROLL Colony, ${ctx.from.first_name}!* \n\n` +
-        `The Currency of Physical Resilience.\n` +
-        `We turn waste into energy, and energy into freedom.\n\n` +
+        `🪲 *Welcome to the SCARAB Protocol community, ${ctx.from.first_name}!* \n\n` +
+        `Hardware-verified ecological production on BNB Smart Chain.\n` +
+        `We connect real-world sustainability output to on-chain rewards.\n\n` +
         `*Status:* 🟢 Seed Sale LIVE\n` +
         `*Round:* Architect Round (0.05 BNB Min)\n\n` +
         `👇 *Choose your path:*`,
         {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
-                [Markup.button.webApp("🚀 Launch App & Buy", WEB_APP_URL)],
-                [Markup.button.url("📜 Read Blueprint", WEB_APP_URL)],
-                [Markup.button.callback("🛡️ Contract Safe?", "contract_safety"), Markup.button.callback("💰 Tokenomics", "tokenomics")]
+                [Markup.button.webApp('🚀 Launch App & Buy', WEB_APP_URL)],
+                [Markup.button.url('📜 Read Blueprint', WEB_APP_URL)],
+                [Markup.button.callback('🛡️ Contract Safe?', 'contract_safety'), Markup.button.callback('💰 Tokenomics', 'tokenomics')]
             ])
         }
     );
@@ -48,11 +48,11 @@ bot.action('tokenomics', (ctx) => {
         { source: '../frontend/public/circular_economy.png' }, // Tries to load local image if running locally
         {
             caption: `📊 *Tokenomics Overview*\n\n` +
-                `• **Total Supply**: 1,000,000,000 ROLL\n` +
+                `• **Total Supply**: 1,000,000,000 SCARAB\n` +
                 `• **Seed Sale**: 30% (Vested)\n` +
-                `• **Eco-Mining**: 30% (Proof of Work)\n` +
+                `• **Eco rewards**: 30% (emission schedule)\n` +
                 `• **Liquidity**: 20% (Locked)\n\n` +
-                `_Deflationary. No Minting. Pure Utility._`
+                `_Fixed supply cap. Utility and governance aligned with verified production._`
         }
     );
 });
@@ -63,7 +63,7 @@ bot.command('website', (ctx) => ctx.reply(`🌐 **Official Site**:\n${WEB_APP_UR
 
 // --- LAUNCH ---
 bot.launch().then(() => {
-    console.log('🤖 ROLL Colony Bot is online!');
+    console.log('🤖 SCARAB Protocol bot is online!');
 }).catch((err) => {
     console.error('❌ Bot failed to launch:', err);
 });

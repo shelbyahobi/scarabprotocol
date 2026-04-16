@@ -282,7 +282,7 @@ export default function StrategyPage() {
                             <Lock size={24} />
                         </div>
                         <h4 className="text-white font-bold mb-2">Data Integrity</h4>
-                        <p className="text-xs text-gray-400 mb-4">On-chain weather and environmental data verification via decentralized oracles.</p>
+                        <p className="text-xs text-gray-400 mb-4">On-chain weather and environmental data verification via SQS fan-out architecture.</p>
                         <div className="flex gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
                             <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">Chainlink</span>
                             <span className="text-[10px] border border-gray-700 px-2 py-1 rounded">The Graph</span>

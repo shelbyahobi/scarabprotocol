@@ -10,13 +10,13 @@ async function main() {
     const MARKETING_WALLET = deployer.address;
     const SHOP_FUND_WALLET = deployer.address;
 
-    // 2. Deploy ROLL Token
-    console.log("\n📄 Deploying ROLLToken...");
+    // 2. Deploy SCARAB token (factory name must match the Solidity contract in this repo)
+    console.log("\n📄 Deploying SCARAB token (ROLLToken factory name)...");
     const ROLLToken = await hre.ethers.getContractFactory("ROLLToken");
     const rollToken = await ROLLToken.deploy(MARKETING_WALLET, SHOP_FUND_WALLET);
     await rollToken.waitForDeployment();
     const rollAddress = await rollToken.getAddress();
-    console.log(`✅ ROLLToken deployed to: ${rollAddress}`);
+    console.log(`✅ Token deployed to: ${rollAddress}`);
 
     // 3. Deploy SeedSale
     console.log("\n📄 Deploying SeedSale...");
@@ -46,7 +46,7 @@ async function main() {
 
     const FUND_AMOUNT = hre.ethers.parseEther("300000000"); // 300M Tokens
     await (await rollToken.transfer(seedSaleAddress, FUND_AMOUNT)).wait();
-    console.log("✅ SeedSale Funded with 300M ROLL");
+    console.log("✅ SeedSale Funded with 300M SCARAB");
 
     // 6. Deploy Liquidity Locker
     console.log("\n📄 Deploying LiquidityLocker...");
@@ -100,7 +100,7 @@ async function main() {
 
     console.log("\n🎉 DEPLOYMENT COMPLETE!");
     console.log("----------------------------------------------------");
-    console.log(`ROLLToken:       ${rollAddress}`);
+    console.log(`SCARAB token:    ${rollAddress}`);
     console.log(`SeedSale:        ${seedSaleAddress}`);
     console.log(`LiquidityLocker: ${lockerAddress}`);
     console.log(`Timelock:        ${timelockAddress}`);

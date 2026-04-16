@@ -1,0 +1,53 @@
+name: Daily Social Automation
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # 8:00 AM UTC everyday
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in --dry-run mode (no live posts)'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  run-social-agent:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r agents/requirements.txt
+
+      - name: Run Social Generator (Dry Run)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' }}
+        env:
+          BSCSCAN_API_KEY: ${{ secrets.BSCSCAN_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          VITE_SCARAB_TOKEN_ADDRESS: ${{ secrets.VITE_SCARAB_TOKEN_ADDRESS }}
+          # Twitter and Ghost keys purposefully omitted in dry-run for absolute safety
+        run: python agents/social_generator.py --dry-run
+
+      - name: Run Social Generator (LIVE)
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false') }}
+        env:
+          BSCSCAN_API_KEY: ${{ secrets.BSCSCAN_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          GHOST_ADMIN_KEY: ${{ secrets.GHOST_ADMIN_KEY }}
+          GHOST_URL: ${{ secrets.GHOST_URL }}
+          VITE_SCARAB_TOKEN_ADDRESS: ${{ secrets.VITE_SCARAB_TOKEN_ADDRESS }}
+        run: python agents/social_generator.py

@@ -21,7 +21,7 @@ export default function DAOPage() {
     const { data: contractData, isLoading } = useReadContracts({
         contracts: [
             {
-                address: CONFIG.ROLL_TOKEN_ADDRESS,
+                address: CONFIG.SCARAB_TOKEN_ADDRESS,
                 abi: ERC20_ABI,
                 functionName: 'balanceOf',
                 args: [address],

@@ -8,7 +8,7 @@ const allocations = [
     { label: 'Global Logistics', amount: '$30', pct: 9, color: 'bg-gray-500', desc: 'Shipping, customs, last-mile delivery' },
     { label: 'Customer Acquisition', amount: '$20', pct: 6, color: 'bg-gray-400', desc: 'Digital marketing and referral programme' },
     { label: 'R&D / Operations', amount: '$69', pct: 20, color: 'bg-beetle-electric', desc: 'Firmware R&D, server costs, team, legal compliance' },
-    { label: 'Liquidity Backing Vault', amount: '$50', pct: 14, color: 'bg-beetle-gold', desc: 'Locked as USDC — backs the SCARAB token floor price' },
+    { label: 'Liquidity Backing Vault', amount: '$50', pct: 14, color: 'bg-beetle-gold', desc: 'Allocated as USDC treasury backing metric (non-guaranteed)' },
 ];
 
 const flywheel = [
@@ -16,7 +16,7 @@ const flywheel = [
     { step: '02', label: 'Device Produces Energy', desc: 'kWh data → validator', color: 'text-beetle-electric' },
     { step: '03', label: 'Rewards Accumulated', desc: 'No gas, ledger-based', color: 'text-green-400' },
     { step: '04', label: 'User Claims SCARAB', desc: '1 tx/week, pull model', color: 'text-purple-400' },
-    { step: '05', label: 'Vault Floor Grows', desc: 'More nodes → higher floor', color: 'text-yellow-400' },
+    { step: '05', label: 'Treasury Backing Updates', desc: 'More nodes → potentially stronger backing metric', color: 'text-yellow-400' },
 ];
 
 export default function UseOfFunds() {
@@ -74,18 +74,18 @@ export default function UseOfFunds() {
                         </div>
                     </div>
 
-                    {/* 5-Year Floor Price Projection */}
+                    {/* 5-Year Treasury Backing Projection */}
                     <div className="bg-[#111] border border-white/10 rounded-3xl p-8 relative overflow-hidden">
                         <div className="absolute top-4 right-4 bg-beetle-gold/20 text-beetle-gold text-xs font-bold px-3 py-1 rounded-full">LIVE MODEL</div>
                         <h3 className="text-white font-bold text-lg mb-2">5-Year Treasury Model</h3>
-                        <p className="text-gray-500 text-xs mb-6 font-mono">P<sub>floor</sub> = V<sub>USDC</sub> ÷ S<sub>circ</sub></p>
+                        <p className="text-gray-500 text-xs mb-6 font-mono">Backing Metric = V<sub>USDC</sub> ÷ S<sub>circ</sub></p>
 
                         <div className="space-y-3 font-mono text-sm">
                             <div className="grid grid-cols-4 text-gray-600 text-xs uppercase pb-2 border-b border-white/5">
                                 <span>Year</span>
                                 <span>Nodes</span>
                                 <span>USDC Vault</span>
-                                <span className="text-right">Floor</span>
+                                <span className="text-right">Backing</span>
                             </div>
                             {[
                                 { year: 1, nodes: '2,000', usdc: '$100k', floor: '$0.0025' },
@@ -102,7 +102,7 @@ export default function UseOfFunds() {
                                 </div>
                             ))}
                         </div>
-                        <p className="text-gray-600 text-xs mt-4">Mathematical minimum ratio. Market price typically scales 5–10× based on utility demand.</p>
+                        <p className="text-gray-600 text-xs mt-4">Illustrative accounting metric only. Not a redemption right or guaranteed market price.</p>
                     </div>
                 </div>
 

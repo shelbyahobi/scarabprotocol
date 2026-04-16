@@ -33,7 +33,7 @@ export default function EcosystemPreview() {
                         Real World <span className="text-transparent bg-clip-text bg-gradient-to-r from-beetle-gold to-yellow-200">Utility</span>
                     </motion.h2>
                     <p className="text-gray-400 text-lg">
-                        We are building the first "Discount Flywheel". Hold $ROLL to automatically unlock massive savings on tech, travel, and dining.
+                        We are building the first "Discount Flywheel". Hold $SCARAB to automatically unlock massive savings on tech, travel, and dining.
                     </p>
                 </div>
 
@@ -51,7 +51,7 @@ export default function EcosystemPreview() {
                                     <div key={i} className={`p-4 rounded-xl border ${i === 3 ? 'bg-beetle-gold/20 border-beetle-gold text-white' : 'bg-black/40 border-white/5 text-gray-400'}`}>
                                         <div className="text-xs font-bold uppercase mb-1 opacity-70">{tier.name}</div>
                                         <div className="text-xl font-black">{tier.disc} OFF</div>
-                                        <div className="text-xs mt-2">Hold {tier.amount} $ROLL</div>
+                                        <div className="text-xs mt-2">Hold {tier.amount} $SCARAB</div>
                                     </div>
                                 ))}
                             </div>

@@ -124,17 +124,17 @@ export default function Tokenomics() {
                             </div>
                             <div>
                                 <h3 className="text-2xl font-black text-white">The Scaling Flywheel</h3>
-                                <p className="text-gray-400">Yield Compression vs. Value Appreciation</p>
+                                <p className="text-gray-400">Reward Compression vs. Treasury Growth</p>
                             </div>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-8">
                             <div>
                                 <h4 className="text-white font-bold mb-3 flex items-center gap-2">
-                                    <ArrowDownRight className="text-red-400" size={18} /> 1. Yield Compression
+                                    <ArrowDownRight className="text-red-400" size={18} /> 1. Reward Compression
                                 </h4>
                                 <p className="text-gray-400 text-sm mb-4">
-                                    The protocol emits a <strong className="text-white">fixed</strong> daily overall pool of SCARAB. As we add <strong>different types of nodes</strong> (Solar, Bokashi, Biogas), they all share this exact same fixed pool. If 1,000 new Solar nodes join, the daily quantity of SCARAB earned by existing Bokashi nodes decreases. Early adopters earn the highest token quantities.
+                                    The protocol emits a <strong className="text-white">fixed</strong> daily pool of SCARAB. As additional node types join (Solar, Bokashi, Biogas), each node may receive a smaller token quantity from that shared pool.
                                 </p>
                             </div>
                             <div>
@@ -142,14 +142,14 @@ export default function Tokenomics() {
                                     <ArrowUpRight className="text-beetle-gold" size={18} /> 2. Value Appreciation
                                 </h4>
                                 <p className="text-gray-400 text-sm mb-4">
-                                    While individual token <em>quantity</em> drops, token <em>value</em> rises. 10,000 nodes of varying types generate 100x more real-world revenue (hardware sales, energy, compost) than 100 nodes. All that revenue flows directly into the Liquidity Vault, driving the <strong className="text-beetle-gold">Treasury Support Ratio</strong> upward. You earn fewer tokens, but each token represents significantly more underlying value.
+                                    As node count increases, aggregate protocol activity can increase treasury resources. This may improve the <strong className="text-beetle-gold">Treasury Backing Metric</strong>, but market value remains non-guaranteed.
                                 </p>
                             </div>
                         </div>
 
                         <div className="bg-white/5 border border-white/10 p-5 rounded-xl mt-4">
                             <p className="text-gray-300 text-sm leading-relaxed">
-                                <strong className="text-beetle-electric font-bold">The DePIN Meta:</strong> Earning 5 SCARAB when the protocol is backed by $10,000,000 in Real-World Assets is mathematically far more lucrative than earning up to 50 SCARAB when it is backed by $0. As the network expands, the shared pool compresses yields, but aggressively skyrockets the token value.
+                                <strong className="text-beetle-electric font-bold">Model note:</strong> token quantity and treasury backing can move in different directions as the network scales. This section is an illustrative scenario, not a return forecast.
                             </p>
                         </div>
                     </div>
@@ -178,7 +178,7 @@ export default function Tokenomics() {
                     </div>
 
                     <div className="mt-6 text-sm text-gray-400 leading-relaxed border-t border-white/10 pt-6">
-                        <strong className="text-white">The Math:</strong> When the SCARAB Treasury Support Ratio reaches $0.09 (backed entirely by hard cash in the Vault), burning 100 tokens nets $9.00—completely covering the subscription cost forever. Any market speculation above the $0.09 baseline is additional value. Because the Vault continuously rises as thousands of cross-sector nodes are sold, early adopters lock in massive token reserves before the yield compresses.
+                        <strong className="text-white">The Math:</strong> if the treasury backing metric reaches $0.09, burning 100 tokens corresponds to $9.00 in this simplified model. This is not guaranteed, not perpetual, and not a promise of market liquidity or redemption rights.
                     </div>
                 </div>
 
@@ -193,8 +193,7 @@ export default function Tokenomics() {
                     </p>
                     <div className="bg-[#0a1a0f] border border-beetle-gold/20 rounded-xl p-4 mb-4 text-center font-mono">
                         <div className="text-lg">
-                            <span className="text-beetle-gold font-bold">P</span>
-                            <span className="text-beetle-gold/60 text-xs align-sub">floor</span>
+                            <span className="text-beetle-gold font-bold">Backing</span>
                             <span className="text-white mx-3">=</span>
                             <span className="text-green-400 font-bold">V</span>
                             <span className="text-green-400/60 text-xs align-sub">USDC</span>
@@ -207,13 +206,13 @@ export default function Tokenomics() {
                     <div className="grid grid-cols-3 text-xs font-mono gap-0">
                         <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">Year</div>
                         <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">USDC Vault</div>
-                        <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">Floor</div>
+                        <div className="py-1 text-center border-b border-white/5 text-[10px] text-gray-500 uppercase">Backing</div>
                         <div className="py-1.5 text-center text-gray-400">Y1</div><div className="py-1.5 text-center text-gray-400">$100K</div><div className="py-1.5 text-center text-white font-bold">$0.0025</div>
                         <div className="py-1.5 text-center text-gray-400">Y2</div><div className="py-1.5 text-center text-gray-400">$500K</div><div className="py-1.5 text-center text-white font-bold">$0.0047</div>
                         <div className="py-1.5 text-center text-gray-400">Y3</div><div className="py-1.5 text-center text-gray-400">$1.75M</div><div className="py-1.5 text-center text-white font-bold">$0.0094</div>
                         <div className="py-1.5 text-center text-beetle-gold">Y5</div><div className="py-1.5 text-center text-beetle-gold">$12.75M</div><div className="py-1.5 text-center text-beetle-gold font-bold">$0.0425</div>
                     </div>
-                    <p className="text-gray-600 text-[10px] mt-3 text-center">Worst-case floor. Market price typically 5–10× higher due to utility demand.</p>
+                    <p className="text-gray-600 text-[10px] mt-3 text-center">Illustrative accounting metric only; not a guaranteed market-price relationship.</p>
                 </div>
 
             </div>

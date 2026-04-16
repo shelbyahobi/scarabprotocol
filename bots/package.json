@@ -1,10 +1,10 @@
 {
-    "name": "roll-community-bot",
+    "name": "scarabprotocol-community-bot",
     "version": "1.0.0",
-    "description": "Official Telegram Bot for ROLL Token Community",
-    "main": "roll_bot.js",
+    "description": "Official Telegram bot for SCARAB Protocol (scarabprotocol.org)",
+    "main": "scarabprotocol_bot.js",
     "scripts": {
-        "start": "node roll_bot.js"
+        "start": "node scarabprotocol_bot.js"
     },
     "dependencies": {
         "telegraf": "^4.15.0",

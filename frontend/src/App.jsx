@@ -42,9 +42,23 @@ import HardwareEcosystem from './components/HardwareEcosystem';
 import AcademicResearch from './components/AcademicResearch';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
 
+import SecuritySection from './components/SecuritySection';
+import FarmerOnboard from './pages/FarmerOnboard';
+import FarmerDashboard from './pages/FarmerDashboard';
+import NodeOnboard from './pages/NodeOnboard';
+import NodeDashboard from './pages/NodeDashboard';
+
 const Documentation = lazy(() => import('./components/Documentation'));
 
 const queryClient = new QueryClient();
+
+function FarmerRoute({ children }) {
+    const session = localStorage.getItem('scarab_farmer_session');
+    if (!session) {
+        return <Navigate to="/onboard/farmer" replace />;
+    }
+    return children;
+}
 
 function LandingPage() {
     return (
@@ -71,10 +85,13 @@ function LandingPage() {
                     <Transparency />
                 </div>
 
-                {/* 7. QUANTUM RESISTANCE (New) */}
+                {/* 7. V2 ARCHITECTURE SECURITY (New) */}
+                <SecuritySection />
+
+                {/* 8. QUANTUM RESISTANCE (New) */}
                 <QuantumResistance />
 
-                {/* 8. TOKENOMICS (Simplified) */}
+                {/* 9. TOKENOMICS (Simplified) */}
                 <SimplifiedTokenomics />
 
                 {/* 8. ROADMAP */}
@@ -105,7 +122,7 @@ function LandingPage() {
                                     to="/app"
                                     className="bg-beetle-gold text-black font-black px-8 py-4 rounded-xl hover:bg-white hover:scale-105 transition-all text-lg flex items-center justify-center gap-2"
                                 >
-                                    Invest Now <Rocket size={20} />
+                                    Participate in Seed Round <Rocket size={20} />
                                 </Link>
                                 <Link
                                     to="/docs"
@@ -119,15 +136,15 @@ function LandingPage() {
                             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 font-medium border-t border-white/10 pt-8 mt-4">
                                 <div className="flex items-center gap-2">
                                     <ShieldCheck className="w-5 h-5 text-green-400" />
-                                    Verified BSC Contract
+                                    Public BSC testnet contracts
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Lock className="w-5 h-5 text-green-400" />
-                                    Liquidity Locked 12mo
+                                    Timelock-enabled governance controls
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Users className="w-5 h-5 text-green-400" />
-                                    1,200+ Waitlist
+                                    Pilot and waitlist metrics in investor updates
                                 </div>
                             </div>
                         </div>
@@ -192,8 +209,8 @@ function DAppPage() {
                         {/* Audit / Trust Badge */}
                         <div className="bg-beetle-green/10 border border-beetle-green/30 rounded-2xl p-6 text-center">
                             <ShieldCheck className="w-12 h-12 text-beetle-green mx-auto mb-2" />
-                            <div className="text-white font-bold">Contract Audited</div>
-                            <div className="text-xs text-beetle-green mt-1">100% Secure & Verified</div>
+                            <div className="text-white font-bold">Security Review In Progress</div>
+                            <div className="text-xs text-beetle-green mt-1">Public testnet verification available</div>
                         </div>
                     </div>
                 </div>
@@ -238,15 +255,15 @@ function Footer() {
             <div className="container mx-auto px-4 text-center">
                 <h3 className="text-3xl font-black text-beetle-gold mb-4 tracking-tighter">$SCARAB Protocol</h3>
                 <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-                    Proof of Physical Activity. Real-world assets backing every token.
-                    Run by the community, for the planet.
+                    Proof of Physical Activity. Hardware-attested telemetry with transparent, on-chain validation.
+                    Public info is disclosed here; sensitive diligence materials are shared under NDA.
                 </p>
                 <div className="flex justify-center flex-wrap gap-6 mb-8">
                     <a href="https://x.com/scarab_protocol" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Twitter (X)</a>
                     <a href="https://t.me/ScarabCommunity" target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Telegram</a>
                     <Link to="/transparency" className="text-gray-400 hover:text-beetle-gold transition-colors">Proof of Reserves</Link>
                     <Link to="/investors" className="text-gray-400 hover:text-green-400 transition-colors">Investors</Link>
-                    <a href={`https://testnet.bscscan.com/address/${CONFIG.ROLL_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
+                    <a href={`https://testnet.bscscan.com/address/${CONFIG.SCARAB_TOKEN_ADDRESS}`} target="_blank" className="text-gray-400 hover:text-beetle-gold transition-colors">Contract (Verified)</a>
                 </div>
 
                 {/* Brand Safety Warning */}
@@ -258,7 +275,7 @@ function Footer() {
                     <p className="text-sm text-gray-400 leading-relaxed">
                         Official Scarab Protocol Contract: <br />
                         <span className="text-beetle-gold font-mono text-xs break-all selection:bg-beetle-gold selection:text-black block mt-1 mb-2">
-                            {CONFIG.ROLL_TOKEN_ADDRESS || '0x...'}
+                            {CONFIG.SCARAB_TOKEN_ADDRESS || '0x...'}
                         </span>
                         Admin/Team will <strong className="text-white">never</strong> DM you first. Beware of fake $SCARAB tokens masquerading as the real protocol.
                     </p>
@@ -310,6 +327,16 @@ function App() {
                                                 <Documentation />
                                             </Suspense>
                                         } />
+
+                                        {/* New Onboarding & Dashboard Routes */}
+                                        <Route path="/onboard/farmer" element={<FarmerOnboard />} />
+                                        <Route path="/onboard/node" element={<NodeOnboard />} />
+                                        <Route path="/dashboard/farmer" element={
+                                            <FarmerRoute>
+                                                <FarmerDashboard />
+                                            </FarmerRoute>
+                                        } />
+                                        <Route path="/dashboard/node" element={<NodeDashboard />} />
 
                                         {/* Redirects */}
                                         <Route path="/blueprint" element={<Navigate to="/docs" replace />} />

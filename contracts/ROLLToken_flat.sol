@@ -5575,7 +5575,7 @@ contract ROLLToken is ERC20, Ownable, ReentrancyGuard, ERC20Permit, ERC20Votes {
     constructor(
         address _marketingWallet,
         address _shopFundWallet
-    ) ERC20("Dung Beetle", "ROLL") ERC20Permit("Dung Beetle") Ownable(msg.sender) {
+    ) ERC20("SCARAB", "SCARAB") ERC20Permit("SCARAB") Ownable(msg.sender) {
         marketingWallet = _marketingWallet;
         shopFundWallet = _shopFundWallet;
 

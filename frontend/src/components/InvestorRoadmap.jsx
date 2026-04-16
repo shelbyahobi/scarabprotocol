@@ -92,14 +92,14 @@ const dataProductTiers = [
 const risks = [
     {
         risk: 'Market Volatility',
-        comms: '"The LBV provides a soft floor, not a peg."',
+        comms: '"The LBV is a treasury backing metric, not a peg."',
         mit: '80% of vault in stables/RWAs — insulated from crypto-corr crashes.',
         color: 'text-yellow-400',
     },
     {
         risk: 'Hardware Spoofing',
         comms: '"Our PoPA includes geospatial + weather cross-checks."',
-        mit: 'Slashed rewards re-enter the LBV — bad actors raise the floor for honest users.',
+        mit: 'Slashed rewards re-enter the LBV — improving treasury backing for honest users.',
         color: 'text-red-400',
     },
     {
@@ -203,21 +203,20 @@ export default function InvestorRoadmap() {
                     </div>
                 </div>
 
-                {/* ── RWA Yield Formula ── */}
+                {/* ── RWA Backing Scenario ── */}
                 <div className="mb-24 bg-gradient-to-br from-beetle-gold/10 to-transparent border border-beetle-gold/20 rounded-3xl p-10">
                     <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
-                        <TrendingUp className="text-beetle-gold" /> Floor Price: The RWA-Enhanced Formula
+                        <TrendingUp className="text-beetle-gold" /> Treasury Backing Metric: RWA-Enhanced Model
                     </h2>
                     <p className="text-gray-400 mb-8">
-                        SCARAB's treasury doesn't just sit idle. 80% is parked in tokenised T-bills generating ~5% APY.
-                        This means the floor price <strong className="text-white">grows continuously</strong> — even with zero new node sales.
+                        SCARAB's treasury model assumes yield-bearing components for scenario analysis.
+                        This describes a backing metric trend, <strong className="text-white">not guaranteed token price performance</strong>.
                     </p>
 
                     {/* Formula display */}
                     <div className="bg-black/60 rounded-2xl p-8 text-center font-mono mb-8 border border-white/10">
                         <div className="text-2xl md:text-3xl font-black">
-                            <span className="text-beetle-gold">P</span>
-                            <span className="text-beetle-gold/60 text-lg align-sub">floor</span>
+                            <span className="text-beetle-gold">Backing</span>
                             <span className="text-white mx-4">=</span>
                             <span>
                                 <span className="text-green-400">V</span>
@@ -237,7 +236,7 @@ export default function InvestorRoadmap() {
                             </div>
                             <div className="bg-yellow-500/10 rounded-xl p-4 border border-yellow-500/20">
                                 <div className="text-yellow-400 font-bold text-sm mb-1">(1 + y)<sup>t</sup></div>
-                                <div className="text-gray-300 text-xs">5% annual yield from tokenised T-bills (RWA). Default: 500 bps. DAO can update via <code className="text-xs">setYieldBps()</code>.</div>
+                                <div className="text-gray-300 text-xs">Illustrative 5% annual modeled yield for scenario analysis. Governance can update <code className="text-xs">setYieldBps()</code> if deployed.</div>
                             </div>
                             <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/20">
                                 <div className="text-beetle-electric font-bold text-sm mb-1">S<sub>circ</sub></div>
@@ -254,8 +253,8 @@ export default function InvestorRoadmap() {
                                     <th className="text-left py-2">Year</th>
                                     <th className="py-2">Nodes</th>
                                     <th className="py-2">USDC Vault</th>
-                                    <th className="py-2">+5% Yield</th>
-                                    <th className="py-2 text-right text-beetle-gold">Floor Price</th>
+                                    <th className="py-2">Modeled Yield Scenario</th>
+                                    <th className="py-2 text-right text-beetle-gold">Backing Metric</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5">
@@ -276,7 +275,7 @@ export default function InvestorRoadmap() {
                                 ))}
                             </tbody>
                         </table>
-                        <p className="text-gray-600 text-[10px] mt-3">Assumptions: 5% APY T-bill yield, 670M S_circ at Y5. Market price typically 5–10× floor.</p>
+                        <p className="text-gray-600 text-[10px] mt-3">Assumptions are illustrative. This table is not a guaranteed return, redemption, or market-price commitment.</p>
                     </div>
                 </div>
 
@@ -335,16 +334,16 @@ export default function InvestorRoadmap() {
                         <Recycle className="text-beetle-gold" /> The "Bran Burn" Mechanism
                     </h2>
                     <p className="text-gray-400 mb-8 max-w-3xl">
-                        Organic waste transformation yields tangible "Soil-as-a-Service" products while preventing methane emissions.
+                        Organic waste transformation supports "Soil-as-a-Service" outputs while reducing methane emissions.
                         The $12/month Bran subscription isn't just revenue; it's a programmatic <strong className="text-white">Token Sink</strong>.
                     </p>
 
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="bg-beetle-gold/10 border border-beetle-gold/20 rounded-2xl p-6">
                             <div className="text-3xl font-black text-beetle-gold font-mono mb-2">20% Burn Rate</div>
-                            <div className="text-white font-bold text-lg mb-2">Automated Buybacks</div>
+                            <div className="text-white font-bold text-lg mb-2">Governance-Configured Buybacks</div>
                             <div className="text-gray-400 text-sm">
-                                20% of all monthly USDC revenue from the $12/mo Bokashi Bran subscription is used by the DAO to programmatically
+                                20% of monthly USDC revenue from the $12/mo Bokashi Bran subscription can be used by governance to programmatically
                                 buy back and burn SCARAB tokens from the open market.
                             </div>
                         </div>
@@ -356,8 +355,8 @@ export default function InvestorRoadmap() {
                             </div>
                             <div className="text-white font-bold text-lg mb-2">Compost Credits</div>
                             <div className="text-gray-400 text-sm">
-                                Verified soil transformation data is sold as "Carbon Removal Credits". 100% of this USDC goes
-                                straight into the Liquidity Backing Vault (LBV), relentlessly raising the token floor price.
+                                Verified soil transformation data may be sold as carbon-related data products where legally applicable. 100% of this USDC goes
+                                into the Liquidity Backing Vault (LBV), strengthening the treasury backing metric over time.
                             </div>
                         </div>
                     </div>

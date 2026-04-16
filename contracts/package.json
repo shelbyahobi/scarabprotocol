@@ -1,7 +1,7 @@
 {
-  "name": "contracts",
+  "name": "scarabprotocol-contracts",
   "version": "1.0.0",
-  "description": "",
+  "description": "SCARAB Protocol — Hardhat smart contracts (BNB Smart Chain)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -33,7 +33,7 @@ export default function Marketplace() {
 
     // Check holder status (≥1000 SCARAB)
     const { data: scarabBalance } = useReadContract({
-        address: CONFIG.ROLL_TOKEN_ADDRESS,
+        address: CONFIG.SCARAB_TOKEN_ADDRESS,
         abi: ERC20_ABI,
         functionName: 'balanceOf',
         args: [address],

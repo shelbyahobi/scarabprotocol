@@ -54,7 +54,7 @@ const StatCard = ({ label, value, subtext, icon: Icon, colorClass }) => (
 );
 
 // ─── Backing Ratio Dial (SVG Arc) ───────────────────────────────────────────
-function BackingRatioDial({ ratio, floorPrice, marketPrice }) {
+function BackingRatioDial({ ratio, backingMetric, marketPrice }) {
     // ratio = marketPrice / floorPrice, clamped 0–5× for display
     const MAX_RATIO = 5;
     const clampedRatio = Math.min(ratio, MAX_RATIO);
@@ -128,11 +128,11 @@ function BackingRatioDial({ ratio, floorPrice, marketPrice }) {
                 </div>
             </div>
 
-            {/* Floor vs Market legend */}
+            {/* Backing metric vs market legend */}
             <div className="grid grid-cols-2 gap-4 mt-4 w-full text-center text-xs font-mono">
                 <div className="bg-black/40 rounded-xl p-2 border border-white/5">
-                    <div className="text-gray-500 text-[10px] uppercase">Floor</div>
-                    <div className="text-beetle-gold font-bold">{floorPrice}</div>
+                    <div className="text-gray-500 text-[10px] uppercase">Backing</div>
+                    <div className="text-beetle-gold font-bold">{backingMetric}</div>
                 </div>
                 <div className="bg-black/40 rounded-xl p-2 border border-white/5">
                     <div className="text-gray-500 text-[10px] uppercase">Market</div>
@@ -169,9 +169,9 @@ export default function TransparencyDashboard() {
     const scarabBurned = dashData ? Number(formatUnits(dashData[4], 18)).toLocaleString('en', { maximumFractionDigits: 0 }) : '0';
     const floorActive = dashData ? dashData[5] : false;
     const effUsdcLabel = effUsdc > 0n ? `$${Number(formatUnits(effUsdc, 18)).toLocaleString('en', { maximumFractionDigits: 0 })}` : '$0';
-    const yieldLabel = `${(yieldBps / 100).toFixed(1)}% APY`;
+    const yieldLabel = `${(yieldBps / 100).toFixed(1)}% modeled yield`;
 
-    // Mock market price until we have an oracle feed; ratio defaults to 0 (shows "—")
+    // Mock market price until we have an SQS feed; ratio defaults to 0 (shows "—")
     const MOCK_MARKET_PRICE = 0;
     const backingRatio = floorPriceRaw > 0 && MOCK_MARKET_PRICE > 0
         ? MOCK_MARKET_PRICE / floorPriceRaw
@@ -214,17 +214,17 @@ export default function TransparencyDashboard() {
                         {/* ★ THE DIAL ★ */}
                         <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
                             <div className="flex justify-between items-center mb-4">
-                                <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">Market / Floor</span>
+                                <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">Market / Backing</span>
                                 {floorActive && (
                                     <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full animate-pulse">
-                                        ⚠ BUYBACK TRIGGERED
+                                        ⚠ BUYBACK CONDITION ACTIVE
                                     </span>
                                 )}
                             </div>
                             <BackingRatioDial
                                 ratio={backingRatio}
-                                floorPrice={floorPriceLabel}
-                                marketPrice={MOCK_MARKET_PRICE > 0 ? `$${MOCK_MARKET_PRICE.toFixed(6)}` : 'No oracle'}
+                                backingMetric={floorPriceLabel}
+                                marketPrice={MOCK_MARKET_PRICE > 0 ? `$${MOCK_MARKET_PRICE.toFixed(6)}` : 'No SQS feed'}
                             />
                         </div>
 
@@ -265,15 +265,15 @@ export default function TransparencyDashboard() {
                                 </span>
                             </div>
                             <div className="text-3xl font-black text-white font-mono">{usdcReserve}</div>
-                            <div className="text-xs text-gray-500 mt-1">Effective (with {yieldLabel} yield): <span className="text-green-400 font-mono">{effUsdcLabel}</span></div>
+                            <div className="text-xs text-gray-500 mt-1">Effective reserve (using {yieldLabel} assumption): <span className="text-green-400 font-mono">{effUsdcLabel}</span></div>
                         </div>
 
                         {/* Stats grid */}
                         <div className="grid grid-cols-2 gap-3">
                             <div className="bg-black/40 border border-white/5 rounded-xl p-3 text-center">
-                                <div className="text-[10px] text-gray-500 uppercase">Floor Price</div>
+                                <div className="text-[10px] text-gray-500 uppercase">Backing Metric</div>
                                 <div className="text-lg font-bold text-beetle-gold font-mono">{floorPriceLabel}</div>
-                                <div className="text-[10px] text-gray-600">w/ RWA yield</div>
+                                <div className="text-[10px] text-gray-600">modeled scenario</div>
                             </div>
                             <div className="bg-black/40 border border-white/5 rounded-xl p-3 text-center">
                                 <div className="text-[10px] text-gray-500 uppercase">Nodes</div>

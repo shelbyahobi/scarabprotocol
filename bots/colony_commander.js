@@ -6,11 +6,11 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(session());
 
 // --- CONSTANTS ---
-const WEB_APP_URL = "https://roll-token-official.vercel.app/";
-const COMMUNITY_GROUP = "https://t.me/rolltoken";
+const WEB_APP_URL = "https://www.scarabprotocol.org/";
+const COMMUNITY_GROUP = "https://t.me/ScarabCommunity";
 const SEED_SALE_ADDRESS = "0xfc95cC5185530c2c386f5Cfc5c68157B6E8bF4F5"; // Updated Deployment
-const TWITTER_URL = "https://x.com/roll_token";
-const BLUEPRINT_URL = "https://roll-token-official.vercel.app/"; // Deep link if possible
+const TWITTER_URL = "https://x.com/scarab_protocol";
+const BLUEPRINT_URL = "https://www.scarabprotocol.org/"; // Deep link if possible
 
 // --- MIDDLEWARE: ERROR HANDLING ---
 bot.catch((err, ctx) => {
@@ -43,7 +43,7 @@ bot.action("verify_human", async (ctx) => {
 
     // 2. The Grand Welcome
     await ctx.replyWithPhoto(
-        { url: 'https://roll-token-official.vercel.app/logo_eco.jpg' }, // Consider updating URL to a new SCARAB image in the future
+        { url: 'https://www.scarabprotocol.org/logo_eco.jpg' },
         {
             caption: `🌍 *Access Granted: Welcome to the Ecosystem!* 🌍\n\n` +
                 `You are now a part of **SCARAB Protocol**.\n` +

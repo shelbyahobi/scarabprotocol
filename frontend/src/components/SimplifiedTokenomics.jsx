@@ -10,12 +10,12 @@ const AllocationItem = ({ label, amount, description }) => (
     </div>
 );
 
-const FloorProjection = ({ year, nodes, vault, floor }) => (
+const TreasuryProjection = ({ year, nodes, vault, backing }) => (
     <div className="bg-[#0a1a0f] border border-beetle-gold/20 rounded-xl p-4 flex flex-col items-center justify-center">
         <div className="font-bold text-green-400 mb-1">{year}</div>
         <div className="text-xs text-gray-500 uppercase font-bold tracking-widest">{nodes} Nodes</div>
         <div className="text-white font-mono mt-2 mb-1">{vault} Vault</div>
-        <div className="text-xl font-black text-beetle-gold font-mono">{floor}</div>
+        <div className="text-xl font-black text-beetle-gold font-mono">{backing}</div>
     </div>
 );
 
@@ -80,7 +80,7 @@ export default function SimplifiedTokenomics() {
                     </div>
                 </div>
 
-                {/* Floor Price Mechanism - Simplified */}
+                {/* Treasury backing metric - simplified */}
                 <div className="max-w-4xl mx-auto bg-black/40 rounded-3xl p-8 md:p-12 border border-beetle-gold/30 shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-beetle-gold to-transparent opacity-50"></div>
 
@@ -90,19 +90,19 @@ export default function SimplifiedTokenomics() {
                     <p className="text-gray-300 text-center mb-10 max-w-2xl mx-auto">
                         $50 from every single $349 hardware purchase is locked natively as USDC in the Treasury Vault.
                         <br /><br />
-                        <code className="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-beetle-gold block">Floor Price = USDC Reserve ÷ Circulating Supply</code>
+                        <code className="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-beetle-gold block">Treasury Backing Metric = USDC Reserve ÷ Circulating Supply</code>
                     </p>
 
                     {/* Simplified Projection Table using our new components */}
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-                        <FloorProjection year="YEAR 1" nodes="2,000" vault="$100K" floor="$0.0025" />
-                        <FloorProjection year="YEAR 2" nodes="8,000" vault="$500K" floor="$0.0047" />
-                        <FloorProjection year="YEAR 3" nodes="25,000" vault="$1.75M" floor="$0.0094" />
-                        <FloorProjection year="YEAR 5" nodes="150,000" vault="$12.75M" floor="$0.0425" />
+                        <TreasuryProjection year="YEAR 1" nodes="2,000" vault="$100K" backing="$0.0025" />
+                        <TreasuryProjection year="YEAR 2" nodes="8,000" vault="$500K" backing="$0.0047" />
+                        <TreasuryProjection year="YEAR 3" nodes="25,000" vault="$1.75M" backing="$0.0094" />
+                        <TreasuryProjection year="YEAR 5" nodes="150,000" vault="$12.75M" backing="$0.0425" />
                     </div>
 
                     <p className="text-sm text-gray-500 text-center mt-8 italic">
-                        * Note: This represents the mathematical support limit. The actual market value is historically modeled at 5-10× higher due to real utility demand scaling against decreasing emissions.
+                        * Note: This is a non-guaranteed accounting metric, not a redemption promise or guaranteed market price.
                     </p>
                 </div>
 

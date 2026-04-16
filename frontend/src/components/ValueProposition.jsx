@@ -29,12 +29,12 @@ export default function ValueProposition() {
                         <ValueProp
                             icon={<Zap size={28} />}
                             title="Hardware Owners"
-                            description="Turn your solar panel, bokashi bucket, or water filter into a passive income stream through verifiable output."
+                            description="Turn your solar panel, bokashi bucket, or water filter into participation-based rewards tied to verifiable output and protocol conditions."
                         />
                         <ValueProp
                             icon={<TrendingUp size={28} />}
                             title="Early Investors"
-                            description="Utility token with a mathematically supported treasury ratio that rises with every new hardware deployment."
+                            description="Utility token with a treasury backing metric that may improve as hardware deployment and protocol usage scale."
                         />
                         <ValueProp
                             icon={<Leaf size={28} />}

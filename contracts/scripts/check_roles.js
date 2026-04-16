@@ -21,8 +21,8 @@ async function main() {
     const ecBal = await token.balanceOf(EMISSION_CONTROLLER);
 
     console.log("\n🔍 Balance Check");
-    console.log("Deployer:          ", ethers.formatEther(depBal), "ROLL");
-    console.log("EmissionController:", ethers.formatEther(ecBal), "ROLL");
+    console.log("Deployer:          ", ethers.formatEther(depBal), "SCARAB");
+    console.log("EmissionController:", ethers.formatEther(ecBal), "SCARAB");
 
     // Check tx receipt
     const receipt = await signer.provider.getTransactionReceipt(TX_HASH);

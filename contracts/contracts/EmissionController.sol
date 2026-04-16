@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
@@ -56,7 +56,6 @@ contract EmissionController is UUPSUpgradeable, AccessControlUpgradeable {
     
     function initialize(address _scarab, address _validator) public initializer {
         __AccessControl_init();
-        __UUPSUpgradeable_init();
         
         SCARAB = IScarabToken(_scarab);
         validator = IProductionValidator(_validator);
@@ -71,7 +70,7 @@ contract EmissionController is UUPSUpgradeable, AccessControlUpgradeable {
     // --- STAKING LOGIC ---
     function depositStake(uint256 amount) external {
         require(amount > 0, "Cannot stake 0");
-        require(IERC20Upgradeable(address(SCARAB)).transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        require(IERC20(address(SCARAB)).transferFrom(msg.sender, address(this), amount), "Transfer failed");
         userStakes[msg.sender] += amount;
         emit StakeDeposited(msg.sender, amount);
     }
@@ -79,7 +78,7 @@ contract EmissionController is UUPSUpgradeable, AccessControlUpgradeable {
     function withdrawStake(uint256 amount) external {
         require(userStakes[msg.sender] >= amount, "Insufficient stake");
         userStakes[msg.sender] -= amount;
-        require(IERC20Upgradeable(address(SCARAB)).transfer(msg.sender, amount), "Transfer failed");
+        require(IERC20(address(SCARAB)).transfer(msg.sender, amount), "Transfer failed");
         emit StakeWithdrawn(msg.sender, amount);
     }
 

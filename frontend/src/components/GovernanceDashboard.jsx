@@ -5,7 +5,7 @@ import { Vote, Users, FileText, CheckCircle, XCircle, Clock, ArrowRight, Trendin
 import { motion } from 'framer-motion';
 import { CONFIG } from '../config';
 
-const ROLL_TOKEN_ADDRESS = CONFIG.ROLL_TOKEN_ADDRESS;
+const SCARAB_TOKEN_ADDRESS = CONFIG.SCARAB_TOKEN_ADDRESS;
 
 const ROLL_ABI = [
     { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "getVotes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
@@ -20,7 +20,7 @@ const GovernanceDashboard = () => {
 
     // Read Balance & Voting Power
     const { data: votingPower } = useReadContract({
-        address: ROLL_TOKEN_ADDRESS,
+        address: SCARAB_TOKEN_ADDRESS,
         abi: ROLL_ABI,
         functionName: 'getVotes',
         args: [address],
@@ -28,7 +28,7 @@ const GovernanceDashboard = () => {
     });
 
     const { data: balance } = useReadContract({
-        address: ROLL_TOKEN_ADDRESS,
+        address: SCARAB_TOKEN_ADDRESS,
         abi: ROLL_ABI,
         functionName: 'balanceOf',
         args: [address],
@@ -41,7 +41,7 @@ const GovernanceDashboard = () => {
     const handleDelegate = () => {
         if (!delegatee.startsWith('0x')) return;
         delegate({
-            address: ROLL_TOKEN_ADDRESS,
+            address: SCARAB_TOKEN_ADDRESS,
             abi: ROLL_ABI,
             functionName: 'delegate',
             args: [delegatee]
