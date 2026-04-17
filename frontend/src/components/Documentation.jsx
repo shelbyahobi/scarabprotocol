@@ -276,12 +276,33 @@ export default function Documentation() {
                             <div className="relative z-10 text-3xl md:text-5xl font-mono text-beetle-green font-black tracking-widest filter drop-shadow-[0_0_10px_rgba(74,222,128,0.3)]">
                                 E(t) = D₀ × e^(-λt)
                             </div>
+                            </div>
                             <div className="text-gray-500 text-sm mt-4 font-mono tracking-widest block">
                                 D₀ = Initial Daily Mint | λ = 0.00020518
                             </div>
                         </div>
 
-                        <h3 className="text-xl font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Clustering & Activity Multipliers</h3>
+                        <h3 className="text-xl font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Waste Stream Base Multipliers</h3>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <div className="text-xs text-gray-500 uppercase font-bold mb-1">Bokashi</div>
+                                <div className="text-xl font-black text-white">1.0x</div>
+                            </div>
+                            <div className="bg-white/5 p-4 rounded-xl border border-beetle-gold/30">
+                                <div className="text-xs text-beetle-gold/80 uppercase font-bold mb-1">UCO (SAF Feedstock)</div>
+                                <div className="text-xl font-black text-beetle-gold">2.5x</div>
+                            </div>
+                            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <div className="text-xs text-gray-500 uppercase font-bold mb-1">Restaurant Fat</div>
+                                <div className="text-xl font-black text-white">1.8x</div>
+                            </div>
+                            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <div className="text-xs text-gray-500 uppercase font-bold mb-1">Grease Trap</div>
+                                <div className="text-xl font-black text-white">0.8x</div>
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Clustering & Activity Boosts</h3>
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                                 <h4 className="font-bold text-beetle-gold mb-2 text-lg">Geographic Cluster Bonus (Up to +100%)</h4>
@@ -341,6 +362,19 @@ export default function Documentation() {
                                 </div>
                             </div>
                         </div>
+
+                        <h3 className="text-2xl font-black text-white mt-12 mb-4 border-b border-white/10 pb-2">Stand-alone ESG Revenue: Logistics Efficiency</h3>
+                        <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+                            SCARAB's Hub Node network creates a secondary, entirely distinct revenue stream independent of the token model. By intercepting residential organic waste drops at local hubs, SCARAB prevents 50 separate car trips in favor of 1 bulk Electric Vehicle trip to the farm.
+                        </p>
+                        <div className="bg-[#050A05] border border-beetle-green/20 rounded-2xl p-6 font-mono text-xs text-gray-400 space-y-2">
+                            <div><span className="text-gray-500">WITHOUT HUB:</span> 50 car trips × 4km = 200 km × 180g = 36 kg CO2/week</div>
+                            <div><span className="text-gray-500">WITH HUB:</span> 1 EV trip = 0 kg CO2 tailpipe emissions</div>
+                            <div className="text-beetle-green pt-2 border-t border-white/10 mt-2">NET AVOIDED: 1,872 kg CO2 per Hub per Year</div>
+                        </div>
+                        <p className="text-sm text-gray-400 mt-6 leading-relaxed">
+                            At scale (e.g. 1,000 Hubs), this equates to 1,872 tonnes of completely verifiable avoided logistics emissions—valued at ~€159,000 annually via the EU ETS carbon credit market (€85/tonne). These funds flow directly into the DAO treasury. <strong className="text-white">(Modelled scenario, not guaranteed).</strong>
+                        </p>
                     </motion.div>
                 );
             case 'carbon-methodology':
@@ -361,6 +395,11 @@ export default function Documentation() {
                                     <div className="text-white font-mono">GPS, Weight, Thermodynamics</div>
                                 </div>
                             </div>
+
+                            <h4 className="font-bold text-white mb-2 mt-8 text-lg">ISCC Certification & SAF Feedstock</h4>
+                            <p className="text-sm text-gray-400 leading-relaxed">
+                                Used Cooking Oil (UCO) generates the highest APY yield (2.5x base). This is because UCO is a highly sought-after commodity feedstock for Sustainable Aviation Fuel (SAF). SCARAB Hub Nodes natively validate UCO via algorithmic density and conductivity checks, preparing our network for formal institutional ISCC verification to sell natively to ESG airline buyers.
+                            </p>
                         </div>
                     </motion.div>
                 );
@@ -395,6 +434,26 @@ export default function Documentation() {
                                 </tbody>
                             </table>
                         </div>
+
+                        <h3 className="text-2xl font-black text-white mt-12 mb-4 border-b border-white/10 pb-2">Technical Architecture Pipeline</h3>
+                        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+                            Below is the definitive data-flow mapping physical world validation to smart contract execution.
+                        </p>
+                        <div className="bg-black border border-white/10 rounded-2xl p-6 overflow-x-auto text-xs text-beetle-green font-mono whitespace-pre font-bold">
+{` [Edge Hardware]        [Cloud Relay]          [Oracles]            [On-Chain Exec]      [Deflation Engine]
+
+ +-------------+      +---------------+      +--------------+      +----------------+      +--------------+
+ | ESP32-S3    |      | AWS SQS Queue |      | SCARAB Node. |      | HubValidator   |      | Liquidity-   |
+ | ATECC608A   | ===> | / Telemetry   | ===> | js Relayer   | ===> | .sol (Escrow)  | ===> | BackingVault |
+ | I2C Sensors |      | Buffer        |      | (Validates   |      | (Phase 1 & 2)  |      | .sol         |
+ +-------------+      +---------------+      | Signatures)  |      +----------------+      +--------------+
+                                             +--------------+                                      ||
+                                                                                                   \\/
+                                                                                            +---------------+
+                                                                                            | PancakeSwap   |
+                                                                                            | Buy & Burn    |
+                                                                                            +---------------+`}
+                        </div>
                     </motion.div>
                 );
             case 'risks':
@@ -405,6 +464,25 @@ export default function Documentation() {
                             <FraudProtection method="Sybil Attack (Fake Nodes)" description="To spin up 1,000 fake AWS server nodes, an attacker must burn 50 SCARAB per node (50,000 SCARAB). Because they lack the hardware ATECC608A cryptographic identity chips, the SQS relay immediately rejects their spoofed telemetry, permanently isolating and destroying their capital investment." />
                             <FraudProtection method="Quantum Computing Decryption" description="Protocol is UUPS upgradeable and explicitly mapped to migrate to NIST's 2024 Post-Quantum standard (CRYSTALS-Dilithium) allowing hardware Edge-OTA updates well before the million-qubit threshold threatens ECDSA." />
                             <FraudProtection method="Sensor Spoofing" description="If an attacker physically bypasses a sensor (e.g. heating a thermometer with a lighter to fake fermentation), Geographic Clustering algorithms compare it against peer nodes and standard physical thermodynamic duration curves, flagging manual manipulation anomalies." />
+                        </div>
+
+                        <h3 className="text-2xl font-black text-white mt-12 mb-4 border-b border-warning/10 pb-2">Open Risks (Series A Transparency)</h3>
+                        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+                            We believe in absolute transparency with institutional backers. The following risk vectors are actively being engineered against in the current sprint lifecycle:
+                        </p>
+                        <div className="space-y-4">
+                            <div className="bg-red-900/10 border-l-2 border-red-500 p-4">
+                                <div className="font-bold text-white text-sm mb-1">API3 Oracle Gap (UCO Spot Pricing)</div>
+                                <p className="text-xs text-gray-400">Chainlink currently lacks an EU-specific Used Cooking Oil (UCO) commodity data feed. The `LiquidityBackingVault` fundamentally relies on these price floors. We are actively developing a custom external adapter for API3 Airnodes to bridge this exact deficiency.</p>
+                            </div>
+                            <div className="bg-orange-900/10 border-l-2 border-orange-500 p-4">
+                                <div className="font-bold text-white text-sm mb-1">ISCC Certification Timeline</div>
+                                <p className="text-xs text-gray-400">Selling UCO directly as Sustainable Aviation Fuel (SAF) feedstock requires formal institutional ISCC verification. While our hardware validations meet the criteria, the bureaucratic pilot approval process represents a 6-9 month external timing dependency.</p>
+                            </div>
+                            <div className="bg-yellow-900/10 border-l-2 border-yellow-500 p-4">
+                                <div className="font-bold text-white text-sm mb-1">Regulatory Jurisdiction / DAO Liability</div>
+                                <p className="text-xs text-gray-400">The protocol operates under a Wyoming DAO LLC legal wrapper. However, physical hardware deployment in the EU creates conflicting multi-jurisdiction liabilities. A finalized corporate restructuring is TBD pending Series A lead counsel review.</p>
+                            </div>
                         </div>
                     </motion.div>
                 );

@@ -22,3 +22,6 @@ typechain-types/
 # Hardhat
 hardhat.config.js.backup
 .vercel
+
+# SCARAB Internal R&D / IP Protection (Series A Embargo)
+docs/internal/

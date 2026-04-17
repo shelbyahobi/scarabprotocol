@@ -48,20 +48,27 @@ export default function Hero() {
                     </h1>
 
                     {/* Primary CTAs */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6 w-full max-w-2xl mx-auto">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6 w-full max-w-4xl mx-auto">
                         <Link 
                             to="/onboard/farmer" 
-                            className="w-full sm:w-auto px-8 py-4 bg-[#1D9E75] text-white rounded-xl font-bold text-lg hover:bg-[#15805e] transition-colors flex flex-col items-center justify-center flex-1"
+                            className="w-full sm:w-auto px-8 py-4 bg-[#1D9E75] text-white rounded-xl font-bold text-base hover:bg-[#15805e] transition-colors flex flex-col items-center justify-center flex-1"
                         >
                             <span>Join as a Farmer</span>
-                            <span className="text-xs font-normal text-white/80 mt-1">No crypto knowledge needed</span>
+                            <span className="text-[10px] font-normal text-white/80 mt-1">No crypto knowledge needed</span>
+                        </Link>
+                        <Link 
+                            to="/onboard/hub" 
+                            className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/20 text-white rounded-xl font-bold text-base hover:bg-white/10 transition-colors flex flex-col items-center justify-center flex-1"
+                        >
+                            <span>Host a Hub Node</span>
+                            <span className="text-[10px] font-normal text-zinc-400 mt-1">B2B Infrastructure Anchors</span>
                         </Link>
                         <Link 
                             to="/onboard/node" 
-                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/5 transition-colors flex flex-col items-center justify-center flex-1"
+                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white rounded-xl font-bold text-base hover:bg-white/5 transition-colors flex flex-col items-center justify-center flex-1"
                         >
-                            <span>Connect as Node Operator</span>
-                            <span className="text-xs font-normal text-zinc-400 mt-1">MetaMask / WalletConnect</span>
+                            <span>Connect as Validator</span>
+                            <span className="text-[10px] font-normal text-zinc-400 mt-1">MetaMask / WalletConnect</span>
                         </Link>
                     </div>
                     
@@ -70,7 +77,7 @@ export default function Hero() {
                         <span>·</span>
                         <span>Hardware-attested data</span>
                         <span>·</span>
-                        <span>Open-source contracts</span>
+                        <span>Testnet-deployed (Security review in progress)</span>
                     </div>
                 </motion.div>
 

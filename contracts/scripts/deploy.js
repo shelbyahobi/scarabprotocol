@@ -97,21 +97,41 @@ async function main() {
     // Actually, if we don't transfer, the DAO can't do much on the token/sale.
     // But for verification, we might want to keep control.
     // Let's leave ownership with deployer for now and just log the DAO setup.
+    console.log("\n🚚 Deploying HubValidator...");
+    const HubValidator = await hre.ethers.getContractFactory("HubValidator");
+    const hubValidator = await HubValidator.deploy();
+    await hubValidator.waitForDeployment();
+    const hubValidatorAddress = await hubValidator.getAddress();
+    console.log(`✅ HubValidator deployed to: ${hubValidatorAddress}`);
+
+    console.log("\n🏦 Deploying LiquidityBackingVault...");
+    const LiquidityBackingVault = await hre.ethers.getContractFactory("LiquidityBackingVault");
+    
+    // Mock USDC for testnet
+    const usdcAddress = "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"; // BSC Mainnet USDC placeholder or testnet
+    const pancakeRouter = "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3"; // Testnet Router
+    const lbv = await LiquidityBackingVault.deploy(usdcAddress, rollAddress, pancakeRouter);
+    await lbv.waitForDeployment();
+    const lbvAddress = await lbv.getAddress();
+    console.log(`✅ LiquidityBackingVault deployed to: ${lbvAddress}`);
 
     console.log("\n🎉 DEPLOYMENT COMPLETE!");
     console.log("----------------------------------------------------");
-    console.log(`SCARAB token:    ${rollAddress}`);
-    console.log(`SeedSale:        ${seedSaleAddress}`);
-    console.log(`LiquidityLocker: ${lockerAddress}`);
-    console.log(`Timelock:        ${timelockAddress}`);
-    console.log(`BeetleGovernor:  ${governorAddress}`);
+    console.log(`SCARAB token:             ${rollAddress}`);
+    console.log(`SeedSale:                 ${seedSaleAddress}`);
+    console.log(`LiquidityLocker:          ${lockerAddress}`);
+    console.log(`Timelock:                 ${timelockAddress}`);
+    console.log(`BeetleGovernor:           ${governorAddress}`);
+    console.log(`HubValidator:             ${hubValidatorAddress}`);
+    console.log(`LiquidityBackingVault:    ${lbvAddress}`);
     console.log("----------------------------------------------------");
 
     console.log("\n⚠️  NEXT STEP: Verify on BscScan");
     console.log(`npx hardhat verify --network bscTestnet ${rollAddress} "${MARKETING_WALLET}" "${SHOP_FUND_WALLET}"`);
     console.log(`npx hardhat verify --network bscTestnet ${seedSaleAddress} ${SOFT_CAP} ${HARD_CAP} ${START_TIME} ${END_TIME}`);
-    console.log(`npx hardhat verify --network bscTestnet ${timelockAddress} ${MIN_DELAY} [] [] "${admin}"`);
-    console.log(`npx hardhat verify --network bscTestnet ${governorAddress} ${rollAddress} ${timelockAddress}`);
+    console.log(`npx hardhat verify --network bscTestnet ${hubValidatorAddress}`);
+    console.log(`npx hardhat verify --network bscTestnet ${lbvAddress} "${usdcAddress}" "${rollAddress}" "${pancakeRouter}"`);
+
 }
 
 main().catch((error) => {

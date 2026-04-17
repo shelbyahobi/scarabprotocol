@@ -46,7 +46,9 @@ import SecuritySection from './components/SecuritySection';
 import FarmerOnboard from './pages/FarmerOnboard';
 import FarmerDashboard from './pages/FarmerDashboard';
 import NodeOnboard from './pages/NodeOnboard';
+import HubOnboard from './pages/HubOnboard';
 import NodeDashboard from './pages/NodeDashboard';
+import StatusPage from './pages/StatusPage';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -331,6 +333,8 @@ function App() {
                                         {/* New Onboarding & Dashboard Routes */}
                                         <Route path="/onboard/farmer" element={<FarmerOnboard />} />
                                         <Route path="/onboard/node" element={<NodeOnboard />} />
+                                        <Route path="/onboard/hub" element={<HubOnboard />} />
+                                        <Route path="/status" element={<StatusPage />} />
                                         <Route path="/dashboard/farmer" element={
                                             <FarmerRoute>
                                                 <FarmerDashboard />

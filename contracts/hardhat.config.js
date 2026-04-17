@@ -8,6 +8,9 @@ module.exports = {
     version: "0.8.24",
     settings: {
       evmVersion: "cancun",
+      // viaIR: true is REQUIRED. The HubValidator's multi-step arrays 
+      // trigger EVM "Stack Too Deep" compiler limits without the newer Yul IR pipeline.
+      viaIR: true,
       optimizer: {
         enabled: true,
         runs: 200,

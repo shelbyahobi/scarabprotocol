@@ -27,7 +27,11 @@ export const CONFIG = {
     TEAM_VESTING_ADDRESS: import.meta.env.VITE_TEAM_VESTING_ADDRESS || '0x319923184a105Db69dbcB309A971AE22657FC9d6',
     MARKETING_TIMELOCK_ADDRESS: import.meta.env.VITE_MARKETING_TIMELOCK_ADDRESS || '0x60300bc99eedF706aC724A162b49235698aB40d4',
     HARDWARE_PREORDER_ADDRESS: import.meta.env.VITE_HARDWARE_PREORDER_ADDRESS || '0x438682F8C88B97CAc9dC219e2eEDCC44040aBeF2',
-    MOCK_USDC_ADDRESS: import.meta.env.VITE_MOCK_USDC_ADDRESS || '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+    MOCK_USDC_ADDRESS: import.meta.env.VITE_MOCK_USDC_ADDRESS || '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+
+    // Reward Calculator Fiat Exchange Rates
+    FIAT_RATE_BOKASHI: parseFloat(import.meta.env.VITE_FIAT_RATE_BOKASHI || '0.24'), // €0.24 EUR per kg
+    FIAT_RATE_UCO: parseFloat(import.meta.env.VITE_FIAT_RATE_UCO || '0.45') // €0.45 EUR per Litre
 };
 
 // Console warning if running on defaults in production (optional debugging helper)

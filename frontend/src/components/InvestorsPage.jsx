@@ -138,6 +138,49 @@ export default function InvestorsPage() {
 
             <section className="py-24 border-y border-white/5 bg-[#070B08]">
                 <div className="container mx-auto px-4 max-w-6xl">
+                    <div className="grid md:grid-cols-2 gap-16 mb-24">
+                        {/* What We Are Not Building */}
+                        <div>
+                            <span className="text-xs font-mono text-red-500 uppercase tracking-widest mb-4 block">Strategic Clarity</span>
+                            <h2 className="text-3xl font-black text-white mb-6">What We Are <span className="text-red-500">Not</span> Building</h2>
+                            <ul className="space-y-4">
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-1 min-w-[24px] text-red-500 font-bold">✕</div>
+                                    <div><strong className="text-gray-200">Not a Consumer App:</strong> We build invisible B2B hardware routing. Farmers do not manage crypto keys.</div>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-1 min-w-[24px] text-red-500 font-bold">✕</div>
+                                    <div><strong className="text-gray-200">Not a Carbon Credit Broker:</strong> We produce raw, hardware-attested Scope 3 data. We sell APIs to institutional registries, we do not trade credits to retail.</div>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-1 min-w-[24px] text-red-500 font-bold">✕</div>
+                                    <div><strong className="text-gray-200">Not a Crypto Exchange:</strong> SCARAB is a utility token used exclusively for activating network bandwidth and data acquisition.</div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Capital Efficiency */}
+                        <div className="bg-black border border-beetle-green/20 rounded-3xl p-8">
+                            <h2 className="text-2xl font-black text-white mb-2">Capital Efficiency</h2>
+                            <p className="text-sm text-gray-400 mb-8 border-b border-white/10 pb-4">Because hardware hosts stake their own nodes, zero municipal CAPEX is required. This shifts scale velocity heavily into our favor.</p>
+                            
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Milestone 1: Prototype (Months 1-4)</div>
+                                    <div className="flex items-end gap-2"><span className="text-2xl font-black text-beetle-green">$300k</span> <span className="text-sm text-gray-400 mb-1">Unlocks 100 Hubs / Hardware finalization</span></div>
+                                </div>
+                                <div>
+                                    <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Milestone 2: Subsidized Rollout (Months 5-11)</div>
+                                    <div className="flex items-end gap-2"><span className="text-2xl font-black text-white">$1.2M</span> <span className="text-sm text-gray-400 mb-1">Unlocks 1000 Hubs / ISCC Pilot Certification</span></div>
+                                </div>
+                                <div>
+                                    <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Milestone 3: Institutional API (Months 12-18)</div>
+                                    <div className="flex items-end gap-2"><span className="text-2xl font-black text-white">$500k</span> <span className="text-sm text-gray-400 mb-1">Unlocks ESG Data Market & Standalone Sales</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <h2 className="text-3xl font-black text-white mb-10 text-center">Diligence Scope: Public vs. NDA</h2>
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="p-8 bg-white/5 border border-white/10 rounded-3xl">
