@@ -372,9 +372,10 @@ async function submitBatch(validatedItems) {
   const wallet   = new ethers.Wallet(ORACLE_PRIVATE_KEY, provider);
   const contract = new ethers.Contract(BATCH_CONTRACT, BATCH_ABI, wallet);
 
-  // Encode device IDs as bytes32 (truncate to 32 bytes if ID is longer)
-  const deviceIds    = validatedItems.map(i =>
-    ethers.zeroPadValue(ethers.toUtf8Bytes(i.device_id.slice(0, 32)), 32)
+  // MINIMISATION RULE: Device IDs must be cryptographically hashed
+  // Raw serial numbers / identities cannot be stored on EVM storage.
+  const deviceIds = validatedItems.map(i =>
+    ethers.keccak256(ethers.toUtf8Bytes(i.device_id))
   );
   const energyValues = validatedItems.map(i => BigInt(Math.round(i.energy * 1000))); // Wh → mWh
   const confidences  = validatedItems.map(i => i.confidence);

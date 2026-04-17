@@ -1,0 +1,14 @@
+{
+  "DE": {
+    "name": "Germany",
+    "currency": "EUR",
+    "fiat_enabled": true,
+    "token_enabled": false,
+    "waste_categories": ["bokashi", "uco"],
+    "regulatory_note": "Kreislaufwirtschaftsgesetz compliance required",
+    "launch_status": "pilot"
+  },
+  "FR": { "fiat_enabled": true, "token_enabled": false, "launch_status": "planned" },
+  "NL": { "fiat_enabled": true, "token_enabled": false, "launch_status": "planned" },
+  "US": { "fiat_enabled": false, "token_enabled": true, "launch_status": "planned" }
+}

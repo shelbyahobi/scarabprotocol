@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target, Users } from 'lucide-react';
+import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target, Users, Landmark } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
@@ -74,6 +74,14 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
                         <Users size={16} className="text-gray-400/70" />
                         DAO
                     </Link>
+
+                    <Link
+                        to="/municipalities"
+                        className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${location.pathname === '/municipalities' ? 'bg-white/10 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                    >
+                        <Landmark size={16} className="text-emerald-400/70" />
+                        For Cities
+                    </Link>
                 </div>
 
                 {/* Right: Actions */}
@@ -113,6 +121,9 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
                         </Link>
                         <Link to="/dao" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <Users size={20} className="text-gray-400" /> DAO
+                        </Link>
+                        <Link to="/municipalities" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <Landmark size={20} className="text-emerald-400" /> For Cities
                         </Link>
                     </div>
 

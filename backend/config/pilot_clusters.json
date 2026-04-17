@@ -1,0 +1,29 @@
+[
+  {
+    "cluster_id": "DE_STUTTGART_01",
+    "city": "Stuttgart",
+    "country": "Germany",
+    "h3_cells": ["85282033fffffff", "85282037fffffff"],
+    "hub_capacity": 10,
+    "farmer_capacity": 500,
+    "status": "accepting_waitlist"
+  },
+  {
+    "cluster_id": "DE_BERLIN_01",
+    "city": "Berlin Mitte",
+    "country": "Germany",
+    "h3_cells": ["851fa903fffffff", "851fa907fffffff"],
+    "hub_capacity": 5,
+    "farmer_capacity": 200,
+    "status": "accepting_waitlist"
+  },
+  {
+    "cluster_id": "DE_HAMBURG_01",
+    "city": "Hamburg Altona",
+    "country": "Germany",
+    "h3_cells": ["851f1d4ffffffff"],
+    "hub_capacity": 8,
+    "farmer_capacity": 300,
+    "status": "accepting_waitlist"
+  }
+]

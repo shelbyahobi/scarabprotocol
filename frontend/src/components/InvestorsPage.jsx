@@ -211,6 +211,72 @@ export default function InvestorsPage() {
                 </div>
             </section>
 
+            {/* Go-To-Market Sequence */}
+            <section className="py-24 bg-black border-y border-white/5">
+                <div className="container mx-auto px-4 max-w-5xl">
+                    <span className="text-xs font-mono text-beetle-green uppercase tracking-widest mb-4 block">Go-to-Market</span>
+                    <h2 className="text-3xl font-black text-white mb-12">Execution Sequence</h2>
+                    <div className="grid md:grid-cols-4 gap-6">
+                        <GTMStep num="1" title="Stuttgart Pilot" desc="Single-city proof with hardware deployed, municipal API live, fiat payouts active." status="In Progress" />
+                        <GTMStep num="2" title="3 German Cities" desc="Berlin, Hamburg, Stuttgart. Prove multi-cluster economics and logistics efficiency." status="Q3 2026" />
+                        <GTMStep num="3" title="EU Expansion" desc="Netherlands, France. EURC stablecoin payouts. ISCC certification for UCO/SAF feedstock." status="Q1 2027" />
+                        <GTMStep num="4" title="Token Mode (Non-EU)" desc="SCARAB token emissions enabled for US and non-EU jurisdictions where regulatory clarity exists." status="Q2 2027" />
+                    </div>
+                </div>
+            </section>
+
+            {/* Revenue Streams */}
+            <section className="py-24 bg-[#0A0F0C]">
+                <div className="container mx-auto px-4 max-w-5xl">
+                    <h2 className="text-3xl font-black text-white mb-12">Revenue Streams (Ranked by Priority)</h2>
+                    <div className="space-y-4">
+                        <RevenueRow rank="1" stream="Municipal API Subscriptions" desc="Usage-based pricing for city waste management dashboards and compliance reporting." color="beetle-green" />
+                        <RevenueRow rank="2" stream="Corporate Data Access" desc="Enterprise-tier telemetry firehose. Data access fees paid in SCARAB (burned on receipt)." color="beetle-electric" />
+                        <RevenueRow rank="3" stream="UCO/SAF Feedstock Brokerage" desc="Hub-node validated Used Cooking Oil sold as ISCC-certified Sustainable Aviation Fuel feedstock." color="beetle-gold" />
+                        <RevenueRow rank="4" stream="Token Appreciation" desc="Deflationary pressure from buy-and-burn mechanics tied to real-world revenue." color="white" />
+                    </div>
+                </div>
+            </section>
+
+            {/* Entity Structure & Regulatory Positioning */}
+            <section className="py-24 bg-black border-y border-white/5">
+                <div className="container mx-auto px-4 max-w-5xl">
+                    <div className="grid md:grid-cols-2 gap-16">
+                        <div>
+                            <span className="text-xs font-mono text-beetle-gold uppercase tracking-widest mb-4 block">Legal Structure</span>
+                            <h2 className="text-3xl font-black text-white mb-6">Entity Architecture</h2>
+                            <div className="space-y-4">
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                                    <div className="text-beetle-green font-bold text-sm mb-1">Protocol Layer</div>
+                                    <div className="text-white font-black text-lg">SCARAB DAO LLC (Wyoming, USA)</div>
+                                    <p className="text-gray-400 text-xs mt-2">Governs smart contracts, token emissions, and on-chain treasury.</p>
+                                </div>
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                                    <div className="text-beetle-gold font-bold text-sm mb-1">European Operations</div>
+                                    <div className="text-white font-black text-lg">SCARAB UG (Germany, registration in progress)</div>
+                                    <p className="text-gray-400 text-xs mt-2">Manages EU hardware deployment, municipal contracts, GDPR compliance, and ISCC certification.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span className="text-xs font-mono text-blue-400 uppercase tracking-widest mb-4 block">Regulatory</span>
+                            <h2 className="text-3xl font-black text-white mb-6">Positioning</h2>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                                <p className="text-gray-300 leading-relaxed mb-6">
+                                    "We are a <strong className="text-white">data verification and settlement layer</strong>. Waste logistics compliance is the municipality's existing obligation — we make it auditable."
+                                </p>
+                                <ul className="text-sm text-gray-400 space-y-2">
+                                    <li>• EU users receive EUR fiat payouts only — no token exposure at launch</li>
+                                    <li>• Hardware devices are owned by operators, not the protocol</li>
+                                    <li>• Municipal data scoped exclusively to registered jurisdiction</li>
+                                    <li>• All EU data processed on Hetzner Cloud, Frankfurt (GDPR-native)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Execution Roadmap (Integrated from Roadmap component) */}
             <div id="roadmap">
                 <InvestorRoadmap />
@@ -323,6 +389,29 @@ function ProtectionCard({ title, desc, icon }) {
             </div>
             <h4 className="text-white font-black text-xl mb-4">{title}</h4>
             <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
+        </div>
+    );
+}
+
+function GTMStep({ num, title, desc, status }) {
+    return (
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative">
+            <div className="text-beetle-green font-mono text-xs mb-2">Phase {num}</div>
+            <h4 className="text-white font-black text-lg mb-2">{title}</h4>
+            <p className="text-gray-400 text-xs leading-relaxed mb-4">{desc}</p>
+            <div className="text-xs font-bold text-beetle-gold">{status}</div>
+        </div>
+    );
+}
+
+function RevenueRow({ rank, stream, desc, color }) {
+    return (
+        <div className="flex items-center gap-6 bg-white/5 border border-white/10 rounded-xl p-5">
+            <div className={`text-3xl font-black text-${color} min-w-[40px]`}>{rank}</div>
+            <div>
+                <div className="text-white font-bold">{stream}</div>
+                <div className="text-gray-400 text-xs mt-1">{desc}</div>
+            </div>
         </div>
     );
 }

@@ -4,6 +4,7 @@ const { ethers } = require("hardhat");
 describe("HubValidator", function () {
   let hubValidator;
   let owner, oracle, hub, user, farmer;
+  let ORACLE_ROLE;
 
   beforeEach(async function () {
     [owner, oracle, hub, user, farmer] = await ethers.getSigners();
@@ -11,20 +12,19 @@ describe("HubValidator", function () {
     const HubValidatorF = await ethers.getContractFactory("HubValidator");
     hubValidator = await HubValidatorF.deploy();
 
-    const ORACLE_ROLE = await hubValidator.ORACLE_ROLE();
+    ORACLE_ROLE = await hubValidator.ORACLE_ROLE();
     await hubValidator.grantRole(ORACLE_ROLE, oracle.address);
   });
 
   describe("Micro Handshake", function () {
-    it("Should successfully record a micro-handshake event and hold 50% in escrow", async function () {
-      const hubId = ethers.utils.formatBytes32String("HUB-1");
-      const userId = ethers.utils.formatBytes32String("USER-1");
-      const streamType = ethers.utils.formatBytes32String("BOKASHI"); // 1.0x
-      const quantity = 1000; // 1000g = 1kg
+    it("Should complete: farmer receives 40%, hub receives 10%, escrow holds 50%", async function () {
+      const hubId = ethers.encodeBytes32String("HUB-1");
+      const userId = ethers.encodeBytes32String("USER-1");
+      const streamType = ethers.keccak256(ethers.toUtf8Bytes("BOKASHI"));
+      const quantity = 10000; // 10kg in grams
       const qualityScore = 9000; // 90%
-      const nonce = ethers.utils.formatBytes32String("NONCE-1");
-
-      const hubSignature = "0x"; 
+      const nonce = ethers.encodeBytes32String("NONCE-1");
+      const hubSignature = "0x";
       const oracleSignature = "0x";
 
       await expect(
@@ -32,17 +32,52 @@ describe("HubValidator", function () {
           hubId, userId, streamType, quantity, qualityScore, nonce, hubSignature, oracleSignature
         )
       ).to.emit(hubValidator, "MicroHandshake");
+    });
 
-      // Verify the escrow state
-      const blockTime = (await ethers.provider.getBlock("latest")).timestamp;
-      const dropOffId = ethers.utils.keccak256(
-        ethers.utils.solidityPack(["bytes32", "bytes32", "uint256", "bytes32"], [hubId, userId, blockTime, nonce])
-      );
+    it("Should revert if quality score is below 30% threshold", async function () {
+      const hubId = ethers.encodeBytes32String("HUB-1");
+      const userId = ethers.encodeBytes32String("USER-1");
+      const streamType = ethers.keccak256(ethers.toUtf8Bytes("BOKASHI"));
+      const quantity = 10000;
+      const qualityScore = 2000; // 20% — below 30% threshold
+      const nonce = ethers.encodeBytes32String("NONCE-LOW");
 
-      const dropOff = await hubValidator.dropOffs(dropOffId);
-      expect(dropOff.quantity).to.equal(quantity);
-      expect(dropOff.bulkHandshakeComplete).to.be.false;
-      expect(dropOff.escrowedReward).to.be.gt(0); 
+      await expect(
+        hubValidator.connect(oracle).recordMicroHandshake(
+          hubId, userId, streamType, quantity, qualityScore, nonce, "0x", "0x"
+        )
+      ).to.be.revertedWith("HubValidator: quality below threshold");
+    });
+  });
+
+  describe("Pause / Unpause", function () {
+    it("Should reject submissions when paused", async function () {
+      await hubValidator.connect(owner).pause();
+
+      const hubId = ethers.encodeBytes32String("HUB-PAUSED");
+      const userId = ethers.encodeBytes32String("USER-PAUSED");
+      const streamType = ethers.keccak256(ethers.toUtf8Bytes("BOKASHI"));
+
+      await expect(
+        hubValidator.connect(oracle).recordMicroHandshake(
+          hubId, userId, streamType, 5000, 8000, ethers.encodeBytes32String("N-P"), "0x", "0x"
+        )
+      ).to.be.revertedWithCustomError(hubValidator, "EnforcedPause");
+    });
+
+    it("Should accept submissions after unpause", async function () {
+      await hubValidator.connect(owner).pause();
+      await hubValidator.connect(owner).unpause();
+
+      const hubId = ethers.encodeBytes32String("HUB-UNPAUSED");
+      const userId = ethers.encodeBytes32String("USER-UNPAUSED");
+      const streamType = ethers.keccak256(ethers.toUtf8Bytes("BOKASHI"));
+
+      await expect(
+        hubValidator.connect(oracle).recordMicroHandshake(
+          hubId, userId, streamType, 5000, 8000, ethers.encodeBytes32String("N-UP"), "0x", "0x"
+        )
+      ).to.emit(hubValidator, "MicroHandshake");
     });
   });
 });

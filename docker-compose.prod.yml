@@ -1,0 +1,82 @@
+version: '3.8'
+
+# SCARAB Protocol — Production Deployment
+# Target: Hetzner Cloud VPS (Frankfurt, GDPR-native)
+# Run: docker compose -f docker-compose.prod.yml up -d
+
+services:
+  # ─── Redis (Persistence-enabled) ───
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ─── SCARAB Backend API ───
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - AWS_REGION=${AWS_REGION}
+      - SQS_QUEUE_URL=${SQS_QUEUE_URL}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - BSC_TESTNET_RPC=${BSC_TESTNET_RPC}
+      - ORACLE_PRIVATE_KEY=${ORACLE_PRIVATE_KEY}
+      - BSC_BATCH_CONTRACT=${BSC_BATCH_CONTRACT}
+      - BSC_BATCH_ABI_JSON=${BSC_BATCH_ABI_JSON}
+      - ADMIN_SECRET=${ADMIN_SECRET}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ─── Frontend (Static Build via Nginx) ───
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - certbot_certs:/etc/letsencrypt:ro
+    depends_on:
+      - backend
+
+  # ─── Certbot (Let's Encrypt SSL) ───
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h; done'"
+
+volumes:
+  redis_data:
+  certbot_certs:
+  certbot_www:

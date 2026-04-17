@@ -109,34 +109,29 @@ export default function RewardCalculator({ onModeSelect }) {
                             </div>
                         </div>
 
-                        {/* Mode B: Token Risk */}
-                        <div className="bg-white/5 border border-beetle-green/20 rounded-2xl p-5 flex flex-col justify-between hover:border-beetle-green transition-colors group relative overflow-hidden">
+                        {/* Mode B: Token Risk — DISABLED for EU launch */}
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden opacity-60">
                             <div className="absolute top-0 right-0 w-24 h-24 bg-beetle-green/10 rounded-full blur-2xl -mr-8 -mt-8"></div>
+                            
+                            {/* Lock overlay */}
+                            <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] z-20 flex items-center justify-center rounded-2xl">
+                                <div className="text-center px-4">
+                                    <div className="text-beetle-green text-xs font-bold uppercase tracking-widest mb-1">Coming Q2 2026</div>
+                                    <div className="text-gray-400 text-[10px]">Not available in your region</div>
+                                </div>
+                            </div>
+
                             <div className="relative z-10">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="bg-beetle-green/20 text-beetle-green text-[10px] font-bold px-2 py-1 rounded uppercase flex items-center gap-1">
                                         <Zap size={12} /> Mode B: Growth Potential
                                     </div>
-                                    <button 
-                                        onClick={() => setShowTokenAsFiat(!showTokenAsFiat)}
-                                        className="text-gray-500 hover:text-white"
-                                        title="Toggle Fiat Estimate"
-                                    >
-                                        <RefreshCw size={14} />
-                                    </button>
                                 </div>
                                 
-                                {showTokenAsFiat ? (
-                                    <div className="mt-4">
-                                        <h3 className="text-3xl font-black text-white">~€{(calcTokens() * MOCK_SCARAB_PRICE_EUR).toFixed(2)}</h3>
-                                        <div className="text-[10px] text-gray-500 mt-1">Estimated spot value at current DEX pricing</div>
-                                    </div>
-                                ) : (
-                                    <div className="mt-4">
-                                        <h3 className="text-3xl font-black text-beetle-green">{calcTokens().toLocaleString()}</h3>
-                                        <div className="text-[10px] text-gray-500 mt-1">SCARAB at current emission schedule</div>
-                                    </div>
-                                )}
+                                <div className="mt-4">
+                                    <h3 className="text-3xl font-black text-beetle-green">{calcTokens().toLocaleString()}</h3>
+                                    <div className="text-[10px] text-gray-500 mt-1">SCARAB at current emission schedule</div>
+                                </div>
 
                                 <p className="text-xs text-gray-400 mt-2 leading-relaxed">
                                     You receive raw network protocol emissions. Early participants receive more tokens. Emission algorithm halves every 18 months via mathematically modelled decay.
@@ -144,10 +139,10 @@ export default function RewardCalculator({ onModeSelect }) {
                             </div>
                             <div className="mt-6 pt-4 border-t border-white/5 relative z-10">
                                 <button 
-                                    onClick={() => onModeSelect && onModeSelect('B')}
-                                    className="w-full py-2 bg-beetle-green/10 text-beetle-green font-bold text-xs rounded-lg group-hover:bg-beetle-green group-hover:text-black transition-all"
+                                    disabled
+                                    className="w-full py-2 bg-gray-800 text-gray-500 font-bold text-xs rounded-lg cursor-not-allowed"
                                 >
-                                    Select Growth Mode
+                                    Token Mode Unavailable
                                 </button>
                             </div>
                         </div>

@@ -49,6 +49,7 @@ import NodeOnboard from './pages/NodeOnboard';
 import HubOnboard from './pages/HubOnboard';
 import NodeDashboard from './pages/NodeDashboard';
 import StatusPage from './pages/StatusPage';
+import MunicipalitiesPage from './pages/MunicipalitiesPage';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -335,6 +336,7 @@ function App() {
                                         <Route path="/onboard/node" element={<NodeOnboard />} />
                                         <Route path="/onboard/hub" element={<HubOnboard />} />
                                         <Route path="/status" element={<StatusPage />} />
+                                        <Route path="/municipalities" element={<MunicipalitiesPage />} />
                                         <Route path="/dashboard/farmer" element={
                                             <FarmerRoute>
                                                 <FarmerDashboard />

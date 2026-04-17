@@ -14,7 +14,7 @@ SCARAB is a DePIN stack that connects certified devices (solar, bokashi / organi
 
 Our mission is a closed-loop economy where the token is used to:
 
-1. **Purchase** hardware and services at partner conditions.
+1. **Purchase** hardware and services at preferred ecosystem rates.
 2. **Access** gated product and governance features.
 3. **Govern** treasury and protocol upgrades through on-chain voting (where deployed).
 
@@ -74,7 +74,7 @@ The public website and repository are intended to provide:
 The following are not published publicly by default and are shared in a controlled diligence process:
 - detailed BOM/vendor pricing and sensitive manufacturing terms,
 - full financial model assumptions and downside cases,
-- confidential partner pipeline documents and legal memoranda.
+- confidential commercial pipeline documents and legal memoranda.
 
 This separation is intentional for security, confidentiality, and compliance.
 
