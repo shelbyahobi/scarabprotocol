@@ -17,7 +17,7 @@ import ScarabLogo from './ScarabLogo';
  * Max height: 64px. Mobile: full-screen overlay (not dropdown).
  */
 
-const PUBLIC_ROUTES = ['/', '/municipalities', '/methodology', '/docs', '/status', '/blueprint'];
+const PUBLIC_ROUTES = ['/', '/municipalities', '/ecosystem', '/methodology', '/docs', '/status', '/blueprint'];
 
 function isPublicRoute(pathname) {
     return PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/docs/');
@@ -69,13 +69,14 @@ export default function Navbar({ onOpenBlueprint }) {
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
                             <NavLink to="/#how-it-works" label="How It Works" current={location.pathname} />
                             <NavLink to="/municipalities" label="For Cities" current={location.pathname} />
+                            <NavLink to="/ecosystem" label="Ecosystem" current={location.pathname} />
                             <NavLink to="/methodology" label="Methodology" current={location.pathname} />
                             <NavLink to="/docs" label="Docs" current={location.pathname} />
                         </div>
                     ) : (
                         /* Context B — App/Protocol */
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-                            <NavLink to="/ecosystem" label="SKUs" current={location.pathname} />
+                            <NavLink to="/app" label="SKUs" current={location.pathname} />
                             <NavLink to="/investors" label="Investors" current={location.pathname} />
                             <NavLink to="/research" label="Research" current={location.pathname} />
                             <NavLink to="/dao" label="DAO" current={location.pathname} />

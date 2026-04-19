@@ -50,6 +50,7 @@ import HubOnboard from './pages/HubOnboard';
 import NodeDashboard from './pages/NodeDashboard';
 import StatusPage from './pages/StatusPage';
 import MunicipalitiesPage from './pages/MunicipalitiesPage';
+import EcosystemPage from './pages/EcosystemPage';
 import CarbonMethodology from './pages/CarbonMethodology';
 import BlueprintPage from './components/BlueprintPage';
 import DesignReviewPage from './pages/DesignReviewPage';
@@ -350,6 +351,7 @@ function App() {
                                         {/* Redirects */}
                                         <Route path="/blueprint" element={<BlueprintPage />} />
                                         <Route path="/methodology" element={<CarbonMethodology />} />
+                                        <Route path="/ecosystem" element={<EcosystemPage />} />
                                         <Route path="/internal/design-review" element={<DesignReviewPage />} />
                                         <Route path="/strategy" element={<Navigate to="/investors" replace />} />
                                         <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />

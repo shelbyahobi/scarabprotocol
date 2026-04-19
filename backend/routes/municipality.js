@@ -10,7 +10,11 @@ const { redis } = require('../middleware/dataAccessMiddleware');
  */
 router.post('/apply', async (req, res) => {
     try {
-        const { city_name, contact_name, role, email, district_population } = req.body;
+        const { 
+            city_name, contact_name, role, email, district_population,
+            preferred_location_type, drop_off_sites_count, 
+            incentives_interest, contact_language 
+        } = req.body;
 
         if (!city_name || !contact_name || !email) {
             return res.status(400).json({ error: 'Missing required fields: city_name, contact_name, email' });
@@ -23,6 +27,10 @@ router.post('/apply', async (req, res) => {
             role: role || 'Not specified',
             email,
             district_population: district_population || 'Not specified',
+            preferred_location_type: preferred_location_type || 'Not specified',
+            drop_off_sites_count: drop_off_sites_count || 0,
+            incentives_interest: incentives_interest || 'Not specified',
+            contact_language: contact_language || 'English',
             submitted_at: new Date().toISOString(),
             status: 'pending_review'
         };
@@ -51,7 +59,7 @@ router.post('/apply', async (req, res) => {
                 from: '"SCARAB System" <system@scarabprotocol.org>',
                 to: 'admin@scarabprotocol.org',
                 subject: `[PILOT] New Municipality Application: ${city_name}`,
-                text: `City: ${city_name}\nContact: ${contact_name}\nRole: ${role}\nEmail: ${email}\nPopulation: ${district_population}`
+                text: `City: ${city_name}\nContact: ${contact_name}\nRole: ${role}\nEmail: ${email}\nPopulation: ${district_population}\nLocation Type: ${preferred_location_type}\nSites: ${drop_off_sites_count}\nIncentives: ${incentives_interest}\nLanguage: ${contact_language}`
             });
         } else {
             console.log(`[SMTP FALLBACK] Municipality application from ${contact_name} (${city_name}) - ${email}`);
