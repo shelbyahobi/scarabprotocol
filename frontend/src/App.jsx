@@ -50,6 +50,8 @@ import HubOnboard from './pages/HubOnboard';
 import NodeDashboard from './pages/NodeDashboard';
 import StatusPage from './pages/StatusPage';
 import MunicipalitiesPage from './pages/MunicipalitiesPage';
+import CarbonMethodology from './pages/CarbonMethodology';
+import BlueprintPage from './components/BlueprintPage';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -345,7 +347,8 @@ function App() {
                                         <Route path="/dashboard/node" element={<NodeDashboard />} />
 
                                         {/* Redirects */}
-                                        <Route path="/blueprint" element={<Navigate to="/docs" replace />} />
+                                        <Route path="/blueprint" element={<BlueprintPage />} />
+                                        <Route path="/methodology" element={<CarbonMethodology />} />
                                         <Route path="/strategy" element={<Navigate to="/investors" replace />} />
                                         <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />
                                         {/* Legal */}

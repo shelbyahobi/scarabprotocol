@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target, Users, Landmark } from 'lucide-react';
+import { Menu, X, ArrowUpRight, BookOpen, Rocket, LineChart, Target, Users, Landmark, Leaf } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
@@ -41,6 +41,14 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
                     >
                         <Rocket size={16} className="text-beetle-electric/70" />
                         SKUs
+                    </Link>
+
+                    <Link
+                        to="/methodology"
+                        className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${location.pathname === '/methodology' ? 'bg-white/10 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                    >
+                        <Leaf size={16} className="text-emerald-400/70" />
+                        Methodology
                     </Link>
 
                     <Link
@@ -109,6 +117,9 @@ export default function Navbar({ onOpenBlueprint, isLanding }) {
                     <div className="flex flex-col gap-2">
                         <Link to="/ecosystem" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <Rocket size={20} className="text-beetle-electric" /> SKUs
+                        </Link>
+                        <Link to="/methodology" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <Leaf size={20} className="text-emerald-400" /> Methodology
                         </Link>
                         <Link to="/investors" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-bold text-gray-200 hover:text-white p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <LineChart size={20} className="text-green-400" /> Investors
