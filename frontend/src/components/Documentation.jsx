@@ -276,11 +276,11 @@ export default function Documentation() {
                             <div className="relative z-10 text-3xl md:text-5xl font-mono text-beetle-green font-black tracking-widest filter drop-shadow-[0_0_10px_rgba(74,222,128,0.3)]">
                                 E(t) = D₀ × e^(-λt)
                             </div>
-                            </div>
                             <div className="text-gray-500 text-sm mt-4 font-mono tracking-widest block">
                                 D₀ = Initial Daily Mint | λ = 0.00020518
                             </div>
                         </div>
+
 
                         <h3 className="text-xl font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Waste Stream Base Multipliers</h3>
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
