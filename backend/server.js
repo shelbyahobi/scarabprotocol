@@ -20,11 +20,16 @@ app.use(jurisdictionGuard);
 const clusterWaitlist = require('./routes/clusterWaitlist');
 const dataAccess = require('./routes/dataAccess');
 const municipalityRoutes = require('./routes/municipality');
+const farmerRoutes = require('./routes/farmer');
+const designReviewRoute = require('./routes/designReview');
 
 app.use('/api', clusterWaitlist);
 app.use('/api/data', dataAccess);
 app.use('/api/data-access', dataAccess);
 app.use('/api/municipality', municipalityRoutes);
+app.use('/api/farmer', farmerRoutes);
+app.use('/api/device', farmerRoutes); // device/activate lives in farmer.js
+app.use('/api/internal/design-review', designReviewRoute);
 
 // Jurisdiction config endpoint for frontend
 app.get('/api/jurisdiction', serveJurisdictionConfig);

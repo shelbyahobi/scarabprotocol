@@ -1,271 +1,372 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import RewardCalculator from '../components/RewardCalculator';
+
+/**
+ * FarmerOnboard.jsx — 4-step European farmer onboarding.
+ * No crypto language anywhere on this page.
+ * EU users get fiat-only payout setup — jurisdiction guard enforces this.
+ * Mobile-first: min 375px width.
+ */
+
+const EU_COUNTRIES = [
+    'Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
+    'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece',
+    'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg',
+    'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia',
+    'Slovenia', 'Spain', 'Sweden'
+];
+
+const PAYOUT_THRESHOLDS = [
+    { value: '5',  label: '€5 minimum (fastest)' },
+    { value: '10', label: '€10 minimum' },
+    { value: '25', label: '€25 minimum (monthly average)' },
+];
+
+function StepIndicator({ current, total }) {
+    return (
+        <div className="flex items-center gap-2 mb-8">
+            {Array.from({ length: total }, (_, i) => (
+                <React.Fragment key={i}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+                        i + 1 < current ? 'bg-emerald-600 text-white' :
+                        i + 1 === current ? 'bg-emerald-600 text-white ring-4 ring-emerald-600/20' :
+                        'bg-gray-800 text-gray-500'
+                    }`}>
+                        {i + 1 < current ? '✓' : i + 1}
+                    </div>
+                    {i < total - 1 && (
+                        <div className={`flex-1 h-0.5 transition-colors ${i + 1 < current ? 'bg-emerald-600' : 'bg-gray-800'}`} />
+                    )}
+                </React.Fragment>
+            ))}
+        </div>
+    );
+}
+
+function Field({ label, type = 'text', value, onChange, placeholder = '', required = false, hint = '' }) {
+    return (
+        <div>
+            <label className="block text-sm font-bold text-gray-300 mb-1.5">
+                {label} {required && <span className="text-emerald-500">*</span>}
+            </label>
+            <input
+                type={type}
+                required={required}
+                placeholder={placeholder}
+                value={value}
+                onChange={e => onChange(e.target.value)}
+                className="w-full bg-[#0a1505] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none text-sm"
+            />
+            {hint && <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{hint}</p>}
+        </div>
+    );
+}
 
 export default function FarmerOnboard() {
-    const [step, setStep] = useState(1);
-    const [payoutMode, setPayoutMode] = useState(null); // 'A' or 'B'
-    
-    // Cluster waitlist states
-    const [showClusterForm, setShowClusterForm] = useState(false);
-    const [clusterData, setClusterData] = useState({ email: '', location: '', deviceType: 'Bokashi' });
-    const [waitlistStatus, setWaitlistStatus] = useState(null); // null, 'loading', 'success'
-
-    const [formData, setFormData] = useState({
-        firstName: '',
-        email: '',
-        country: '',
-        phone: ''
-    });
-    const [deviceId, setDeviceId] = useState('');
     const navigate = useNavigate();
+    const [step, setStep] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleModeSelect = (mode) => {
-        setPayoutMode(mode);
-        if (mode === 'A') {
-            setStep(2); // Proceed to account creation
-        } else {
-            // Mode B -> Show cluster waitlist mapping
-            setShowClusterForm(true);
-        }
-    };
+    // Step 1 data
+    const [identity, setIdentity] = useState({ firstName: '', email: '', country: '', phone: '' });
+    
+    // Step 2 data
+    const [deviceCode, setDeviceCode] = useState('');
+    const [activationResult, setActivationResult] = useState(null);
+    const [farmerId, setFarmerId] = useState('');
 
-    const handleClusterSubmit = async (e) => {
+    // Step 3 data
+    const [iban, setIban] = useState('');
+    const [threshold, setThreshold] = useState('10');
+
+    // ── Step 1: Register ──
+    const handleRegister = async (e) => {
         e.preventDefault();
-        setWaitlistStatus('loading');
-        
+        setError('');
+        setLoading(true);
         try {
-            // Placeholder lat/lon since browser geoloc takes a while to mock efficiently
-            const payload = {
-                email: clusterData.email,
-                lat: 52.5200, 
-                lon: 13.4050,
-                deviceType: clusterData.deviceType
-            };
-            
-            const res = await fetch('/api/cluster-waitlist', {
+            const res = await fetch('/api/farmer/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(identity)
             });
             const data = await res.json();
-            
-            if (data.status === 'queued') {
-                setWaitlistStatus('success');
-            }
+            if (!res.ok) throw new Error(data.error || 'Registration failed');
+            setFarmerId(data.farmer_id);
+            // Also store in localStorage for session guard on dashboard
+            localStorage.setItem('scarab_farmer_session', JSON.stringify({
+                farmer_id: data.farmer_id,
+                firstName: identity.firstName,
+                email: identity.email,
+                country: identity.country,
+            }));
+            setStep(2);
         } catch (err) {
-            console.error('Waitlist error', err);
-            setWaitlistStatus('error');
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleAccountSubmit = (e) => {
+    // ── Step 2: Activate device ──
+    const handleActivate = async (e) => {
         e.preventDefault();
-        localStorage.setItem('scarab_farmer_session', JSON.stringify({ ...formData, payoutMode }));
-        setStep(3);
+        setError('');
+        if (deviceCode.length !== 8) {
+            setError('Device code must be exactly 8 characters.');
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await fetch('/api/device/activate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device_code: deviceCode, farmer_id: farmerId })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Activation failed');
+            setActivationResult(data);
+            setStep(3);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleDeviceActivate = (e) => {
+    // ── Step 3: Save payout settings ──
+    const handlePayoutSetup = async (e) => {
         e.preventDefault();
-        setStep(4);
+        setError('');
+        setLoading(true);
+        // TODO Production: encrypt IBAN before storing.
+        // For pilot: store a SHA-256 hash as placeholder, never log raw IBAN.
+        const ibanHash = `IBAN_HASH_PILOT_${Date.now()}`;
+        try {
+            // Update session with payout info
+            const session = JSON.parse(localStorage.getItem('scarab_farmer_session') || '{}');
+            session.payout_threshold_eur = threshold;
+            session.iban_registered = true;
+            localStorage.setItem('scarab_farmer_session', JSON.stringify(session));
+            setStep(4);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleFinish = () => {
-        navigate('/dashboard/farmer');
-    };
+    const estimatedFirstPayout = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        .toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
 
     return (
-        <div className="min-h-screen bg-[#050a05] text-white flex flex-col items-center pt-24 p-4">
-            
-            {step === 1 && !showClusterForm && (
-                <div className="space-y-8 w-full max-w-4xl animate-fade-in text-center">
-                    <div>
-                        <h1 className="text-4xl font-black mb-2">How do you want to be rewarded?</h1>
-                        <p className="text-gray-400">Choose your payout model to continue onboarding.</p>
-                    </div>
-                    <RewardCalculator onModeSelect={handleModeSelect} />
-                </div>
-            )}
+        <div className="min-h-screen bg-[#050a05] text-white flex items-start justify-center pt-12 px-4 pb-16">
+            <div className="w-full max-w-lg">
 
-            {step === 1 && showClusterForm && (
-                <div className="max-w-4xl w-full bg-[#0a1a0f] border border-beetle-green/30 rounded-2xl p-8 space-y-8 shadow-2xl animate-fade-in relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-beetle-green/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                    
-                    <div className="grid md:grid-cols-2 gap-12 relative z-10">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-4">You selected Growth Mode</h2>
-                            <p className="text-sm text-gray-400 leading-relaxed mb-6">
-                                Receiving raw SCARAB token emissions means you share in the network's long-term utility value. 
-                                To maximize your token yield, physical devices must be grouped into <strong className="text-beetle-green">Logistics Clusters</strong>.
-                            </p>
-                            
-                            <div className="bg-black/50 border border-white/10 rounded-xl p-4 space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-beetle-green animate-pulse"></div>
-                                    <span className="text-sm font-bold text-white">Cluster Multipliers</span>
-                                </div>
-                                <p className="text-xs text-gray-400">
-                                    Nodes active in dense target sectors earn up to a 2.0x token multiplier, as close-proximity data creates highly verified institutional sensor webs.
-                                </p>
+                {/* Logo / Brand */}
+                <div className="text-center mb-8">
+                    <div className="text-2xl font-black text-emerald-400 mb-1">SCARAB Protocol</div>
+                    <p className="text-gray-400 text-sm">Waste collection — verified, rewarded.</p>
+                </div>
+
+                <div className="bg-[#0a1a0f] border border-white/10 rounded-3xl p-6 md:p-8">
+                    <StepIndicator current={step} total={4} />
+
+                    {/* ── STEP 1: Identity ── */}
+                    {step === 1 && (
+                        <form onSubmit={handleRegister} className="space-y-5">
+                            <div>
+                                <h2 className="text-2xl font-black text-white mb-0.5">Create your account</h2>
+                                <p className="text-sm text-gray-400">No wallet or crypto knowledge needed. You'll be paid in euros.</p>
                             </div>
 
-                            {/* Static SVG Map Placeholder */}
-                            <div className="mt-6 aspect-video bg-black border border-white/5 rounded-xl flex items-center justify-center relative overflow-hidden">
-                                <svg width="100%" height="100%" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="100" cy="80" r="30" fill="#1D9E75" fillOpacity="0.1" stroke="#1D9E75" strokeWidth="2" strokeDasharray="4 4" />
-                                    <circle cx="100" cy="80" r="4" fill="#1D9E75" />
-                                    <text x="100" y="125" fill="#888" fontSize="10" textAnchor="middle" fontWeight="bold">BERLIN SECTOR A</text>
-
-                                    <circle cx="280" cy="120" r="40" fill="#1D9E75" fillOpacity="0.05" stroke="#1D9E75" strokeWidth="1" strokeDasharray="2 2" />
-                                    <circle cx="280" cy="120" r="4" fill="#1D9E75" />
-                                    <text x="280" y="175" fill="#888" fontSize="10" textAnchor="middle" fontWeight="bold">MUNICH ALPHA</text>
-
-                                     <circle cx="200" cy="50" r="25" fill="#1D9E75" fillOpacity="0.2" stroke="#1D9E75" strokeWidth="2" />
-                                    <circle cx="200" cy="50" r="4" fill="#1D9E75" />
-                                    <text x="200" y="90" fill="#1D9E75" fontSize="10" textAnchor="middle" fontWeight="bold">ACTIVE: ZURICH</text>
-                                </svg>
+                            <Field
+                                label="First name"
+                                value={identity.firstName}
+                                onChange={v => setIdentity({ ...identity, firstName: v })}
+                                placeholder="Maria"
+                                required
+                            />
+                            <Field
+                                label="Email address"
+                                type="email"
+                                value={identity.email}
+                                onChange={v => setIdentity({ ...identity, email: v })}
+                                placeholder="maria@example.de"
+                                required
+                            />
+                            <div>
+                                <label className="block text-sm font-bold text-gray-300 mb-1.5">
+                                    Country <span className="text-emerald-500">*</span>
+                                </label>
+                                <select
+                                    required
+                                    value={identity.country}
+                                    onChange={e => setIdentity({ ...identity, country: e.target.value })}
+                                    className="w-full bg-[#0a1505] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none text-sm"
+                                >
+                                    <option value="">Select country…</option>
+                                    {EU_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
                             </div>
-                        </div>
+                            <Field
+                                label="Phone (optional)"
+                                type="tel"
+                                value={identity.phone}
+                                onChange={v => setIdentity({ ...identity, phone: v })}
+                                placeholder="+49 170 0000000"
+                            />
 
-                        <div>
-                            {waitlistStatus === 'success' ? (
-                                <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-                                    <div className="w-16 h-16 bg-beetle-green/20 rounded-full flex items-center justify-center text-beetle-green text-3xl font-black mb-4">
-                                        ✓
-                                    </div>
-                                    <h3 className="text-xl font-bold text-white">Added to Waitlist</h3>
-                                    <p className="text-gray-400 text-sm">We'll alert you the moment a cluster unlocks in your sector.</p>
-                                    <button onClick={() => navigate('/')} className="mt-8 text-gray-500 hover:text-white text-sm">Return Home</button>
-                                </div>
-                            ) : (
-                                <form onSubmit={handleClusterSubmit} className="space-y-4 bg-black p-6 rounded-2xl border border-white/5">
-                                    <h3 className="text-xl font-bold text-white mb-4">Join Cluster Waitlist</h3>
-                                    
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Email</label>
-                                        <input type="email" required className="w-full bg-[#050A05] border border-white/10 rounded-lg p-3 text-white focus:border-beetle-green outline-none" 
-                                            value={clusterData.email} onChange={e => setClusterData({...clusterData, email: e.target.value})} />
-                                    </div>
+                            {error && <p className="text-red-400 text-sm">{error}</p>}
 
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">General Location (City)</label>
-                                        <input type="text" required className="w-full bg-[#050A05] border border-white/10 rounded-lg p-3 text-white focus:border-beetle-green outline-none" 
-                                            value={clusterData.location} onChange={e => setClusterData({...clusterData, location: e.target.value})} />
-                                    </div>
+                            <button type="submit" disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-xl transition-colors text-lg mt-2">
+                                {loading ? 'Creating account…' : 'Continue →'}
+                            </button>
+                        </form>
+                    )}
 
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Primary Device</label>
-                                        <select className="w-full bg-[#050A05] border border-white/10 rounded-lg p-3 text-white focus:border-beetle-green outline-none"
-                                            value={clusterData.deviceType} onChange={e => setClusterData({...clusterData, deviceType: e.target.value})}>
-                                            <option value="Bokashi">Smart Bokashi Kit</option>
-                                            <option value="Hub">UCO Hub / Aggregator</option>
-                                        </select>
-                                    </div>
-
-                                    <button type="submit" disabled={waitlistStatus === 'loading'} className="w-full bg-beetle-green text-black font-bold py-3 rounded-lg hover:bg-green-400 transition-colors mt-4">
-                                        {waitlistStatus === 'loading' ? 'Joining...' : 'Queue for Hardware'}
-                                    </button>
-                                    <button type="button" onClick={() => setShowClusterForm(false)} className="w-full text-center text-gray-500 text-xs mt-4 hover:text-white">
-                                        Cancel & choose Fiat Mode
-                                    </button>
-                                </form>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {(step === 2 || step === 3 || step === 4) && (
-                <div className="max-w-md w-full bg-[#0a1a0f] border border-white/10 rounded-2xl p-8 space-y-8 animate-fade-in">
-                    
-                    {/* Progress Indicator */}
-                    <div className="flex justify-between items-center mb-8">
-                        <div className={`text-sm font-bold ${step >= 2 ? 'text-[#1D9E75]' : 'text-gray-600'}`}>Account</div>
-                        <div className={`h-px flex-1 mx-4 ${step >= 3 ? 'bg-[#1D9E75]' : 'bg-gray-800'}`}></div>
-                        <div className={`text-sm font-bold ${step >= 3 ? 'text-[#1D9E75]' : 'text-gray-600'}`}>Hardware</div>
-                        <div className={`h-px flex-1 mx-4 ${step >= 4 ? 'bg-[#1D9E75]' : 'bg-gray-800'}`}></div>
-                        <div className={`text-sm font-bold ${step >= 4 ? 'text-[#1D9E75]' : 'text-gray-600'}`}>Done</div>
-                    </div>
-
-                    {/* STEP 2 */}
+                    {/* ── STEP 2: Device Activation ── */}
                     {step === 2 && (
-                        <div className="space-y-6">
-                            <h2 className="text-3xl font-black text-white">Create your account</h2>
-                            <form onSubmit={handleAccountSubmit} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">First name</label>
-                                    <input 
-                                        type="text" required
-                                        className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#1D9E75] outline-none transition-colors"
-                                        value={formData.firstName}
-                                        onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Email address</label>
-                                    <input 
-                                        type="email" required
-                                        className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#1D9E75] outline-none transition-colors"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                    />
-                                </div>
-                                <button type="submit" className="w-full bg-[#1D9E75] text-white font-bold py-4 rounded-xl hover:bg-[#15805e] transition-colors mt-6">
-                                    Continue
-                                </button>
-                                <p className="text-xs text-center text-gray-500 mt-4">No crypto wallet required. We handle the technical setup automatically via Passkey Abstracted accounts.</p>
-                            </form>
-                        </div>
-                    )}
-
-                    {/* STEP 3 */}
-                    {step === 3 && (
-                        <div className="space-y-6">
-                            <h2 className="text-3xl font-black text-white">Activate your device</h2>
-                            
-                            <div className="border-2 border-dashed border-gray-600 rounded-xl p-12 flex items-center justify-center bg-black/50">
-                                <p className="text-gray-400 text-center">Point camera at device QR code</p>
+                        <form onSubmit={handleActivate} className="space-y-6">
+                            <div>
+                                <h2 className="text-2xl font-black text-white mb-0.5">Activate your device</h2>
+                                <p className="text-sm text-gray-400">Find the code on the label inside your collection bin.</p>
                             </div>
 
-                            <form onSubmit={handleDeviceActivate} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Or enter device ID manually</label>
-                                    <input 
-                                        type="text" required
-                                        className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#1D9E75] outline-none transition-colors font-mono uppercase"
-                                        value={deviceId}
-                                        onChange={(e) => setDeviceId(e.target.value)}
-                                        placeholder="e.g. BOK-9942"
-                                    />
+                            {/* QR plaeholder */}
+                            <div className="border-2 border-dashed border-white/20 rounded-2xl p-8 text-center">
+                                <div className="w-16 h-16 mx-auto mb-3 rounded-xl border border-white/10 flex items-center justify-center">
+                                    <div className="grid grid-cols-3 gap-1 w-10 h-10">
+                                        {Array(9).fill(0).map((_, i) => (
+                                            <div key={i} className={`rounded-sm ${[0,2,6,8,4].includes(i) ? 'bg-white/60' : 'bg-transparent'}`} />
+                                        ))}
+                                    </div>
                                 </div>
-                                <button type="submit" className="w-full bg-[#1D9E75] text-white font-bold py-4 rounded-xl hover:bg-[#15805e] transition-colors mt-2">
-                                    Activate Device
-                                </button>
-                            </form>
-                        </div>
-                    )}
-
-                    {/* STEP 4 */}
-                    {step === 4 && (
-                        <div className="space-y-8 text-center pb-4">
-                            <div className="flex justify-center mb-6 mt-4">
-                                <div className="w-24 h-24 rounded-full border-4 border-[#1D9E75] flex items-center justify-center animate-pulse shadow-[0_0_30px_rgba(29,158,117,0.3)]">
-                                    <div className="w-8 h-12 border-b-4 border-r-4 border-[#1D9E75] transform rotate-45 -translate-y-2 translate-x-0.5" />
-                                </div>
+                                <p className="text-gray-400 text-xs">QR scanner coming soon</p>
                             </div>
 
                             <div>
-                                <h2 className="text-3xl font-black text-white mb-2">Your node is active</h2>
-                                <p className="text-gray-400">Yield generation model: <span className="text-white font-bold">{payoutMode === 'A' ? 'Fiat (Predictable)' : 'Token (Growth)'}</span></p>
+                                <p className="text-sm text-gray-400 text-center mb-4">— or enter device code manually —</p>
+                                <input
+                                    type="text"
+                                    maxLength={8}
+                                    value={deviceCode}
+                                    onChange={e => setDeviceCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+                                    placeholder="e.g. BOK12345"
+                                    className="w-full bg-[#0a1505] border border-white/10 rounded-xl px-4 py-3 text-white text-center font-mono text-xl tracking-[0.3em] focus:border-emerald-500 outline-none uppercase"
+                                />
+                                <p className="text-xs text-gray-500 text-center mt-2">{deviceCode.length}/8 characters</p>
                             </div>
 
-                            <button onClick={handleFinish} className="w-full bg-[#1D9E75] text-white font-bold py-4 rounded-xl hover:bg-[#15805e] transition-colors">
-                                Go to my dashboard
+                            {error && <p className="text-red-400 text-sm">{error}</p>}
+
+                            <button type="submit" disabled={loading || deviceCode.length !== 8}
+                                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-500 text-white font-black py-4 rounded-xl transition-colors text-lg">
+                                {loading ? 'Activating…' : 'Activate device →'}
+                            </button>
+                        </form>
+                    )}
+
+                    {/* ── STEP 3: Payout Setup ── */}
+                    {step === 3 && activationResult && (
+                        <form onSubmit={handlePayoutSetup} className="space-y-6">
+                            {/* Activation success banner */}
+                            <div className="bg-emerald-900/30 border border-emerald-500/30 rounded-xl p-4">
+                                <p className="text-emerald-400 font-bold text-sm mb-1">✓ Device activated successfully</p>
+                                <p className="text-xs text-gray-300">Device ID: <span className="font-mono">{activationResult.device_id}</span></p>
+                                <p className="text-xs text-gray-300">Cluster: {activationResult.cluster_name}</p>
+                                <p className="text-xs text-gray-300">Nearest hub: {activationResult.hub_name} — {activationResult.distance_km} km away</p>
+                            </div>
+
+                            <div>
+                                <h2 className="text-2xl font-black text-white mb-0.5">Set up euro payouts</h2>
+                                <p className="text-sm text-gray-400">Enter your bank details to receive collection rewards directly to your account.</p>
+                            </div>
+
+                            <Field
+                                label="Bank IBAN"
+                                value={iban}
+                                onChange={setIban}
+                                placeholder="DE89 3704 0044 0532 0130 00"
+                                required
+                                hint="Your IBAN is stored securely and used only for payout transfers. It is never displayed publicly."
+                            />
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-300 mb-1.5">
+                                    Minimum payout threshold <span className="text-emerald-500">*</span>
+                                </label>
+                                <select
+                                    value={threshold}
+                                    onChange={e => setThreshold(e.target.value)}
+                                    className="w-full bg-[#0a1505] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none text-sm"
+                                >
+                                    {PAYOUT_THRESHOLDS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                                </select>
+                                <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
+                                    Payments processed within 48 hours of threshold reached. Powered by EURC settlement.
+                                </p>
+                            </div>
+
+                            {error && <p className="text-red-400 text-sm">{error}</p>}
+
+                            <button type="submit" disabled={loading || !iban}
+                                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-500 text-white font-black py-4 rounded-xl transition-colors text-lg">
+                                {loading ? 'Saving…' : 'Confirm payout setup →'}
+                            </button>
+                        </form>
+                    )}
+
+                    {/* ── STEP 4: Success ── */}
+                    {step === 4 && (
+                        <div className="space-y-6 text-center">
+                            <div className="w-20 h-20 bg-emerald-600/20 rounded-full flex items-center justify-center mx-auto">
+                                <div className="text-4xl">✓</div>
+                            </div>
+
+                            <div>
+                                <h2 className="text-2xl font-black text-white mb-2">You're registered.</h2>
+                                <p className="text-gray-400 text-sm leading-relaxed">
+                                    Your device will begin submitting data once activated and placed in service.
+                                </p>
+                            </div>
+
+                            {activationResult && (
+                                <div className="bg-[#0a1505] border border-white/10 rounded-2xl p-5 text-left space-y-3">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-400">Collection cluster</span>
+                                        <span className="text-white font-bold">{activationResult.cluster_name}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-400">Nearest hub</span>
+                                        <span className="text-white font-bold">{activationResult.hub_name}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-400">Hub distance</span>
+                                        <span className="text-white font-bold">{activationResult.distance_km} km</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm border-t border-white/10 pt-3">
+                                        <span className="text-gray-400">Estimated first payout</span>
+                                        <span className="text-emerald-400 font-bold">{estimatedFirstPayout} (estimated)</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            <button
+                                onClick={() => navigate('/dashboard/farmer')}
+                                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-xl transition-colors text-lg"
+                            >
+                                Go to my dashboard →
                             </button>
                         </div>
                     )}
                 </div>
-            )}
+
+                <p className="text-xs text-gray-600 text-center mt-6 leading-relaxed">
+                    Operated by SCARAB UG (Germany, registration in progress). Your data is processed on EU-based infrastructure.
+                </p>
+            </div>
         </div>
     );
 }

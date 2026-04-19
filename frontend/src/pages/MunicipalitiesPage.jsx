@@ -22,7 +22,7 @@ export default function MunicipalitiesPage() {
             });
             if (res.ok) setSubmitted(true);
         } catch (err) {
-            console.error('Submission error:', err);
+            // Error handled silently; submitting state reset below
         }
         setSubmitting(false);
     };
@@ -50,14 +50,103 @@ export default function MunicipalitiesPage() {
                 </div>
             </section>
 
-            {/* How It Works */}
+            {/* How SCARAB tracks waste: 5-step full cycle */}
             <section className="py-24 bg-white">
+                <div className="container mx-auto px-6 max-w-4xl">
+                    <h2 className="text-3xl font-black text-gray-900 mb-4 text-center">End-to-End Waste Tracking</h2>
+                    <p className="text-gray-500 text-center mb-16 max-w-xl mx-auto">
+                        SCARAB tracks the complete chain — from a resident's collection bin to the processing facility.
+                    </p>
+
+                    <div className="space-y-0">
+                        <CycleStep
+                            num={1}
+                            icon="◉"
+                            title="Household activates"
+                            desc="Resident registers their Bokashi bin or cooking oil container. Device GPS records activation location."
+                        />
+                        <CycleStep
+                            num={2}
+                            icon="⬡"
+                            title="Waste is verified at source"
+                            desc="Smart hardware weighs and timestamps each deposit. Data is cryptographically signed — no manual entry, no fraud."
+                        />
+                        <CycleStep
+                            num={3}
+                            icon="▶"
+                            title="Farmer collects"
+                            desc="A registered collection farmer picks up within a defined radius. We record: collection timestamp, distance travelled (activation point → Hub), and chain of custody handoff."
+                        />
+                        <CycleStep
+                            num={4}
+                            icon="▣"
+                            title="Hub aggregates"
+                            desc="Hub node records: time to fill (days), total weight, waste origin cluster. You see fill rate curves — how long it takes your district's waste to complete a cycle."
+                        />
+                        <CycleStep
+                            num={5}
+                            icon="◈"
+                            title="Processing facility receives"
+                            desc="Verified batch reaches the processing facility. CO₂ avoidance is calculated. Your district receives a digitally-signed impact certificate."
+                            isLast
+                        />
+                    </div>
+                </div>
+            </section>
+
+            {/* Metric cards */}
+            <section className="py-16 bg-gray-50 border-y border-gray-200">
                 <div className="container mx-auto px-6 max-w-5xl">
-                    <h2 className="text-3xl font-black text-gray-900 mb-12 text-center">How It Works</h2>
-                    <div className="grid md:grid-cols-3 gap-12">
-                        <Step num="1" title="Residents submit waste" desc="Households deposit organic waste at local collection points equipped with smart weighing hardware." icon={<MapPin />} />
-                        <Step num="2" title="Hardware verifies data" desc="Each deposit is automatically weighed, categorised, and time-stamped by tamper-evident sensors." icon={<BarChart3 />} />
-                        <Step num="3" title="You receive a live dashboard" desc="Your district gets a real-time overview of collection volumes, participation rates, and environmental impact." icon={<FileText />} />
+                    <h2 className="text-2xl font-black text-gray-900 mb-10 text-center">What We Track</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <MetricCard
+                            value="4.2 km"
+                            label="Average collection distance"
+                            sub="Only local farmers, no long-haul transport"
+                        />
+                        <MetricCard
+                            value="11 days"
+                            label="Average Hub fill time"
+                            sub="Real-time fill curve visible in your dashboard"
+                        />
+                        <MetricCard
+                            value="4"
+                            label="Chain of custody events per batch"
+                            sub="Verified handoffs — activation, pickup, hub, processing"
+                        />
+                        <MetricCard
+                            value="~180 kg"
+                            label="CO₂ avoided per tonne"
+                            sub="Modelled scenario, not guaranteed"
+                        />
+                    </div>
+                    <p className="text-xs text-gray-400 text-center mt-8 italic leading-relaxed">
+                        All figures shown are modelled pilot projections. Live data will populate once the Stuttgart pilot cluster is active.
+                    </p>
+                </div>
+            </section>
+
+            {/* Closed Loop Guarantee */}
+            <section className="py-20 bg-white">
+                <div className="container mx-auto px-6 max-w-3xl">
+                    <h2 className="text-2xl font-black text-gray-900 mb-4 text-center">
+                        Closed Loop Guarantee
+                    </h2>
+                    <p className="text-gray-500 text-center mb-10">
+                        We track waste from your district's doorstep to the processing facility — and nowhere else.
+                    </p>
+                    <div className="space-y-4">
+                        <TrustPoint text="Collection distance is capped at a configurable radius from the activation point — you set the boundary per municipality." />
+                        <TrustPoint text="Hub locations are within your district boundary or agreed adjacent zones — no cross-boundary movement without a signed handoff event." />
+                        <TrustPoint text="No waste leaves the defined supply chain without a verified handoff event on record." />
+                    </div>
+                    <div className="mt-10 text-center">
+                        <a
+                            href="/methodology"
+                            className="inline-flex items-center gap-2 bg-gray-900 text-white font-bold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors text-sm"
+                        >
+                            Download our data methodology →
+                        </a>
                     </div>
                 </div>
             </section>
@@ -143,15 +232,41 @@ export default function MunicipalitiesPage() {
     );
 }
 
-function Step({ num, title, desc, icon }) {
+function CycleStep({ num, icon, title, desc, isLast = false }) {
     return (
-        <div className="text-center">
-            <div className="w-16 h-16 bg-emerald-50 border-2 border-emerald-200 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600">
-                {icon}
+        <div className="flex gap-6 pb-0">
+            <div className="flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 border-2 border-emerald-300 flex items-center justify-center text-emerald-700 font-black text-sm flex-shrink-0">
+                    {num}
+                </div>
+                {!isLast && <div className="w-0.5 flex-1 bg-emerald-100 my-1 mx-auto" style={{ minHeight: 32 }}></div>}
             </div>
-            <div className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">Step {num}</div>
-            <h3 className="text-xl font-black text-gray-900 mb-2">{title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+            <div className={`pb-8 ${isLast ? '' : ''}`}>
+                <div className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">{icon} Step {num}</div>
+                <h3 className="text-lg font-black text-gray-900 mb-1">{title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+            </div>
+        </div>
+    );
+}
+
+function MetricCard({ value, label, sub }) {
+    return (
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center hover:shadow-md transition-shadow">
+            <div className="text-3xl font-black text-emerald-700 mb-2">{value}</div>
+            <div className="text-sm font-bold text-gray-900 mb-1">{label}</div>
+            <div className="text-xs text-gray-400 leading-relaxed">{sub}</div>
+        </div>
+    );
+}
+
+function TrustPoint({ text }) {
+    return (
+        <div className="flex gap-4 bg-gray-50 border border-gray-200 rounded-xl p-5">
+            <div className="w-5 h-5 rounded-full bg-emerald-600 flex-shrink-0 mt-0.5 flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+            <p className="text-gray-700 text-sm leading-relaxed">{text}</p>
         </div>
     );
 }
