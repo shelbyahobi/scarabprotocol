@@ -161,10 +161,74 @@ export default function CarbonMethodology() {
                 </p>
             </section>
 
-            {/* ─── SECTION 6: Timeline ─── */}
+            {/* ─── SECTION 5: Distance Calculation ─── */}
             <section className="py-12 px-4 max-w-3xl mx-auto">
                 <h2 className="text-xl font-black text-gray-900 mb-6 border-b border-gray-200 pb-3">
-                    5. Path to Formal Verification
+                    5. How Distance is Calculated (H3 Grid)
+                </h2>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
+                    <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                        To protect resident privacy while maintaining verifiable logistics data, SCARAB uses the **Uber H3 hexagonal hierarchical geospatial indexing system** at resolution level 5 (average cell area ~250 km²).
+                    </p>
+                    <ul className="text-sm text-gray-600 space-y-4 list-disc list-inside">
+                        <li><strong>Activation Point:</strong> We store only the H3 cell centroid, never the exact GPS coordinates of a household.</li>
+                        <li><strong>Logistics Efficiency:</strong> Distance is calculated between centroids: <span className="font-mono">Activation Centroid → Hub Centroid → Facility Centroid</span>.</li>
+                        <li><strong>Radius Verification:</strong> The "local farmer" guarantee is enforced by ensuring the activation and Hub H3 cells are adjacent or within a defined threshold distance.</li>
+                    </ul>
+                </div>
+            </section>
+
+            {/* ─── SECTION 6: Data Governance ─── */}
+            <section className="py-12 px-4 max-w-3xl mx-auto">
+                <h2 className="text-xl font-black text-gray-900 mb-6 border-b border-gray-200 pb-3">
+                    6. Data Governance & Access Control
+                </h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 className="font-bold text-gray-900 text-sm mb-3">Public Data (On-Chain)</h3>
+                        <ul className="text-sm text-gray-500 space-y-2 list-disc list-inside">
+                            <li>Anonymized Device ID hash</li>
+                            <li>Aggregate waste weight per cluster</li>
+                            <li>CO₂e avoidance per cell</li>
+                            <li>Verification timestamp</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-gray-900 text-sm mb-3">Municipal Data (API)</h3>
+                        <ul className="text-sm text-gray-500 space-y-2 list-disc list-inside">
+                            <li>Detailed district heatmaps</li>
+                            <li>Farmer efficiency reports</li>
+                            <li>Raw (but non-PII) telemetry logs</li>
+                            <li>Regulatory compliance exports</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <p className="text-xs text-blue-800">
+                        <strong>Privacy Guarantee:</strong> SCARAB never stores plain-text identity or exact residential coordinates. PII is hashed server-side or handled by the operating entity (SCARAB UG) under GDPR-compliant protocols.
+                    </p>
+                </div>
+            </section>
+
+            {/* ─── SECTION 7: Limitations ─── */}
+            <section className="py-12 px-4 max-w-3xl mx-auto">
+                <h2 className="text-xl font-black text-gray-900 mb-6 border-b border-gray-200 pb-3">
+                    7. Transparency & Known Limitations
+                </h2>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                    <ul className="text-sm text-yellow-900 space-y-3 list-disc list-inside leading-relaxed">
+                        <li><strong>Verification Status:</strong> Credits are currently modelled projections. ISCC and Gold Standard certification are on the 2025-26 roadmap.</li>
+                        <li><strong>Oracle Latency:</strong> Bulk CO₂ calculations are batch-processed weekly to optimize gas and verification costs.</li>
+                        <li><strong>Market Pricing:</strong> UCO spot price parity is currently mock-fed via manual update until the API3 oracle integration is finalized.</li>
+                        <li><strong>Stage:</strong> Protocol is in Pilot/Testnet phase using modelled IPCC Tier 1 defaults.</li>
+                    </ul>
+                </div>
+            </section>
+
+            {/* ─── SECTION 8: Path to Formal Verification ─── */}
+            <section className="py-12 px-4 max-w-3xl mx-auto">
+                <h2 className="text-xl font-black text-gray-900 mb-6 border-b border-gray-200 pb-3">
+                    8. Verification Path
                 </h2>
 
                 <div className="flex flex-col md:flex-row gap-4">
