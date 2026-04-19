@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { 
     CheckCircle, Shield, BarChart3, Users, Zap, RefreshCw, 
     Trash2, ClipboardCheck, ArrowRight, LayoutDashboard, 
-    Lock, Eye, Database, Globe2, Sun, HeartCircle, 
+    Lock, Eye, Database, Globe2, Sun, Heart, 
     PackageSearch, Info, Languages, MapPin
 } from 'lucide-react';
 import Navbar from '../components/Navbar';

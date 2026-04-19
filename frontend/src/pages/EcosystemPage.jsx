@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
     Users, Tractor, Warehouse, Landmark, Building2, 
-    Zap, RefreshCw, BarChart3, TrendingUp, HeartCircle, 
+    Zap, RefreshCw, BarChart3, TrendingUp, Heart, 
     ArrowRight, Activity, Database, Flame, CircleCheckBig
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -88,7 +88,7 @@ export default function EcosystemPage() {
                         
                         {/* Spoke 1: Households */}
                         <StakeholderCard 
-                             icon={<HeartCircle size={32} />} 
+                             icon={<Heart size={32} />} 
                              title="Households / Bio Consumers" 
                              sub="The Foundation"
                              join="Submit Bokashi or UCO waste. Clean their footprint."
