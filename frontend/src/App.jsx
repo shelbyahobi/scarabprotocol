@@ -52,6 +52,7 @@ import StatusPage from './pages/StatusPage';
 import MunicipalitiesPage from './pages/MunicipalitiesPage';
 import CarbonMethodology from './pages/CarbonMethodology';
 import BlueprintPage from './components/BlueprintPage';
+import DesignReviewPage from './pages/DesignReviewPage';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -349,6 +350,7 @@ function App() {
                                         {/* Redirects */}
                                         <Route path="/blueprint" element={<BlueprintPage />} />
                                         <Route path="/methodology" element={<CarbonMethodology />} />
+                                        <Route path="/internal/design-review" element={<DesignReviewPage />} />
                                         <Route path="/strategy" element={<Navigate to="/investors" replace />} />
                                         <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />
                                         {/* Legal */}
