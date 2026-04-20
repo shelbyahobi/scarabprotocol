@@ -133,6 +133,7 @@ export default function Navbar({ onOpenBlueprint }) {
                             <>
                                 <MobileNavLink to="/#how-it-works" label="How It Works" icon={<FlaskConical size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/municipalities" label="For Cities" icon={<Building2 size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/ecosystem" label="Ecosystem" icon={<Activity size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/methodology" label="Methodology" icon={<Leaf size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/docs" label="Docs" icon={<BookOpen size={22} className="text-blue-400" />} close={() => setMobileMenuOpen(false)} />
                             </>
