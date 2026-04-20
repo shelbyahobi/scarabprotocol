@@ -108,7 +108,77 @@ async function pullFromSQS() {
  * @property {number} energy
  * @property {number} lat
  * @property {number} lon
+ * @property {boolean} [lid_open]           - true when lid reed switch is open
+ * @property {number}  [lid_open_seconds]   - cumulative seconds lid has been open this session
+ * @property {number}  [weight_kg]          - current load cell reading in kg
+ * @property {number}  [temp_ambient_c]     - ambient temperature at sensor
  */
+
+/**
+ * @typedef {Object} LidSession
+ * @property {string}  device_id
+ * @property {string}  session_id          - UUID generated on lid-open
+ * @property {number}  opened_at           - Unix timestamp
+ * @property {number}  closed_at           - Unix timestamp (0 if still open)
+ * @property {number}  duration_open_s     - seconds lid was open
+ * @property {number}  weight_before_kg    - weight snapshot at lid-open
+ * @property {number}  weight_after_kg     - weight snapshot at lid-close (0 if still open)
+ * @property {number}  weight_delta_kg     - computed: after − before (negative = waste removed)
+ * @property {number}  temp_ambient_c      - temperature at lid-open (proxy for room temp)
+ * @property {string}  input_type          - 'waste_added'|'bran_added'|'inspection'|'unknown'
+ */
+
+/**
+ * Infer what the user was doing during a lid-open event.
+ * Rules:
+ *   delta < 0.05 kg  → inspection (nothing meaningful added)
+ *   previous session was waste_added within 10 min → bran_added (user is completing the feed cycle)
+ *   otherwise        → waste_added
+ *
+ * @param {number}       delta_kg      - weight_after_kg − weight_before_kg
+ * @param {LidSession[]} prev_sessions - Most recent sessions for this device (ascending)
+ * @returns {'waste_added'|'bran_added'|'inspection'|'unknown'}
+ */
+function inferInputType(delta_kg, prev_sessions) {
+  if (delta_kg < 0.05) return 'inspection';      // opened and closed, nothing meaningful added
+  const recentWaste = prev_sessions.slice(-1)[0];
+  if (
+    recentWaste &&
+    (Date.now() / 1000 - recentWaste.closed_at) < 600 &&
+    recentWaste.input_type === 'waste_added'
+  ) {
+    return 'bran_added';  // waste was added in last 10 min — this is the bran follow-up
+  }
+  return 'waste_added';
+}
+
+/**
+ * Persist a completed LidSession to Redis.
+ * Key pattern: `lid_sessions:{device_id}` — LPUSH, capped at 90 entries (~30 days of 3×/day).
+ *
+ * @param {LidSession} session
+ * @returns {Promise<void>}
+ */
+async function storeLidSession(session) {
+  const redis = await getRedis();
+  const key   = `lid_sessions:${session.device_id}`;
+  await redis.lPush(key, JSON.stringify(session));
+  await redis.lTrim(key, 0, 89);  // keep last 90 sessions
+  console.info(`[LID] Stored session ${session.session_id} for device ${session.device_id} — type: ${session.input_type}`);
+}
+
+/**
+ * Retrieve recent lid sessions for a device (for input_type inference).
+ *
+ * @param {string} device_id
+ * @param {number} [count=5]
+ * @returns {Promise<LidSession[]>}
+ */
+async function getRecentLidSessions(device_id, count = 5) {
+  const redis = await getRedis();
+  const raw   = await redis.lRange(`lid_sessions:${device_id}`, 0, count - 1);
+  return raw.map(s => JSON.parse(s)).reverse(); // return ascending (oldest first)
+}
 
 /**
  * Convert a raw 64-byte r||s signature buffer to DER format.
