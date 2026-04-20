@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
     Wind, Droplets, Zap, ShieldCheck, Microscope, 
     Leaf, Database, Clock, ArrowRight, Table, 
-    BookOpen, Activity, AlertCircle, TrendingUp
+    BookOpen, Activity, AlertCircle, TrendingUp, Battery
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
