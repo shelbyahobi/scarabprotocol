@@ -111,7 +111,10 @@ async function pullFromSQS() {
  * @property {boolean} [lid_open]           - true when lid reed switch is open
  * @property {number}  [lid_open_seconds]   - cumulative seconds lid has been open this session
  * @property {number}  [weight_kg]          - current load cell reading in kg
- * @property {number}  [temp_ambient_c]     - ambient temperature at sensor
+ * @property {number}  [temp_c]             - DS18B20 internal temperature (internal to bin)
+ * @property {number}  [temp_ambient_c]     - ambient temperature from H3 weather data
+ * @property {number}  [co2_ppm]            - SCD41 CO2 concentration (ppm)
+ * @property {boolean} [fermentation_valid]  - true if biological activity confirmed
  */
 
 /**
@@ -150,6 +153,25 @@ function inferInputType(delta_kg, prev_sessions) {
     return 'bran_added';  // waste was added in last 10 min — this is the bran follow-up
   }
   return 'waste_added';
+}
+
+/**
+ * Validate that lactic acid fermentation is occurring based on Gas and Thermal signals.
+ * Requires both a thermal gradient and elevated CO2 to distinguish from putrefaction.
+ * 
+ * @param {Telemetry} telemetry
+ * @returns {boolean}
+ */
+function validateFermentation(telemetry) {
+  if (telemetry.co2_ppm === undefined || telemetry.temp_ambient_c === undefined || telemetry.temp_c === undefined) {
+    return false;
+  }
+  const tempAboveAmbient = telemetry.temp_c > (telemetry.temp_ambient_c + 2);
+  const co2Elevated = telemetry.co2_ppm > 1000;
+  
+  // Both signals required for valid fermentation confirmation
+  // CO2 alone can spike from other causes; temp alone insufficient
+  return tempAboveAmbient && co2Elevated;
 }
 
 /**
