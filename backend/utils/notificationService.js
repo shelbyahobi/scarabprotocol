@@ -24,9 +24,9 @@ function processLidNotifications(telemetry, notifications) {
     // Lid-open: START a session, do not suppress data collection
     // Lid-open warning fires only if duration > THRESHOLDS.LID_OPEN_WARN_SECONDS (1800s)
     // Short opens (adding waste/bran) are expected — no warning for <5 minutes
-    if (telemetry.lid_open_seconds > 300 && telemetry.lid_open_seconds < THRESHOLDS.LID_OPEN_WARN_SECONDS) {
+    if (telemetry.lid_open_seconds > 300 && telemetry.lid_open_seconds < 1800) {
         // Silent — normal feeding event
-    } else if (telemetry.lid_open_seconds >= THRESHOLDS.LID_OPEN_WARN_SECONDS) {
+    } else if (telemetry.lid_open_seconds >= 1800) {
         notifications.push({
             type: 'warning',
             category: 'lid',

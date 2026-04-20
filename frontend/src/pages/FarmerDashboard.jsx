@@ -152,6 +152,9 @@ export default function FarmerDashboard() {
                             <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
                                 <div className="w-2 h-2 rounded-full bg-[#FBBF24]"></div> Bran
                             </div>
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
+                                <div className="w-2 h-2 rounded-full bg-[#4B5563]"></div> Inspection
+                            </div>
                         </div>
                     </div>
 

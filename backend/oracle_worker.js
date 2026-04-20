@@ -120,37 +120,33 @@ async function pullFromSQS() {
 /**
  * @typedef {Object} LidSession
  * @property {string}  device_id
- * @property {string}  session_id          - UUID generated on lid-open
- * @property {number}  opened_at           - Unix timestamp
- * @property {number}  closed_at           - Unix timestamp (0 if still open)
- * @property {number}  duration_open_s     - seconds lid was open
- * @property {number}  weight_before_kg    - weight snapshot at lid-open
- * @property {number}  weight_after_kg     - weight snapshot at lid-close (0 if still open)
- * @property {number}  weight_delta_kg     - computed: after − before (negative = waste removed)
- * @property {number}  temp_ambient_c      - temperature at lid-open (proxy for room temp)
- * @property {string}  input_type          - 'waste_added'|'bran_added'|'inspection'|'unknown'
+ * @property {string}  session_id        - UUID generated on lid-open
+ * @property {number}  opened_at         - Unix timestamp
+ * @property {number}  closed_at         - Unix timestamp (0 if still open)
+ * @property {number}  duration_open_s   - seconds lid was open
+ * @property {number}  weight_before_kg  - weight snapshot at lid-open
+ * @property {number}  weight_after_kg   - weight snapshot at lid-close
+ * @property {number}  weight_delta_kg   - computed: after - before (can be negative if waste removed)
+ * @property {number}  temp_ambient_c    - temperature reading at lid-open (proxy for room temp)
+ * @property {string}  input_type        - 'waste_added' | 'bran_added' | 'inspection' | 'unknown'
+ *                                         inferred: delta >0.1kg = waste/bran, delta <0.1kg = inspection
  */
 
 /**
  * Infer what the user was doing during a lid-open event.
  * Rules:
- *   delta < 0.05 kg  → inspection (nothing meaningful added)
- *   previous session was waste_added within 10 min → bran_added (user is completing the feed cycle)
+ *   delta < 0.05 kg  → inspection
+ *   previous session within 10 min was waste_added → bran_added
  *   otherwise        → waste_added
- *
- * @param {number}       delta_kg      - weight_after_kg − weight_before_kg
- * @param {LidSession[]} prev_sessions - Most recent sessions for this device (ascending)
- * @returns {'waste_added'|'bran_added'|'inspection'|'unknown'}
  */
 function inferInputType(delta_kg, prev_sessions) {
-  if (delta_kg < 0.05) return 'inspection';      // opened and closed, nothing meaningful added
+  if (delta_kg < 0.05) return 'inspection';      // opened and closed, nothing added
+  // If previous session within 10 min added waste, this is likely bran
   const recentWaste = prev_sessions.slice(-1)[0];
-  if (
-    recentWaste &&
-    (Date.now() / 1000 - recentWaste.closed_at) < 600 &&
-    recentWaste.input_type === 'waste_added'
-  ) {
-    return 'bran_added';  // waste was added in last 10 min — this is the bran follow-up
+  if (recentWaste && 
+      (Date.now()/1000 - recentWaste.closed_at) < 600 && 
+      recentWaste.input_type === 'waste_added') {
+    return 'bran_added';
   }
   return 'waste_added';
 }
