@@ -10,8 +10,9 @@ import {
 import Navbar from '../components/Navbar';
 
 /**
- * SCARAB Protocol — Ecosystem Page Rebuild v2.5
+ * SCARAB Protocol — Ecosystem Page Rebuild v2.5.1
  * Audiences: Farmers, Municipalities, Impact Investors
+ * Force-triggering fresh Vercel build.
  */
 
 const FLYWHEEL_STEPS = [
