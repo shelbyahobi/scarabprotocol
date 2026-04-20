@@ -140,7 +140,7 @@ export default function Navbar({ onOpenBlueprint }) {
                         ) : (
                             /* App mobile links */
                             <>
-                                <MobileNavLink to="/ecosystem" label="SKUs" icon={<Rocket size={22} className="text-beetle-electric" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/app" label="SKUs" icon={<Rocket size={22} className="text-beetle-electric" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/investors" label="Investors" icon={<LineChart size={22} className="text-green-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/research" label="Research" icon={<Target size={22} className="text-purple-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/dao" label="DAO" icon={<Users size={22} className="text-gray-400" />} close={() => setMobileMenuOpen(false)} />
