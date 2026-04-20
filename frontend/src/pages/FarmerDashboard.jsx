@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Lock, Info, ShieldCheck, Activity } from 'lucide-react';
 
 /**
  * SCARAB Protocol — Farmer Dashboard
@@ -29,6 +31,29 @@ export default function FarmerDashboard() {
         { id: '2', initial: 'M.', distance: '3.4', kg: '9.0' },
         { id: '3', initial: 'J.', distance: '5.1', kg: '22.0' }
     ];
+
+    // Mock Feeding Data for Chart
+    const mockFeedingData = [
+        { date: '04-01', delta: 4.2, type: 'waste_added' },
+        { date: '04-01', delta: 0.5, type: 'bran_added' },
+        { date: '04-03', delta: 3.8, type: 'waste_added' },
+        { date: '04-03', delta: 0.4, type: 'bran_added' },
+        { date: '04-05', delta: 0.02, type: 'inspection' },
+        { date: '04-07', delta: 5.1, type: 'waste_added' },
+        { date: '04-07', delta: 0.6, type: 'bran_added' },
+        { date: '04-09', delta: 4.5, type: 'waste_added' },
+        { date: '04-09', delta: 0.5, type: 'bran_added' },
+        { date: '04-11', delta: 0.01, type: 'inspection' },
+        { date: '04-13', delta: 3.2, type: 'waste_added' },
+        { date: '04-13', delta: 0.4, type: 'bran_added' },
+        { date: '04-15', delta: 4.9, type: 'waste_added' },
+    ];
+
+    const getBarColor = (type) => {
+        if (type === 'waste_added') return '#1D9E75';
+        if (type === 'bran_added') return '#FBBF24';
+        return '#4B5563'; // grey for inspection
+    };
 
     useEffect(() => {
         const session = localStorage.getItem('scarab_farmer_session');
@@ -110,6 +135,56 @@ export default function FarmerDashboard() {
                                 <strong>+4.2 kg</strong> added today
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* SECTION C — Feeding Activity Chart [NEW] */}
+                <div className="bg-[#0a1a0f] border border-white/10 rounded-2xl p-6 md:p-8" data-testid="feeding-activity-chart">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="text-lg font-bold text-white">Feeding Activity</h3>
+                            <p className="text-xs text-gray-500">Waste vs. Bran additions (last 30 days)</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
+                                <div className="w-2 h-2 rounded-full bg-[#1D9E75]"></div> Waste
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
+                                <div className="w-2 h-2 rounded-full bg-[#FBBF24]"></div> Bran
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="h-64 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={mockFeedingData}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                <XAxis 
+                                    dataKey="date" 
+                                    stroke="#555" 
+                                    fontSize={10} 
+                                    tickLine={false} 
+                                    axisLine={false}
+                                />
+                                <YAxis 
+                                    stroke="#555" 
+                                    fontSize={10} 
+                                    tickLine={false} 
+                                    axisLine={false}
+                                    unit="kg"
+                                />
+                                <Tooltip 
+                                    contentStyle={{ background: '#0a1a0f', border: '1px solid #ffffff20', borderRadius: '8px' }}
+                                    itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                                    cursor={{ fill: '#ffffff05' }}
+                                />
+                                <Bar dataKey="delta" radius={[4, 4, 0, 0]}>
+                                    {mockFeedingData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={getBarColor(entry.type)} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 
@@ -220,6 +295,62 @@ export default function FarmerDashboard() {
                         <div className="text-xs font-mono text-gray-600">
                             Status: {autoWithdraw ? 'Active' : 'Inactive'}
                         </div>
+                    </div>
+                </div>
+
+                {/* SECTION F — Transparency Table [NEW] */}
+                <div className="bg-[#050a05] border border-white/5 rounded-3xl p-6 md:p-10 mb-20" data-testid="transparency-table-card">
+                    <div className="flex items-center gap-3 mb-8">
+                        <ShieldCheck className="text-[#1D9E75]" size={24} />
+                        <h3 className="text-xl font-black text-white">Data Collection Transparency</h3>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-white/10">
+                                    <th className="py-4 pr-6 text-[10px] font-black uppercase tracking-widest text-gray-500">Sensor</th>
+                                    <th className="py-4 pr-6 text-[10px] font-black uppercase tracking-widest text-gray-500">What it measures</th>
+                                    <th className="py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">What happens to this data</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/5">
+                                <tr>
+                                    <td className="py-5 pr-6 font-bold text-white">Reed switch (lid) + load cell</td>
+                                    <td className="py-5 pr-6 text-gray-400 leading-relaxed">
+                                        Lid open/close events, weight before and after each opening, duration open, ambient temperature at opening
+                                    </td>
+                                    <td className="py-5 text-gray-400 leading-relaxed">
+                                        Stored as feeding sessions linked to your device. Used to calculate fermentation quality score and validate submission weight. Aggregate feeding patterns (anonymised) may be shared with agricultural research partners with your consent. You can view every session in your dashboard.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="py-5 pr-6 font-bold text-white">ATECC608A Chip</td>
+                                    <td className="py-5 pr-6 text-gray-400 leading-relaxed">
+                                        Cryptographic signatures of telemetry data
+                                    </td>
+                                    <td className="py-5 text-gray-400 leading-relaxed">
+                                        Ensures that the weight and temperature data came from your specific hardware. Prevents data tampering or spoofing.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="py-5 pr-6 font-bold text-white">Environmental (API)</td>
+                                    <td className="py-5 pr-6 text-gray-400 leading-relaxed">
+                                        Regional temperature and humidity
+                                    </td>
+                                    <td className="py-5 text-gray-400 leading-relaxed">
+                                        Cross-referenced with your device sensors to verify that the fermentation cycle matches local climate conditions.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="mt-8 p-4 bg-white/5 rounded-xl flex items-start gap-4">
+                        <Info className="text-gray-500 flex-shrink-0 mt-1" size={16} />
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                            <strong>Privacy Shield:</strong> Your exact GPS coordinates and real-world identity are never stored in the telemetry feed. Only your city-level H3 spatial cell is recorded for logistics optimization.
+                        </p>
                     </div>
                 </div>
 
