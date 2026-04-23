@@ -197,6 +197,51 @@ export default function CarbonMethodology() {
                 </div>
             </section>
 
+            {/* ── SECTION 4.5: Is SCARAB energy positive? ── */}
+            <section className="py-24 bg-gray-50 border-b border-gray-100 px-6">
+                <div className="container mx-auto max-w-5xl">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Is SCARAB energy positive?</h2>
+                        <p className="text-gray-500 font-medium max-w-3xl mx-auto leading-relaxed">
+                            Does the energy spent running the hardware negate the environmental benefit? The protocol's total energy footprint is orders of magnitude smaller than the logistics and cloud infrastructure it displaces.
+                        </p>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+                        <table className="w-full text-sm text-left">
+                            <thead className="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th className="py-5 px-6 font-black text-gray-400 uppercase tracking-widest text-[10px]">Device</th>
+                                    <th className="py-5 px-6 font-black text-gray-400 uppercase tracking-widest text-[10px]">Overhead</th>
+                                    <th className="py-5 px-6 font-black text-gray-400 uppercase tracking-widest text-[10px]">Benefit</th>
+                                    <th className="py-5 px-6 font-black text-emerald-600 uppercase tracking-widest text-[10px] text-right">ROI (Energy)</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                <tr className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="py-5 px-6 font-bold text-gray-900">Solar Sentinel V1</td>
+                                    <td className="py-5 px-6 text-gray-500">1.2W continuous</td>
+                                    <td className="py-5 px-6 text-gray-500">Secures 1,500W+ generation</td>
+                                    <td className="py-5 px-6 text-right font-black text-emerald-600">1,250x</td>
+                                </tr>
+                                <tr className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="py-5 px-6 font-bold text-gray-900">Smart Bokashi Kit</td>
+                                    <td className="py-5 px-6 text-gray-500">0.1W (BLE only)</td>
+                                    <td className="py-5 px-6 text-gray-500">Diverts 200kg methane-emitting waste</td>
+                                    <td className="py-5 px-6 text-right font-black text-emerald-600">Infinite (Passive)</td>
+                                </tr>
+                                <tr className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="py-5 px-6 font-bold text-gray-900">Pro Bioreactor</td>
+                                    <td className="py-5 px-6 text-gray-500">450W (Heating/Motors)</td>
+                                    <td className="py-5 px-6 text-gray-500">Processes 2,000kg/month locally</td>
+                                    <td className="py-5 px-6 text-right font-black text-emerald-600">Net positive vs central transport</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             {/* ── SECTION 5: BRU Transparency Table ── */}
             <section className="py-24 bg-gray-900 text-white px-6">
                 <div className="container mx-auto max-w-5xl text-center">
