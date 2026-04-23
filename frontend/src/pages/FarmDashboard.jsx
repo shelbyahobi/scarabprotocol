@@ -214,7 +214,7 @@ export default function FarmDashboard() {
                                 <div className="relative pl-6">
                                     <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1"></div>
                                     <p className="text-xs text-gray-500">2 days ago</p>
-                                    <p className="text-sm">Active heat stress mitigation confirmed (>5°C diff)</p>
+                                    <p className="text-sm">Active heat stress mitigation confirmed (&gt;5°C diff)</p>
                                 </div>
                                 <div className="relative pl-6">
                                     <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1"></div>
@@ -224,7 +224,7 @@ export default function FarmDashboard() {
                                 <div className="relative pl-6">
                                     <div className="absolute w-3 h-3 bg-red-500 rounded-full -left-[7px] top-1"></div>
                                     <p className="text-xs text-gray-500">28 days ago</p>
-                                    <p className="text-sm">Pollinator stress event detected (PAI dropped >20%)</p>
+                                    <p className="text-sm">Pollinator stress event detected (PAI dropped &gt;20%)</p>
                                 </div>
                             </div>
                         </div>

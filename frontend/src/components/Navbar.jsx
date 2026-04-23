@@ -66,6 +66,7 @@ export default function Navbar({ onOpenBlueprint }) {
                     {/* ── Desktop Nav ── */}
                     {isPublic ? (
                         /* Context A — Public */
+                        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
                             <NavLink to="/how-it-works" label="How It Works" current={location.pathname} />
                             <NavLink to="/why-scarab" label="Why SCARAB" current={location.pathname} />
                             <div className="relative group">
