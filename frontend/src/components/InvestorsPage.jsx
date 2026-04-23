@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, TrendingUp, BarChart3, Users, DollarSign, Rocket, PieChart, ArrowRight, Download, Calendar, FileCheck, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import InvestorRoadmap from './InvestorRoadmap';
 import StrategyPage from './StrategyPage';
 import Navbar from './Navbar';
+import RevenueBreakdown from './RevenueBreakdown';
 
 export default function InvestorsPage() {
     return (
@@ -44,11 +46,11 @@ export default function InvestorsPage() {
                         transition={{ delay: 0.3 }}
                         className="flex flex-wrap justify-center gap-4"
                     >
-                        <a href="/docs" className="bg-beetle-green text-black px-8 py-4 rounded-xl font-black text-lg hover:scale-105 transition-all flex items-center gap-2">
+                        <Link to="/investors/summary" className="bg-white text-black px-8 py-4 rounded-xl font-black text-lg hover:bg-beetle-green transition-all flex items-center gap-2">
+                            View Institutional Summary <ArrowRight size={20} />
+                        </Link>
+                        <a href="/docs" className="bg-beetle-green/10 border border-beetle-green/30 text-beetle-green px-8 py-4 rounded-xl font-bold text-lg hover:bg-beetle-green/20 transition-all flex items-center gap-2">
                             Download Investor Deck <Download size={20} />
-                        </a>
-                        <a href="mailto:investors@scarabprotocol.org?subject=SCARAB%20Investor%20Technical%20Call" className="bg-white/5 border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all flex items-center gap-2">
-                            Schedule Technical Call <Calendar size={20} />
                         </a>
                     </motion.div>
                 </div>
@@ -225,7 +227,14 @@ export default function InvestorsPage() {
                 </div>
             </section>
 
-            {/* Revenue Streams */}
+            {/* Revenue breakdown chart integrated */}
+            <section className="py-24 bg-[#050a05] border-y border-white/5">
+                <div className="container mx-auto px-4 max-w-5xl">
+                    <RevenueBreakdown />
+                </div>
+            </section>
+
+            {/* Revenue Streams List */}
             <section className="py-24 bg-[#0A0F0C]">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <h2 className="text-3xl font-black text-white mb-12">Revenue Streams (Ranked by Priority)</h2>
@@ -234,6 +243,42 @@ export default function InvestorsPage() {
                         <RevenueRow rank="2" stream="Corporate Data Access" desc="Enterprise-tier telemetry firehose. Data access fees paid in SCARAB (burned on receipt)." color="beetle-electric" />
                         <RevenueRow rank="3" stream="UCO/SAF Feedstock Brokerage" desc="Hub-node validated Used Cooking Oil sold as ISCC-certified Sustainable Aviation Fuel feedstock." color="beetle-gold" />
                         <RevenueRow rank="4" stream="Token Appreciation" desc="Deflationary pressure from buy-and-burn mechanics tied to real-world revenue." color="white" />
+                    </div>
+                </div>
+            </section>
+
+            {/* SAM/SOM Market Sizing */}
+            <section className="py-24 bg-black border-y border-white/5">
+                <div className="container mx-auto px-4 max-w-4xl text-center">
+                    <h2 className="text-4xl font-black text-white mb-16">Market Sizing (TAM/SAM/SOM)</h2>
+                    
+                    <div className="space-y-4 max-w-2xl mx-auto mb-16">
+                        {/* Funnel Visual */}
+                        <div className="bg-emerald-900/20 border border-emerald-500/30 p-10 rounded-t-[4rem]">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-2 block">TAM (Total Addressable)</span>
+                            <div className="text-4xl font-black">€56B</div>
+                            <p className="text-xs text-emerald-500/60 mt-1">4 EU verticals, long-term ceiling</p>
+                        </div>
+                        <div className="bg-blue-900/20 border border-blue-500/30 p-8 w-[90%] mx-auto">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-2 block">SAM (Serviceable Addressable)</span>
+                            <div className="text-3xl font-black">€1.2B</div>
+                            <p className="text-xs text-blue-500/60 mt-1">German organic waste + solar monitoring, 3-year reachable</p>
+                        </div>
+                        <div className="bg-amber-900/20 border border-amber-500/30 p-6 w-[80%] mx-auto rounded-b-3xl">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-2 block">SOM (Serviceable Obtainable)</span>
+                            <div className="text-2xl font-black">€4.8M</div>
+                            <p className="text-xs text-amber-500/60 mt-1">Stuttgart + Berlin + Hamburg pilot addressable revenue Y1–Y2</p>
+                        </div>
+                    </div>
+
+                    <div className="text-left bg-white/5 border border-white/10 p-8 rounded-3xl">
+                        <h4 className="text-white font-bold mb-4 flex items-center gap-2">
+                             Calculation Transparency
+                        </h4>
+                        <div className="space-y-4 text-sm text-gray-400 leading-relaxed">
+                            <p><strong>SAM Calculation:</strong> German organic waste market €800M/yr × SCARAB's addressable % (municipal data subscriptions + hardware penetration) + German solar monitoring €400M/yr × addressable %</p>
+                            <p><strong>SOM Calculation:</strong> 3 pilot cities × avg district population 120K × participation rate 0.5% × hardware ARPU €265 + subscription €144/yr</p>
+                        </div>
                     </div>
                 </div>
             </section>

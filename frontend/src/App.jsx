@@ -54,6 +54,10 @@ import EcosystemPage from './pages/EcosystemPage';
 import CarbonMethodology from './pages/CarbonMethodology';
 import BlueprintPage from './components/BlueprintPage';
 import DesignReviewPage from './pages/DesignReviewPage';
+import WhySCARABPage from './pages/WhySCARABPage';
+import InstitutionalSummaryPage from './pages/InstitutionalSummaryPage';
+import AgriSentinelPage from './pages/AgriSentinelPage';
+import FarmDashboard from './pages/FarmDashboard';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -341,6 +345,8 @@ function App() {
                                         <Route path="/onboard/hub" element={<HubOnboard />} />
                                         <Route path="/status" element={<StatusPage />} />
                                         <Route path="/municipalities" element={<MunicipalitiesPage />} />
+                                        <Route path="/why-scarab" element={<WhySCARABPage />} />
+                                        <Route path="/investors/summary" element={<InstitutionalSummaryPage />} />
                                         <Route path="/dashboard/farmer" element={
                                             <FarmerRoute>
                                                 <FarmerDashboard />
@@ -352,6 +358,12 @@ function App() {
                                         <Route path="/blueprint" element={<BlueprintPage />} />
                                         <Route path="/methodology" element={<CarbonMethodology />} />
                                         <Route path="/ecosystem" element={<EcosystemPage />} />
+                                        <Route path="/agrisentinel" element={<AgriSentinelPage />} />
+                                        <Route path="/dashboard/farm" element={
+                                            <FarmerRoute>
+                                                <FarmDashboard />
+                                            </FarmerRoute>
+                                        } />
                                         <Route path="/internal/design-review" element={<DesignReviewPage />} />
                                         <Route path="/strategy" element={<Navigate to="/investors" replace />} />
                                         <Route path="/roadmap" element={<Navigate to="/investors#roadmap" replace />} />

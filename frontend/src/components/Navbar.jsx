@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, FlaskConical } from 'lucide-react';
+import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, FlaskConical, Activity } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
@@ -17,7 +17,7 @@ import ScarabLogo from './ScarabLogo';
  * Max height: 64px. Mobile: full-screen overlay (not dropdown).
  */
 
-const PUBLIC_ROUTES = ['/', '/municipalities', '/ecosystem', '/methodology', '/docs', '/status', '/blueprint'];
+const PUBLIC_ROUTES = ['/', '/municipalities', '/why-scarab', '/ecosystem', '/methodology', '/docs', '/status', '/blueprint'];
 
 function isPublicRoute(pathname) {
     return PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/docs/');
@@ -68,8 +68,10 @@ export default function Navbar({ onOpenBlueprint }) {
                         /* Context A — Public */
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
                             <NavLink to="/#how-it-works" label="How It Works" current={location.pathname} />
+                            <NavLink to="/why-scarab" label="Why SCARAB" current={location.pathname} />
                             <NavLink to="/municipalities" label="For Cities" current={location.pathname} />
                             <NavLink to="/ecosystem" label="Ecosystem" current={location.pathname} />
+                            <NavLink to="/agrisentinel" label="AgriSentinel" current={location.pathname} />
                             <NavLink to="/methodology" label="Methodology" current={location.pathname} />
                             <NavLink to="/docs" label="Docs" current={location.pathname} />
                         </div>
@@ -132,8 +134,10 @@ export default function Navbar({ onOpenBlueprint }) {
                             /* Public mobile links */
                             <>
                                 <MobileNavLink to="/#how-it-works" label="How It Works" icon={<FlaskConical size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/why-scarab" label="Why SCARAB" icon={<Target size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/municipalities" label="For Cities" icon={<Building2 size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/ecosystem" label="Ecosystem" icon={<Activity size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/agrisentinel" label="AgriSentinel" icon={<Rocket size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/methodology" label="Methodology" icon={<Leaf size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/docs" label="Docs" icon={<BookOpen size={22} className="text-blue-400" />} close={() => setMobileMenuOpen(false)} />
                             </>

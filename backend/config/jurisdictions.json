@@ -10,5 +10,11 @@
   },
   "FR": { "fiat_enabled": true, "token_enabled": false, "launch_status": "planned" },
   "NL": { "fiat_enabled": true, "token_enabled": false, "launch_status": "planned" },
-  "US": { "fiat_enabled": false, "token_enabled": true, "launch_status": "planned" }
+  "US": { "fiat_enabled": false, "token_enabled": true, "launch_status": "planned" },
+  "products": {
+    "agrisentinel_lite": { "price_eur": 149, "sku": "AS-LITE-001", "bru_year": 1200, "available_regions": ["DE", "FR", "NL", "AT"] },
+    "agrisentinel_pro": { "price_eur": 349, "sku": "AS-PRO-001", "bru_year": 1800, "available_regions": ["DE", "FR", "NL", "AT"] },
+    "agrisentinel_biodiversity": { "price_eur": 599, "sku": "AS-BIO-001", "bru_year": 2400, "available_regions": ["DE", "FR"] },
+    "agrisentinel_industrial": { "price_eur": 2495, "sku": "AS-IND-001", "bru_year": 4000, "available_regions": ["DE"] }
+  }
 }
