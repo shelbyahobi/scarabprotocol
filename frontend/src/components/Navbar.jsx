@@ -93,13 +93,14 @@ export default function Navbar({ onOpenBlueprint }) {
                             <NavLink to="/municipalities" label="For Cities" current={location.pathname} />
                             <NavLink to="/ecosystem" label="Ecosystem" current={location.pathname} />
                             <NavLink to="/methodology" label="Methodology" current={location.pathname} />
+                            <NavLink to="/research" label="Research" current={location.pathname} />
+                            <NavLink to="/docs" label="Docs" current={location.pathname} />
                         </div>
                     ) : (
                         /* Context B — App/Protocol */
                         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
                             <NavLink to="/app" label="SKUs" current={location.pathname} />
                             <NavLink to="/investors" label="Investors" current={location.pathname} />
-                            <NavLink to="/research" label="Research" current={location.pathname} />
                             <NavLink to="/dao" label="DAO" current={location.pathname} />
                         </div>
                     )}
@@ -167,13 +168,14 @@ export default function Navbar({ onOpenBlueprint }) {
                                 <MobileNavLink to="/municipalities" label="For Cities" icon={<Building2 size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/ecosystem" label="Ecosystem" icon={<Activity size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/methodology" label="Methodology" icon={<Leaf size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/research" label="Research" icon={<Target size={22} className="text-purple-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/docs" label="Docs" icon={<BookOpen size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                             </>
                         ) : (
                             /* App mobile links */
                             <>
                                 <MobileNavLink to="/app" label="SKUs" icon={<Rocket size={22} className="text-beetle-electric" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/investors" label="Investors" icon={<LineChart size={22} className="text-green-400" />} close={() => setMobileMenuOpen(false)} />
-                                <MobileNavLink to="/research" label="Research" icon={<Target size={22} className="text-purple-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/dao" label="DAO" icon={<Users size={22} className="text-gray-400" />} close={() => setMobileMenuOpen(false)} />
                             </>
                         )}

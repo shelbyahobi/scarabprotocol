@@ -69,6 +69,19 @@ export default function OpenResearch() {
                         );
                     })}
                 </div>
+                
+                <div className="mt-12 text-center">
+                    <a 
+                        href="/research" 
+                        className="inline-flex items-center gap-3 bg-white border border-gray-200 shadow-sm hover:shadow-md hover:border-emerald-500/50 transition-all rounded-2xl px-6 py-4 text-left w-full sm:w-auto"
+                    >
+                        <div className="flex-1">
+                            <div className="font-bold text-gray-900 text-sm">View the full Universität Hohenheim research proposal</div>
+                            <div className="text-gray-500 text-xs">and open dataset API access</div>
+                        </div>
+                        <span className="text-emerald-600 font-bold ml-4">→</span>
+                    </a>
+                </div>
             </div>
         </section>
     );

@@ -38,6 +38,7 @@ import Marketplace from './components/Marketplace';
 import ProductsPage from './components/ProductsPage';
 import DAOPage from './components/DAOPage';
 import QuantumResistance from './components/QuantumResistance';
+import ResearchPage from './pages/ResearchPage';
 import HardwareEcosystem from './components/HardwareEcosystem';
 import AcademicResearch from './components/AcademicResearch';
 import { Rocket, ArrowLeft, Shield, BookOpen, Globe, ShieldCheck, ExternalLink, Lock, Users } from 'lucide-react';
@@ -325,7 +326,7 @@ function App() {
                                         <Route path="/products" element={<ProductsPage />} />
                                         <Route path="/marketplace" element={<Marketplace />} />
                                         <Route path="/ecosystem" element={<HardwareEcosystem />} />
-                                        <Route path="/research" element={<AcademicResearch />} />
+                                        <Route path="/research" element={<ResearchPage />} />
                                         <Route path="/dao" element={<DAOPage />} />
                                         <Route path="/investors" element={<InvestorsPage />} />
                                         <Route path="/transparency" element={<ProofOfReservesPage />} />
