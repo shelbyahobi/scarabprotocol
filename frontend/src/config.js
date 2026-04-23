@@ -30,7 +30,7 @@ export const CONFIG = {
     MOCK_USDC_ADDRESS: import.meta.env.VITE_MOCK_USDC_ADDRESS || '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
 
     // Reward Calculator Fiat Exchange Rates
-    FIAT_RATE_BOKASHI: parseFloat(import.meta.env.VITE_FIAT_RATE_BOKASHI || '0.24'), // €0.24 EUR per kg
+    FIAT_RATE_BOKASHI: parseFloat(import.meta.env.VITE_FIAT_RATE_BOKASHI || '0.08'), // €0.08 EUR per kg
     FIAT_RATE_UCO: parseFloat(import.meta.env.VITE_FIAT_RATE_UCO || '0.45') // €0.45 EUR per Litre
 };
 

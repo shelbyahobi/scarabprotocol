@@ -12,7 +12,7 @@ const CORE_SKUS = [
         desc: "Residential & Commercial PV monitoring. Cryptographically verifies kWh generation via ATECC608A signatures at source.",
         bru: "2,400 BRU/Year",
         color: "group-hover:border-beetle-electric/50",
-        market: "Actively Mining"
+        market: "Stuttgart Pilot"
     },
     {
         icon: <Sprout size={32} className="text-beetle-gold" />,
@@ -21,7 +21,7 @@ const CORE_SKUS = [
         desc: "Transforms residential kitchen waste into verifiable carbon sequestration using integrated weight and thermodynamic sensors.",
         bru: "650 BRU/Year",
         color: "group-hover:border-beetle-gold/50",
-        market: "Actively Mining"
+        market: "Stuttgart Pilot"
     },
     {
         icon: <MapPin size={32} className="text-purple-400" />,
@@ -30,7 +30,7 @@ const CORE_SKUS = [
         desc: "Processes localized urban waste at scale. Forms the end-point of our circular economy cryptographic handshake loop.",
         bru: "8,000 BRU/Year",
         color: "group-hover:border-purple-500/50",
-        market: "Actively Mining"
+        market: "Stuttgart Pilot"
     }
 ];
 
@@ -63,7 +63,7 @@ export default function HardwareEcosystem() {
                         The Universal Standard for <span className="text-transparent bg-clip-text bg-gradient-to-r from-beetle-green to-teal-400">Ecological Output.</span>
                     </motion.h1>
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-gray-400 text-lg md:text-xl leading-relaxed">
-                        SCARAB is not limited to solar or composting. By standardizing ATECC608A cryptographic validation, we construct a 9-SKU planetary monitoring matrix.
+                        SCARAB is not limited to solar or composting. By standardizing ATECC608A cryptographic validation, we construct a continuously expanding planetary monitoring matrix.
                     </motion.p>
                 </div>
 

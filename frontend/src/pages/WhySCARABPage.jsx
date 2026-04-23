@@ -10,7 +10,7 @@ const panels = [
     title: 'Household / Bio Consumer',
     headline: 'Turn your kitchen waste into money. No complexity.',
     points: [
-      'Submit 10kg Bokashi → receive €2.40 within 48 hours to your IBAN',
+      'Submit 10kg Bokashi → receive €0.80 within 48 hours to your IBAN (Base rate — increases with municipal partnership. Modelled scenario.)',
       'Your waste never enters the contaminated Biomüll bin — your building\'s contamination rate drops',
       'Annual tax export: download a PDF showing your CO₂ avoidance for your Steuerberater'
     ],
@@ -128,7 +128,7 @@ export default function WhySCARABPage() {
           <header className="mb-16 text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
               One Protocol. <br />
-              <span className="text-emerald-500">Five Value Propositions.</span>
+              <span className="text-emerald-500">Every Stakeholder. One Protocol.</span>
             </h1>
             <p className="text-xl text-gray-400">
               SCARAB isn't just a waste protocol. It's a shared incentive layer for the entire circular economy lifecycle.

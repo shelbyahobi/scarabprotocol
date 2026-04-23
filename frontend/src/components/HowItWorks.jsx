@@ -33,7 +33,7 @@ export default function HowItWorks() {
                             <FlowStep
                                 number="1"
                                 title="Buy Hardware"
-                                description="Solar Node ($349) or Smart Bokashi Kit ($89)"
+                                description="Solar Node (€320) or Smart Bokashi Kit (€265)"
                                 icon={<Package size={32} />}
                             />
                             <FlowStep

@@ -73,7 +73,7 @@ export default function InstitutionalSummaryPage() {
           <section className="mb-32">
             <h2 className="text-3xl font-black mb-12 tracking-tight">The Flywheel: Multi-Stakeholder Value</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <RecapPanel title="Households" color="teal" points={['€2.40 per 10kg waste', 'Bypass Biomüll bin complexity']} />
+              <RecapPanel title="Households" color="teal" points={['€0.80 per 10kg waste (Base rate — increases with municipal partnership. Modelled scenario.)', 'Bypass Biomüll bin complexity']} />
               <RecapPanel title="Farmers" color="green" points={['40% collection commission', 'On-chain route optimization']} />
               <RecapPanel title="Hub Operators" color="amber" points={['10% handshake commission', 'Solar Sentinel powered']} />
               <RecapPanel title="Municipalities" color="blue" points={['Direct CSRD data firehose', 'Enforcement-free diversion']} />

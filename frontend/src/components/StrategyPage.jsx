@@ -219,7 +219,7 @@ export default function StrategyPage() {
                         <div className="p-6 bg-black/40 rounded-xl border border-beetle-gold/20 relative overflow-hidden group hover:bg-black/80 transition-colors">
                             <h4 className="text-white font-bold mb-4 flex items-center justify-between">
                                 Smart Bokashi Kit
-                                <span className="text-beetle-gold font-mono text-sm">$89 + $12/mo</span>
+                                <span className="text-beetle-gold font-mono text-sm">€265 + €12/mo</span>
                             </h4>
                             <div className="space-y-3 text-[11px] text-gray-400 font-mono">
                                 <div className="flex justify-between border-b border-white/5 pb-1"><span>BOM Cost</span><span className="text-white">$28</span></div>

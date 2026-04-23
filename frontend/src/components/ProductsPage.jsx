@@ -65,7 +65,7 @@ export default function ProductsPage() {
             description: "Consumer-grade smart Bokashi bin. Cryptographically verifies official SCARAB bran to unlock token emissions.",
             depositAmount: 50,
             depositCurrency: "USDC",
-            retailPrice: 289,
+            retailPrice: 265,
             image: "♻️",
             features: ["NFC/SD Card Bran Auth", "Weight & Temp Telemetry", "Stainless Steel Dual-Bucket"],
             milestone: { current: 12, target: 50, label: "Beta Tester Batch" }

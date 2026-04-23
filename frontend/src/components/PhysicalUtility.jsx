@@ -84,7 +84,7 @@ export default function PhysicalUtility() {
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
                                 <span className="text-gray-400">Price Point</span>
-                                <span className="text-white font-bold text-xl">$89 <span className="text-xs font-normal text-gray-500">+ $12/mo sub</span></span>
+                                <span className="text-white font-bold text-xl">€265 <span className="text-xs font-normal text-gray-500">+ €12/mo sub</span></span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-white/5">
                                 <span className="text-gray-400">Est. Protocol Rewards*</span>

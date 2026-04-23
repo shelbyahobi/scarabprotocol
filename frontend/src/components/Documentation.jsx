@@ -82,7 +82,7 @@ export default function Documentation() {
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10 hover:border-beetle-gold/50 transition-colors">
                                 <div className="text-beetle-gold font-bold mb-3 flex items-center gap-2"><Sprout size={20} /> Smart Bokashi Kit</div>
                                 <p className="text-xs text-gray-400 mb-3">Residential organic waste processor mitigating methane emissions. Verifies weight diversion and fermentation temperature.</p>
-                                <div className="text-[10px] font-mono text-gray-500 bg-black/50 px-2 py-1 rounded inline-block">Hardware Price: $289 + $12/mo</div>
+                                <div className="text-[10px] font-mono text-gray-500 bg-black/50 px-2 py-1 rounded inline-block">Hardware Price: €265 + €12/mo</div>
                             </div>
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10 hover:border-purple-500/50 transition-colors">
                                 <div className="text-purple-400 font-bold mb-3 flex items-center gap-2"><MapPin size={20} /> Pro Bioreactor</div>
