@@ -358,6 +358,8 @@ export default function FarmerDashboard() {
                             Status: {autoWithdraw ? 'Active' : 'Inactive'}
                         </div>
                     </div>
+                </div>
+
                 {/* SECTION E2 — Reward Rate Derivation [NEW] */}
                 <div className="bg-[#0a1a0f] border border-white/10 rounded-[2rem] p-8 md:p-12 mb-8">
                     <h3 className="text-2xl font-black mb-2 text-white">Reward Rate Derivation</h3>
