@@ -152,22 +152,43 @@ export default function UCOPage() {
                         </div>
                     </div>
 
-                    <div className="mt-16 text-center">
-                        <h3 className="text-lg font-bold mb-6 text-gray-400">Pricing Transparency</h3>
-                        <div className="inline-block border border-white/10 rounded-2xl overflow-hidden bg-white/5">
-                            <div className="grid grid-cols-3 divide-x divide-white/10 text-sm">
-                                <div className="p-4">
-                                    <div className="text-gray-500 mb-1">Household (&lt;25L/visit)</div>
-                                    <div className="font-bold text-white text-lg">€0.28/L</div>
-                                </div>
-                                <div className="p-4 bg-white/5">
-                                    <div className="text-gray-500 mb-1">Regular User (&gt;50L/month)</div>
-                                    <div className="font-bold text-amber-400 text-lg">€0.31/L</div>
-                                </div>
-                                <div className="p-4">
-                                    <div className="text-gray-500 mb-1">Commercial (&gt;200L/month)</div>
-                                    <div className="font-bold text-white text-lg">€0.35/L <span className="text-xs text-gray-500 font-normal">+ pickup</span></div>
-                                </div>
+                    <div className="mt-16 bg-[#0a1a0f] border border-white/10 rounded-[2rem] p-8 md:p-12">
+                        <h3 className="text-2xl font-black mb-2 text-white">Reward Rate Derivation</h3>
+                        <p className="text-gray-400 mb-8 text-sm max-w-2xl">
+                            SCARAB operates on radical transparency. The €0.28/L resident payout is mathematically derived from the wholesale ISCC-certified Sustainable Aviation Fuel (SAF) feedstock market.
+                        </p>
+                        
+                        <div className="grid md:grid-cols-2 gap-12">
+                            <div>
+                                <table className="w-full text-sm">
+                                    <tbody className="divide-y divide-white/5">
+                                        <tr>
+                                            <td className="py-4 text-gray-300 font-medium">SAF Feedstock Market Rate (ISCC Certified)</td>
+                                            <td className="py-4 text-right text-white font-mono">€0.85/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="py-4 text-gray-500">SCARAB Logistics & Oracle Cut</td>
+                                            <td className="py-4 text-right text-red-400 font-mono">-€0.15/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="py-4 text-gray-500">Hub Host Split (Supermarket/Depot)</td>
+                                            <td className="py-4 text-right text-red-400 font-mono">-€0.42/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="py-4 text-amber-500 font-black text-base">Resident Net Reward</td>
+                                            <td className="py-4 text-right text-amber-500 font-black text-base font-mono">€0.28/L</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="bg-black/50 border border-white/5 rounded-2xl p-6 text-xs text-gray-400 leading-relaxed space-y-4">
+                                <p>
+                                    <strong className="text-gray-300 block mb-1">Why is this possible?</strong>
+                                    Unverified household UCO is traditionally valued at €0.00 to €0.10/L due to high contamination risks. By pushing the water/FFA (Free Fatty Acid) spectrometer verification to the hardware edge (the kiosk), SCARAB creates an ISCC-compliant audit trail from the exact moment of deposit.
+                                </p>
+                                <p>
+                                    This elevates household UCO to "Commercial Grade" feedstock pricing, allowing us to pass the wholesale premium directly back to the resident.
+                                </p>
                             </div>
                         </div>
                     </div>

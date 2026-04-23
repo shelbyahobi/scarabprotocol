@@ -358,6 +358,43 @@ export default function FarmerDashboard() {
                             Status: {autoWithdraw ? 'Active' : 'Inactive'}
                         </div>
                     </div>
+                {/* SECTION E2 — Reward Rate Derivation [NEW] */}
+                <div className="bg-[#0a1a0f] border border-white/10 rounded-[2rem] p-8 md:p-12 mb-8">
+                    <h3 className="text-2xl font-black mb-2 text-white">Reward Rate Derivation</h3>
+                    <p className="text-gray-400 mb-8 text-sm max-w-2xl">
+                        SCARAB operates on radical transparency. The €0.08/kg resident payout is mathematically derived from municipal waste fee offsets and certified fertilizer/carbon markets.
+                    </p>
+                    
+                    <div className="grid md:grid-cols-2 gap-12">
+                        <div>
+                            <table className="w-full text-sm">
+                                <tbody className="divide-y divide-white/5">
+                                    <tr>
+                                        <td className="py-4 text-gray-300 font-medium">Base Municipal Fee Offset</td>
+                                        <td className="py-4 text-right text-emerald-400 font-mono">€0.05</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-4 text-gray-300 font-medium">ISCC Fertilizer Value Offset</td>
+                                        <td className="py-4 text-right text-emerald-400 font-mono">€0.02</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-4 text-gray-300 font-medium">Carbon Avoidance Credit (Provisional)</td>
+                                        <td className="py-4 text-right text-emerald-400 font-mono">€0.01</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-4 text-[#1D9E75] font-black text-base">Resident Net Reward (per kg)</td>
+                                        <td className="py-4 text-right text-[#1D9E75] font-black text-base font-mono">€0.08</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="bg-black/50 border border-white/5 rounded-2xl p-6 text-xs text-gray-400 leading-relaxed space-y-4">
+                            <p>
+                                <strong className="text-gray-300 block mb-1">Why is this possible?</strong>
+                                Centralized waste processing carries high logistics costs and methane emissions. By fermenting waste locally at the source, SCARAB displaces these costs and emissions. The resulting data audit trail allows municipalities to share the saved logistics costs directly with you.
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* SECTION F — Transparency Table [NEW] */}
