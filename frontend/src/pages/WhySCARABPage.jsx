@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Tractor, Warehouse, Landmark, Building2, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Users, Tractor, Warehouse, Landmark, Building2, ArrowRight, CheckCircle2, Sun, Droplet } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import { SKU_REGISTRY } from '../data/skuRegistry';
 
 const panels = [
   {
@@ -82,6 +83,38 @@ const panels = [
     color: 'purple',
     borderColor: 'border-purple-500',
     icon: <Building2 className="text-purple-500" size={32} />
+  },
+  {
+    id: 'agrivoltaic',
+    title: 'Agrivoltaic Operator',
+    headline: 'Prove your installation is food-safe. Automatically.',
+    points: [
+      'Continuous DIN SPEC 91434 compliance score — no manual declarations',
+      'Panel soiling monitor: know exactly when to clean and what it costs you not to',
+      'Pollinator and biodiversity index: the data your NGO partners and insurers need',
+      'Download a cryptographically-signed compliance PDF for your Landwirtschaftsamt inspector'
+    ],
+    cta: 'See AgriSentinel',
+    link: '/agrisentinel',
+    color: 'yellow',
+    borderColor: 'border-yellow-500',
+    icon: <Sun className="text-yellow-500" size={32} />
+  },
+  {
+    id: 'saf_buyer',
+    title: 'SAF / Biodiesel Buyer',
+    headline: 'ISCC-grade UCO provenance. Hardware-attested, not self-reported.',
+    points: [
+      'Every litre of UCO in our network is signed at collection by a tamper-proof hardware chip',
+      'Full chain of custody: household kitchen → kiosk → processor → your facility — on-chain',
+      'Access device-level provenance by burning SCARAB — each purchase reduces token supply',
+      'EU RED II and ISCC certification pathway — the documentation your compliance team needs'
+    ],
+    cta: 'Request data room',
+    link: 'mailto:investors@scarabprotocol.org',
+    color: 'amber',
+    borderColor: 'border-amber-600',
+    icon: <Droplet className="text-amber-600" size={32} />
   }
 ];
 
