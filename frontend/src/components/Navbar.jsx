@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, FlaskConical, Activity, Droplet } from 'lucide-react';
+import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, FlaskConical, Activity, Droplet, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
@@ -66,15 +66,23 @@ export default function Navbar({ onOpenBlueprint }) {
                     {/* ── Desktop Nav ── */}
                     {isPublic ? (
                         /* Context A — Public */
-                        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-                            <NavLink to="/#how-it-works" label="How It Works" current={location.pathname} />
+                            <NavLink to="/how-it-works" label="How It Works" current={location.pathname} />
                             <NavLink to="/why-scarab" label="Why SCARAB" current={location.pathname} />
+                            <div className="relative group">
+                                <button className="flex items-center gap-1 text-sm font-medium text-gray-400 hover:text-white transition-colors h-16" style={{ letterSpacing: '0.01em' }}>
+                                    Products <ChevronDown size={14} />
+                                </button>
+                                <div className="absolute top-[60px] left-0 w-60 bg-[#050B08] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-2">
+                                    <DropdownLink to="/app" label="Solar Sentinel" />
+                                    <DropdownLink to="/app" label="Smart Bokashi Kit" />
+                                    <DropdownLink to="/app" label="Pro Bioreactor" />
+                                    <DropdownLink to="/uco" label="UCO Collection Node" />
+                                    <DropdownLink to="/agrisentinel" label="AgriSentinel Family →" />
+                                </div>
+                            </div>
                             <NavLink to="/municipalities" label="For Cities" current={location.pathname} />
                             <NavLink to="/ecosystem" label="Ecosystem" current={location.pathname} />
-                            <NavLink to="/agrisentinel" label="AgriSentinel" current={location.pathname} />
-                            <NavLink to="/uco" label="UCO Drop-off" current={location.pathname} />
                             <NavLink to="/methodology" label="Methodology" current={location.pathname} />
-                            <NavLink to="/docs" label="Docs" current={location.pathname} />
                         </div>
                     ) : (
                         /* Context B — App/Protocol */
@@ -134,14 +142,21 @@ export default function Navbar({ onOpenBlueprint }) {
                         {isPublic ? (
                             /* Public mobile links */
                             <>
-                                <MobileNavLink to="/#how-it-works" label="How It Works" icon={<FlaskConical size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/how-it-works" label="How It Works" icon={<FlaskConical size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/why-scarab" label="Why SCARAB" icon={<Target size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <div className="px-4 py-2">
+                                    <div className="text-gray-400 text-sm font-bold uppercase tracking-widest mb-2">Products</div>
+                                    <div className="flex flex-col gap-2 pl-4 border-l border-white/10">
+                                        <MobileNavLink to="/app" label="Solar Sentinel" close={() => setMobileMenuOpen(false)} />
+                                        <MobileNavLink to="/app" label="Smart Bokashi Kit" close={() => setMobileMenuOpen(false)} />
+                                        <MobileNavLink to="/app" label="Pro Bioreactor" close={() => setMobileMenuOpen(false)} />
+                                        <MobileNavLink to="/uco" label="UCO Collection Node" close={() => setMobileMenuOpen(false)} />
+                                        <MobileNavLink to="/agrisentinel" label="AgriSentinel Family →" close={() => setMobileMenuOpen(false)} />
+                                    </div>
+                                </div>
                                 <MobileNavLink to="/municipalities" label="For Cities" icon={<Building2 size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/ecosystem" label="Ecosystem" icon={<Activity size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
-                                <MobileNavLink to="/agrisentinel" label="AgriSentinel" icon={<Rocket size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
-                                <MobileNavLink to="/uco" label="UCO Drop-off" icon={<Droplet size={22} className="text-amber-500" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/methodology" label="Methodology" icon={<Leaf size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
-                                <MobileNavLink to="/docs" label="Docs" icon={<BookOpen size={22} className="text-blue-400" />} close={() => setMobileMenuOpen(false)} />
                             </>
                         ) : (
                             /* App mobile links */
@@ -204,7 +219,18 @@ function MobileNavLink({ to, label, icon, close }) {
             onClick={close}
             className="flex items-center gap-4 text-xl font-bold text-gray-200 hover:text-white p-4 rounded-2xl hover:bg-white/5 transition-colors"
         >
-            {icon}
+            {icon && icon}
+            {label}
+        </Link>
+    );
+}
+
+function DropdownLink({ to, label }) {
+    return (
+        <Link
+            to={to}
+            className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+        >
             {label}
         </Link>
     );
