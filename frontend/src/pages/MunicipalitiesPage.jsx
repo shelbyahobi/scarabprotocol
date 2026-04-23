@@ -5,7 +5,7 @@ import {
     CheckCircle, Shield, BarChart3, Users, Zap, RefreshCw, 
     Trash2, ClipboardCheck, ArrowRight, LayoutDashboard, 
     Lock, Eye, Database, Globe2, Sun, Heart, 
-    PackageSearch, Info, Languages, MapPin
+    PackageSearch, Info, Languages, MapPin, Download, Activity, Wifi, Server
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -46,8 +46,33 @@ export default function MunicipalitiesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FAFAFA] text-[#1a1a1a] font-sans">
-            <Navbar />
+        <div className="min-h-screen bg-[#FAFAFA] text-[#1a1a1a] font-sans print:bg-white print:text-black">
+            <style dangerouslySetInnerHTML={{__html: `
+                @media print {
+                    @page { margin: 1cm; size: A4 portrait; }
+                    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; color: black !important; }
+                    .print-hide { display: none !important; }
+                    .print-show { display: block !important; }
+                    .print-break-inside-avoid { break-inside: avoid; }
+                    * { color: black !important; }
+                    .text-emerald-600 { color: #059669 !important; }
+                    .bg-emerald-600 { background-color: #059669 !important; color: white !important; }
+                    .bg-emerald-50 { background-color: #ecfdf5 !important; }
+                    .bg-gray-50 { background-color: #f9fafb !important; }
+                }
+            `}} />
+            <div className="print-hide">
+                <Navbar />
+            </div>
+
+            <div className="container mx-auto px-6 max-w-6xl flex justify-end pt-6 print-hide relative z-50">
+                <button 
+                    onClick={() => window.print()}
+                    className="flex items-center gap-2 bg-white border border-gray-200 hover:border-emerald-500 hover:text-emerald-600 text-gray-600 px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-sm"
+                >
+                    <Download size={16} /> Print Pilot Briefing (A4)
+                </button>
+            </div>
 
             {/* 1A. Hero — Partner With Us */}
             <section className="relative pt-32 pb-24 bg-white border-b border-gray-100">
@@ -94,6 +119,39 @@ export default function MunicipalitiesPage() {
                         <p className="text-sm text-gray-400 font-bold tracking-wide italic">
                             No new infrastructure. No software integration. No upfront cost during the pilot phase.
                         </p>
+                    </div>
+                </div>
+
+                {/* Live Network Status Widget */}
+                <div className="container mx-auto px-6 max-w-6xl mt-12">
+                    <div className="bg-gray-900 border border-gray-800 rounded-3xl p-6 flex flex-wrap md:flex-nowrap items-center justify-between gap-6 shadow-xl print-break-inside-avoid">
+                        <div className="flex items-center gap-3">
+                            <Activity className="text-emerald-500" size={24} />
+                            <div>
+                                <div className="text-white font-bold">Live Network Status</div>
+                                <div className="text-gray-400 text-xs">Simulated for presentation</div>
+                            </div>
+                        </div>
+                        <div className="flex gap-8 flex-wrap">
+                            <div>
+                                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Active Pilot Nodes</div>
+                                <div className="text-xl font-black text-white">12</div>
+                            </div>
+                            <div>
+                                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Processed Today</div>
+                                <div className="text-xl font-black text-white">450 <span className="text-sm text-gray-500">kg</span></div>
+                            </div>
+                            <div>
+                                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">API Uptime</div>
+                                <div className="text-xl font-black text-emerald-500">99.99%</div>
+                            </div>
+                            <div>
+                                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Sync Status</div>
+                                <div className="flex items-center gap-2 text-sm font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">
+                                    <Wifi size={14} /> Connected to testnet
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -337,7 +395,18 @@ export default function MunicipalitiesPage() {
                                 <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">Launch in Stuttgart.</h2>
                                 <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Pilot slots for German municipalities are limited.</p>
                             </div>
-                            <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-8 md:p-12 rounded-3xl border border-gray-200">
+                            
+                            {/* Print-only CTA */}
+                            <div className="hidden print-show bg-gray-50 border border-gray-200 rounded-3xl p-12 text-center print-break-inside-avoid">
+                                <h3 className="text-2xl font-black text-gray-900 mb-4">Interested in a Pilot?</h3>
+                                <p className="text-gray-600 mb-6">Contact our municipal partnerships team directly to schedule a technical walkthrough and receive hardware samples.</p>
+                                <div className="text-xl font-bold text-emerald-600 border border-emerald-200 bg-emerald-50 inline-block px-6 py-3 rounded-xl">
+                                    pilots@scarabprotocol.org
+                                </div>
+                            </div>
+
+                            {/* Web-only Form */}
+                            <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-8 md:p-12 rounded-3xl border border-gray-200 print-hide">
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <Field label="City / District" value={formData.city_name} onChange={v => setFormData({...formData, city_name: v})} required />
                                     <Field label="Staff Member Name" value={formData.contact_name} onChange={v => setFormData({...formData, contact_name: v})} required />
