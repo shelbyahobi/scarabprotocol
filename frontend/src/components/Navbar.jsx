@@ -3,6 +3,7 @@ import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, F
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
+import { useDemoMode } from '../hooks/useDemoMode';
 
 /**
  * Dual-context Navbar
@@ -28,6 +29,7 @@ export default function Navbar({ onOpenBlueprint }) {
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const isDemoMode = useDemoMode();
 
     const isPublic = isPublicRoute(location.pathname);
 
@@ -55,13 +57,20 @@ export default function Navbar({ onOpenBlueprint }) {
                 }`}>
 
                     {/* Logo */}
-                    <Link
-                        to="/"
-                        className="flex items-center gap-3 group cursor-pointer flex-shrink-0"
-                        onClick={() => window.scrollTo(0, 0)}
-                    >
-                        <ScarabLogo variant="wordmark" size={32} className="group-hover:opacity-80 transition-opacity" />
-                    </Link>
+                    <div className="flex items-center gap-3">
+                        <Link
+                            to="/"
+                            className="flex items-center gap-3 group cursor-pointer flex-shrink-0"
+                            onClick={() => window.scrollTo(0, 0)}
+                        >
+                            <ScarabLogo variant="wordmark" size={32} className="group-hover:opacity-80 transition-opacity" />
+                        </Link>
+                        {isDemoMode && (
+                            <span className="bg-amber-500/20 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest hidden sm:inline-block">
+                                Demo
+                            </span>
+                        )}
+                    </div>
 
                     {/* ── Desktop Nav ── */}
                     {isPublic ? (

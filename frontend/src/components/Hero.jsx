@@ -45,19 +45,25 @@ export default function Hero() {
                     </div>
 
                     {/* Primary CTAs */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-lg mx-auto">
-                        <a 
-                            href="#how-it-works"
-                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white rounded-xl font-bold text-base hover:bg-white/5 transition-colors text-center"
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center items-center w-full max-w-2xl mx-auto">
+                        <Link 
+                            to="/dashboard/farmer?demo=true" 
+                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-emerald-500/50 text-emerald-400 rounded-xl font-bold text-base hover:bg-emerald-500/10 transition-colors text-center"
                         >
-                            How it works ↓
-                        </a>
+                            See a live farmer dashboard →
+                        </Link>
                         <Link 
                             to="/municipalities#apply" 
                             className="w-full sm:w-auto px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold text-base hover:bg-emerald-500 transition-colors text-center"
                         >
                             Apply for Pilot →
                         </Link>
+                        <a 
+                            href="#how-it-works"
+                            className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white rounded-xl font-bold text-base hover:bg-white/5 transition-colors text-center"
+                        >
+                            How it works ↓
+                        </a>
                     </div>
                 </motion.div>
                 

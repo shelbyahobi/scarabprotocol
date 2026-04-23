@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Lock, Info, ShieldCheck, Activity } from 'lucide-react';
+import { Lock, Info, ShieldCheck, Activity, Bell } from 'lucide-react';
+import { useDemoMode } from '../hooks/useDemoMode';
+import { DEMO_FARMER, DEMO_SUBMISSIONS, DEMO_NOTIFICATIONS } from '../data/demoSeedData';
 
 /**
  * SCARAB Protocol — Farmer Dashboard
@@ -18,6 +20,7 @@ import { Lock, Info, ShieldCheck, Activity } from 'lucide-react';
  */
 export default function FarmerDashboard() {
     const navigate = useNavigate();
+    const isDemoMode = useDemoMode();
     const [farmerData, setFarmerData] = useState(null);
     const [autoWithdraw, setAutoWithdraw] = useState(false);
 
@@ -56,13 +59,17 @@ export default function FarmerDashboard() {
     };
 
     useEffect(() => {
+        if (isDemoMode) {
+            setFarmerData(DEMO_FARMER);
+            return;
+        }
         const session = localStorage.getItem('scarab_farmer_session');
         if (!session) {
             navigate('/onboard/farmer');
         } else {
             setFarmerData(JSON.parse(session));
         }
-    }, [navigate]);
+    }, [navigate, isDemoMode]);
 
     const handleAcceptPickup = (id) => {
         // TODO: BokashiValidator handshake call — Phase 4 integration
@@ -71,14 +78,27 @@ export default function FarmerDashboard() {
 
     if (!farmerData) return null;
 
+    const displayBalanceEUR = isDemoMode 
+        ? DEMO_SUBMISSIONS.reduce((sum, s) => sum + s.reward_eur, 0).toFixed(2)
+        : mockBalanceEUR;
+
+    const displayFeedingData = isDemoMode 
+        ? DEMO_SUBMISSIONS.map(s => ({ date: s.date.slice(5), delta: s.weight_kg, type: 'waste_added' }))
+        : mockFeedingData;
+
     return (
         <div className="min-h-screen bg-[#050a05] text-white p-4 md:p-8">
-            <div className="max-w-4xl mx-auto space-y-6 mt-16">
+            {isDemoMode && (
+                <div className="fixed top-0 left-0 w-full bg-amber-500 text-black text-center text-sm font-bold py-2 z-50">
+                    Demo Mode — Simulated data for presentation purposes. No real transactions.
+                </div>
+            )}
+            <div className={`max-w-4xl mx-auto space-y-6 ${isDemoMode ? 'mt-24' : 'mt-16'}`}>
                 
                 {/* Header Section */}
                 <div className="flex justify-between items-end mb-8 border-b border-white/5 pb-4">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-black">Welcome back, {farmerData.firstName || 'Farmer'}</h1>
+                        <h1 className="text-3xl md:text-4xl font-black">Welcome back, {farmerData.name || farmerData.firstName || 'Farmer'}</h1>
                         <p className="text-gray-400 mt-1">Your ecosystem summary</p>
                     </div>
                 </div>
@@ -86,8 +106,8 @@ export default function FarmerDashboard() {
                 {/* SECTION A — Summary metrics row (3 cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-[#0a1a0f] border border-white/10 rounded-2xl p-6" data-testid="metric-eur-card">
-                        <div className="text-sm font-medium text-gray-400 mb-2">This month</div>
-                        <div className="text-4xl font-black text-[#1D9E75]">€{mockBalanceEUR}</div>
+                        <div className="text-sm font-medium text-gray-400 mb-2">{isDemoMode ? 'Total Earnings' : 'This month'}</div>
+                        <div className="text-4xl font-black text-[#1D9E75]">€{displayBalanceEUR}</div>
                         <div className="text-xs text-green-500 font-bold mt-2 bg-green-500/10 inline-block px-2 py-1 rounded">
                             +12% vs last month
                         </div>
@@ -95,7 +115,9 @@ export default function FarmerDashboard() {
                     
                     <div className="bg-[#0a1a0f] border border-white/10 rounded-2xl p-6" data-testid="metric-waste-card">
                         <div className="text-sm font-medium text-gray-400 mb-2">Waste processed</div>
-                        <div className="text-4xl font-black text-white">415 <span className="text-2xl text-gray-500">kg</span></div>
+                        <div className="text-4xl font-black text-white">
+                            {isDemoMode ? DEMO_SUBMISSIONS.reduce((sum, s) => sum + s.weight_kg, 0).toFixed(1) : '415'} <span className="text-2xl text-gray-500">kg</span>
+                        </div>
                         <div className="text-xs text-gray-400 font-bold mt-2 bg-white/5 inline-block px-2 py-1 rounded">
                             12 cycles completed
                         </div>
@@ -117,10 +139,10 @@ export default function FarmerDashboard() {
                     <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 relative z-10">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <h3 className="text-xl font-bold text-white">Primary Composter</h3>
+                                <h3 className="text-xl font-bold text-white">{isDemoMode ? farmerData.tier : 'Primary Composter'}</h3>
                                 <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#1D9E75]/20 text-[#1D9E75] border border-[#1D9E75]/30">Active</span>
                             </div>
-                            <p className="text-sm text-gray-400 font-mono">ID: BOK-9942</p>
+                            <p className="text-sm text-gray-400 font-mono">ID: {isDemoMode ? farmerData.device_id : 'BOK-9942'}</p>
                         </div>
                         
                         <div className="flex-1 max-w-md w-full bg-[#0a1a0f] rounded-xl p-4 border border-white/5">
@@ -160,7 +182,7 @@ export default function FarmerDashboard() {
 
                     <div className="h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={mockFeedingData}>
+                            <BarChart data={displayFeedingData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                 <XAxis 
                                     dataKey="date" 
@@ -182,7 +204,7 @@ export default function FarmerDashboard() {
                                     cursor={{ fill: '#ffffff05' }}
                                 />
                                 <Bar dataKey="delta" radius={[4, 4, 0, 0]}>
-                                    {mockFeedingData.map((entry, index) => (
+                                    {displayFeedingData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={getBarColor(entry.type)} />
                                     ))}
                                 </Bar>
@@ -197,24 +219,24 @@ export default function FarmerDashboard() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                             <div className="text-xs text-gray-500 uppercase font-bold mb-1">Hub name</div>
-                            <div className="text-white font-bold text-sm">Hub Marktplatz</div>
+                            <div className="text-white font-bold text-sm">{isDemoMode ? farmerData.hub_name : 'Hub Marktplatz'}</div>
                         </div>
                         <div>
                             <div className="text-xs text-gray-500 uppercase font-bold mb-1">Distance</div>
-                            <div className="text-white font-bold text-sm">2.4 km</div>
+                            <div className="text-white font-bold text-sm">{isDemoMode ? `${farmerData.hub_distance_km} km` : '2.4 km'}</div>
                         </div>
                         <div>
                             <div className="text-xs text-gray-500 uppercase font-bold mb-1">Fill level</div>
                             <div className="flex flex-col gap-1">
-                                <div className="text-white font-bold text-sm">23%</div>
+                                <div className="text-white font-bold text-sm">{isDemoMode ? `${farmerData.hub_fill_pct}%` : '23%'}</div>
                                 <div className="h-1.5 bg-black rounded-full overflow-hidden w-full">
-                                    <div className="h-full bg-emerald-600 rounded-full" style={{ width: '23%' }}></div>
+                                    <div className="h-full bg-emerald-600 rounded-full" style={{ width: isDemoMode ? `${farmerData.hub_fill_pct}%` : '23%' }}></div>
                                 </div>
                             </div>
                         </div>
                         <div>
                             <div className="text-xs text-gray-500 uppercase font-bold mb-1">Est. collection</div>
-                            <div className="text-white font-bold text-sm">~8 days</div>
+                            <div className="text-white font-bold text-sm">{isDemoMode ? `~${farmerData.hub_days_to_collection} days` : '~8 days'}</div>
                         </div>
                     </div>
                 </div>
@@ -266,17 +288,54 @@ export default function FarmerDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colSpan={4} className="py-12 text-center">
-                                        <div className="text-gray-600 text-sm leading-relaxed">
-                                            Your first payout will appear here once your device submits verified data.
-                                        </div>
-                                    </td>
-                                </tr>
+                                {isDemoMode ? (
+                                    DEMO_SUBMISSIONS.map((sub, i) => (
+                                        <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                                            <td className="py-4 pr-4">{sub.date}</td>
+                                            <td className="py-4 pr-4 font-bold text-[#1D9E75]">€{sub.reward_eur.toFixed(2)}</td>
+                                            <td className="py-4 pr-4">{sub.weight_kg}</td>
+                                            <td className="py-4 capitalize text-gray-400">{sub.status}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={4} className="py-12 text-center">
+                                            <div className="text-gray-600 text-sm leading-relaxed">
+                                                Your first payout will appear here once your device submits verified data.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
                 </div>
+
+                {/* SECTION D2 — Notifications (Demo Mode) */}
+                {isDemoMode && (
+                    <div className="bg-black border border-white/10 rounded-2xl p-6 md:p-8" data-testid="notifications-card">
+                        <div className="flex items-center gap-3 mb-6">
+                            <Bell className="text-[#1D9E75]" size={20} />
+                            <h3 className="text-lg font-bold text-white">System Notifications</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {DEMO_NOTIFICATIONS.map((notif, i) => (
+                                <div key={i} className={`p-4 rounded-xl border ${notif.type === 'warning' ? 'bg-amber-900/10 border-amber-500/20' : 'bg-white/5 border-white/10'}`}>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className={`w-2 h-2 rounded-full ${notif.type === 'warning' ? 'bg-amber-500' : 'bg-blue-500'}`}></span>
+                                        <h4 className={`font-bold ${notif.type === 'warning' ? 'text-amber-500' : 'text-white'}`}>{notif.title}</h4>
+                                    </div>
+                                    <p className="text-gray-400 text-sm ml-4 mb-2">{notif.body}</p>
+                                    {notif.advice && (
+                                        <div className="ml-4 text-xs font-bold text-[#1D9E75] bg-[#1D9E75]/10 inline-block px-2 py-1 rounded">
+                                            Tip: {notif.advice}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* SECTION E — Auto-withdraw toggle card */}
                 <div className="bg-black border border-white/10 rounded-2xl p-6 md:p-8 flex items-start gap-4" data-testid="auto-withdraw-card">

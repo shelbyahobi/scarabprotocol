@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
 import { CONFIG } from '../config';
+import { useDemoMode } from '../hooks/useDemoMode';
+import { DEMO_NODE, DEMO_TRANSACTIONS } from '../data/demoSeedData';
 
 const SCARAB_ABI = [
     "function balanceOf(address owner) view returns (uint256)"
@@ -14,11 +16,17 @@ const mockMultipliers = [
 
 export default function NodeDashboard() {
     const { address, isConnected } = useAccount();
+    const isDemoMode = useDemoMode();
     const [scarabBalance, setScarabBalance] = useState(null);
     const [txHistory, setTxHistory] = useState([]);
     const [loadingTx, setLoadingTx] = useState(false);
 
     useEffect(() => {
+        if (isDemoMode) {
+            setScarabBalance(DEMO_NODE.scarab_balance.toString());
+            setTxHistory(DEMO_TRANSACTIONS);
+            return;
+        }
         const fetchBalance = async () => {
             if (!address) return;
             try {
@@ -54,11 +62,11 @@ export default function NodeDashboard() {
              }
         };
 
-        if (isConnected) {
+        if (isConnected && !isDemoMode) {
             fetchBalance();
             fetchTxHistory();
         }
-    }, [address, isConnected]);
+    }, [address, isConnected, isDemoMode]);
 
     // Truncate address for header
     const formatAddress = (addr) => {
@@ -66,7 +74,7 @@ export default function NodeDashboard() {
         return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
     };
 
-    if (!isConnected) {
+    if (!isConnected && !isDemoMode) {
         return (
             <div className="min-h-screen bg-[#050a05] text-white flex items-center justify-center p-4">
                 <div className="text-center">
@@ -77,22 +85,29 @@ export default function NodeDashboard() {
         );
     }
 
+    const displayAddress = isDemoMode ? DEMO_NODE.wallet : address;
+
     return (
-        <div className="min-h-screen bg-[#050a05] text-white pt-24 pb-12 px-4 md:px-8">
-            <div className="max-w-6xl mx-auto space-y-8">
+        <div className="min-h-screen bg-[#050a05] text-white p-4 md:p-8">
+            {isDemoMode && (
+                <div className="fixed top-0 left-0 w-full bg-amber-500 text-black text-center text-sm font-bold py-2 z-50">
+                    Demo Mode — Simulated data for presentation purposes. No real transactions.
+                </div>
+            )}
+            <div className={`max-w-6xl mx-auto space-y-8 ${isDemoMode ? 'mt-24' : 'mt-16'}`}>
                 
                 {/* SECTION A — Wallet header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-white/5 pb-6">
                     <div>
                         <h1 className="text-3xl font-black text-white flex items-center gap-3">
                             <span className="bg-white/10 px-3 py-1 rounded-lg text-lg font-mono text-gray-300 border border-white/20">
-                                {formatAddress(address)}
+                                {formatAddress(displayAddress)}
                             </span>
                         </h1>
                     </div>
                     <div className="flex gap-3">
                         <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-500 border border-yellow-500/30">BSC Testnet</span>
-                        <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#1D9E75]/20 text-[#1D9E75] border border-[#1D9E75]/30">2 Devices Registered</span>
+                        <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#1D9E75]/20 text-[#1D9E75] border border-[#1D9E75]/30">{isDemoMode ? DEMO_NODE.registered_devices : 2} Devices Registered</span>
                     </div>
                 </div>
 
@@ -106,15 +121,15 @@ export default function NodeDashboard() {
                     </div>
                     <div className="bg-[#0a1a0f] border border-white/10 rounded-2xl p-6" data-testid="node-bru-epoch">
                         <div className="text-sm font-medium text-gray-400 mb-2">BRU This Epoch</div>
-                        <div className="text-3xl font-black text-white">41.5</div>
+                        <div className="text-3xl font-black text-white">{isDemoMode ? DEMO_NODE.bru_this_epoch.toLocaleString() : '41.5'}</div>
                     </div>
                     <div className="bg-[#0a1a0f] border border-white/10 rounded-2xl p-6" data-testid="node-staked">
                         <div className="text-sm font-medium text-gray-400 mb-2">Staked Amount</div>
-                        <div className="text-3xl font-black text-white">10,000 <span className="text-lg text-gray-500">SCARAB</span></div>
+                        <div className="text-3xl font-black text-white">{isDemoMode ? DEMO_NODE.staked_scarab.toLocaleString() : '10,000'} <span className="text-lg text-gray-500">SCARAB</span></div>
                     </div>
                     <div className="bg-black border border-[#1D9E75]/30 rounded-2xl p-6" data-testid="node-claimable">
                         <div className="text-sm font-medium text-gray-400 mb-2">Claimable Rewards</div>
-                        <div className="text-3xl font-black text-[#1D9E75]">1,250 <span className="text-lg text-[#1D9E75]/50">SCARAB</span></div>
+                        <div className="text-3xl font-black text-[#1D9E75]">{isDemoMode ? DEMO_NODE.claimable_rewards_scarab.toLocaleString() : '1,250'} <span className="text-lg text-[#1D9E75]/50">SCARAB</span></div>
                         <button className="mt-3 text-xs bg-[#1D9E75] text-black font-bold px-4 py-1.5 rounded hover:bg-white transition-colors">Claim Now</button>
                     </div>
                 </div>
@@ -162,19 +177,19 @@ export default function NodeDashboard() {
                         </div>
                     ) : txHistory.length > 0 ? (
                         <div className="space-y-3">
-                            {txHistory.map((tx) => (
-                                <div key={tx.hash} className="flex flex-col sm:flex-row sm:items-center justify-between bg-black border border-white/5 rounded-xl p-4 gap-3">
+                            {txHistory.map((tx, idx) => (
+                                <div key={tx.hash || idx} className="flex flex-col sm:flex-row sm:items-center justify-between bg-black border border-white/5 rounded-xl p-4 gap-3">
                                     <div>
                                         <div className="font-bold text-gray-300 capitalize">
-                                            {tx.functionName ? tx.functionName.split('(')[0] : 'Transfer'}
+                                            {isDemoMode ? tx.type : (tx.functionName ? tx.functionName.split('(')[0] : 'Transfer')}
                                         </div>
                                         <div className="text-xs text-gray-500 font-mono mt-1">
-                                            {new Date(tx.timeStamp * 1000).toLocaleString()}
+                                            {isDemoMode ? tx.age : new Date(tx.timeStamp * 1000).toLocaleString()}
                                         </div>
                                     </div>
                                     <a 
-                                        href={`https://testnet.bscscan.com/tx/${tx.hash}`}
-                                        target="_blank" rel="noreferrer"
+                                        href={isDemoMode ? '#' : `https://testnet.bscscan.com/tx/${tx.hash}`}
+                                        target={isDemoMode ? '_self' : '_blank'} rel="noreferrer"
                                         className="text-sm font-mono text-[#D4AF37] hover:text-white transition-colors bg-[#D4AF37]/10 px-3 py-1.5 rounded border border-[#D4AF37]/20 text-center"
                                     >
                                         {formatAddress(tx.hash)}
