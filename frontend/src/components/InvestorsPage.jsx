@@ -9,8 +9,39 @@ import RevenueBreakdown from './RevenueBreakdown';
 
 export default function InvestorsPage() {
     return (
-        <div className="min-h-screen bg-[#050B08] text-[#E8E8E8] font-sans selection:bg-[#3DDB5A] selection:text-black">
-            <Navbar />
+        <div className="min-h-screen bg-[#050B08] text-[#E8E8E8] font-sans selection:bg-[#3DDB5A] selection:text-black print:bg-white print:text-black">
+            <style dangerouslySetInnerHTML={{__html: `
+                @media print {
+                    @page { margin: 1cm; size: A4 portrait; }
+                    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; color: black !important; }
+                    .print-hide { display: none !important; }
+                    .print-break-inside-avoid { break-inside: avoid; }
+                    .print-text-black { color: black !important; }
+                    .print-bg-white { background: white !important; }
+                    .print-border { border-color: #e5e7eb !important; }
+                    /* Make all text black in print */
+                    * { color: black !important; }
+                    .text-beetle-green { color: #1D9E75 !important; }
+                    .bg-beetle-green { background-color: #1D9E75 !important; color: white !important; }
+                }
+            `}} />
+            
+            <div className="bg-amber-500 text-black text-xs font-bold text-center py-2 px-4 print-hide">
+                Information on this page is for institutional qualification under the Markets in Crypto-Assets (MiCA) regulation. Not for retail distribution.
+            </div>
+
+            <div className="print-hide">
+                <Navbar />
+            </div>
+
+            <div className="container mx-auto px-4 max-w-4xl flex justify-end pt-6 print-hide relative z-50">
+                <button 
+                    onClick={() => window.print()}
+                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors border border-white/20"
+                >
+                    <Download size={16} /> Print Briefing (A4)
+                </button>
+            </div>
 
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 overflow-hidden">
@@ -57,7 +88,7 @@ export default function InvestorsPage() {
             </section>
 
             {/* High-Level Metrics */}
-            <section className="py-20 bg-black/40 border-y border-white/5">
+            <section className="py-20 bg-black/40 border-y border-white/5 print-bg-white print-border print-break-inside-avoid">
                 <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8 text-center">
                     <MetricCard label="Raise Objective" value="$2.0M" sub="Prototype + early manufacturing" />
                     <MetricCard label="Network Status" value="BSC Testnet" sub="Public contracts and simulations" />
@@ -106,7 +137,7 @@ export default function InvestorsPage() {
             </section>
 
             {/* Unit Economics Section */}
-            <section className="py-24 bg-[#0A0F0C] border-y border-white/5">
+            <section className="py-24 bg-[#0A0F0C] border-y border-white/5 print-bg-white print-border print-break-inside-avoid">
                 <div className="container mx-auto px-4 max-w-6xl">
                     <div className="grid md:grid-cols-2 gap-16 items-center">
                         <div>
@@ -235,14 +266,14 @@ export default function InvestorsPage() {
             </section>
 
             {/* Revenue Streams List */}
-            <section className="py-24 bg-[#0A0F0C]">
+            <section className="py-24 bg-[#0A0F0C] print-bg-white print-break-inside-avoid">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <h2 className="text-3xl font-black text-white mb-12">Revenue Streams (Ranked by Priority)</h2>
+                    <h2 className="text-3xl font-black text-white mb-12">Revenue & Value Capture</h2>
                     <div className="space-y-4">
-                        <RevenueRow rank="1" stream="Municipal API Subscriptions" desc="Usage-based pricing for city waste management dashboards and compliance reporting." color="beetle-green" />
-                        <RevenueRow rank="2" stream="Corporate Data Access" desc="Enterprise-tier telemetry firehose. Data access fees paid in SCARAB (burned on receipt)." color="beetle-electric" />
-                        <RevenueRow rank="3" stream="UCO/SAF Feedstock Brokerage" desc="Hub-node validated Used Cooking Oil sold as ISCC-certified Sustainable Aviation Fuel feedstock." color="beetle-gold" />
-                        <RevenueRow rank="4" stream="Token Appreciation" desc="Deflationary pressure from buy-and-burn mechanics tied to real-world revenue." color="white" />
+                        <RevenueRow rank="1" stream="Hardware Licensing" desc="B2B hardware licensing fees for Pro Bioreactor and Commercial UCO Nodes." color="beetle-green" />
+                        <RevenueRow rank="2" stream="Validator Slashing Mechanics" desc="Economic security model. Validators stake SCARAB. False telemetry or downtime results in slashing, capturing value back to the protocol treasury." color="beetle-electric" />
+                        <RevenueRow rank="3" stream="API Data Monetization" desc="Corporate ESG compliance APIs and ISCC-certified UCO provenance datasets sold to aviation fuel producers." color="beetle-gold" />
+                        <RevenueRow rank="4" stream="Token Appreciation" desc="Deflationary pressure from buy-and-burn mechanics tied to real-world fiat revenue." color="white" />
                     </div>
                     <p className="text-gray-400 mt-12 leading-relaxed">
                         UCO collection nodes complete the LiquidityBackingVault loop. Corporate SAF buyers burn SCARAB to access ISCC-certified provenance records generated by our kiosk hardware. This is the highest-margin data stream in the protocol — UCO verified at source commands a 3–5× premium over self-reported feedstock in the aviation fuel market.
