@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import OpenResearch from '../components/OpenResearch';
 import { 
     Wind, Droplets, Zap, ShieldCheck, Microscope, 
     Leaf, Database, Clock, ArrowRight, Table, 
@@ -336,6 +337,9 @@ export default function CarbonMethodology() {
                     </div>
                 </div>
             </section>
+
+            {/* ── SECTION 7: Open Research ── */}
+            <OpenResearch />
 
             {/* ── Footer ── */}
             <footer className="py-12 border-t border-gray-100 text-center bg-gray-50 px-6">
