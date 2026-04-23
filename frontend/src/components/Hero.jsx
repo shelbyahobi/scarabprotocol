@@ -20,10 +20,10 @@ export default function Hero() {
                     transition={{ duration: 1, ease: "easeOut" }}
                     className="text-center w-full"
                 >
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white mb-2 leading-[1.05]">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white mb-2 leading-[1.05]">
                         Verified ecological output.
                     </h1>
-                    <h2 className="text-4xl md:text-6xl font-black tracking-tight text-emerald-500 mb-8 leading-[1.05]">
+                    <h2 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight text-emerald-500 mb-8 leading-[1.05]">
                         For every stakeholder in the circular economy.
                     </h2>
                     

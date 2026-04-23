@@ -119,7 +119,7 @@ export default function Navbar({ onOpenBlueprint }) {
 
                     {/* Mobile hamburger */}
                     <button
-                        className="md:hidden text-white p-2 -mr-2"
+                        className="md:hidden text-white p-3 -mr-3"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-label="Toggle menu"
                     >
