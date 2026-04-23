@@ -211,7 +211,7 @@ function SKUCard({ sku }) {
     const statusColor = sku.status === 'active' ? 'emerald' : sku.status === 'pilot' ? 'amber' : 'gray';
 
     return (
-        <div className="bg-white border border-gray-200 rounded-[2.5rem] p-8 hover:border-emerald-500/40 transition-all shadow-sm flex flex-col h-full">
+        <div id={sku.id} className="bg-white border border-gray-200 rounded-[2.5rem] p-8 hover:border-emerald-500/40 transition-all shadow-sm flex flex-col h-full scroll-mt-24">
             <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-4">
                     <div className="text-4xl">{sku.icon}</div>
