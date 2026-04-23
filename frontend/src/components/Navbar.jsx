@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, FlaskConical, Activity } from 'lucide-react';
+import { Menu, X, Rocket, LineChart, Target, Users, Leaf, BookOpen, Building2, FlaskConical, Activity, Droplet } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ScarabLogo from './ScarabLogo';
@@ -72,6 +72,7 @@ export default function Navbar({ onOpenBlueprint }) {
                             <NavLink to="/municipalities" label="For Cities" current={location.pathname} />
                             <NavLink to="/ecosystem" label="Ecosystem" current={location.pathname} />
                             <NavLink to="/agrisentinel" label="AgriSentinel" current={location.pathname} />
+                            <NavLink to="/uco" label="UCO Drop-off" current={location.pathname} />
                             <NavLink to="/methodology" label="Methodology" current={location.pathname} />
                             <NavLink to="/docs" label="Docs" current={location.pathname} />
                         </div>
@@ -138,6 +139,7 @@ export default function Navbar({ onOpenBlueprint }) {
                                 <MobileNavLink to="/municipalities" label="For Cities" icon={<Building2 size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/ecosystem" label="Ecosystem" icon={<Activity size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/agrisentinel" label="AgriSentinel" icon={<Rocket size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
+                                <MobileNavLink to="/uco" label="UCO Drop-off" icon={<Droplet size={22} className="text-amber-500" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/methodology" label="Methodology" icon={<Leaf size={22} className="text-emerald-400" />} close={() => setMobileMenuOpen(false)} />
                                 <MobileNavLink to="/docs" label="Docs" icon={<BookOpen size={22} className="text-blue-400" />} close={() => setMobileMenuOpen(false)} />
                             </>

@@ -11,11 +11,11 @@ import {
 } from 'recharts';
 
 const revenueData = [
-  { year: 'Y1', hardware: 230000, subscription: 50000, municipal_api: 0, corporate_data: 25000 },
-  { year: 'Y2', hardware: 720000, subscription: 280000, municipal_api: 180000, corporate_data: 120000 },
-  { year: 'Y3', hardware: 1400000, subscription: 890000, municipal_api: 720000, corporate_data: 690000 },
-  { year: 'Y4', hardware: 2100000, subscription: 1900000, municipal_api: 2100000, corporate_data: 1800000 },
-  { year: 'Y5', hardware: 2800000, subscription: 3200000, municipal_api: 5100000, corporate_data: 5000000 },
+  { year: 'Y1', hardware: 230000, subscription: 50000, municipal_api: 0, corporate_data: 25000, uco_supply_chain: 8000 },
+  { year: 'Y2', hardware: 720000, subscription: 280000, municipal_api: 180000, corporate_data: 120000, uco_supply_chain: 95000 },
+  { year: 'Y3', hardware: 1400000, subscription: 890000, municipal_api: 720000, corporate_data: 690000, uco_supply_chain: 380000 },
+  { year: 'Y4', hardware: 2100000, subscription: 1900000, municipal_api: 2100000, corporate_data: 1800000, uco_supply_chain: 920000 },
+  { year: 'Y5', hardware: 2800000, subscription: 3200000, municipal_api: 5100000, corporate_data: 5000000, uco_supply_chain: 2100000 },
 ];
 
 const formatCurrency = (value) => 
@@ -25,7 +25,7 @@ export default function RevenueBreakdown() {
   const [showPercentage, setShowPercentage] = useState(false);
 
   const processedData = revenueData.map(item => {
-    const total = item.hardware + item.subscription + item.municipal_api + item.corporate_data;
+    const total = item.hardware + item.subscription + item.municipal_api + item.corporate_data + item.uco_supply_chain;
     if (showPercentage) {
       return {
         year: item.year,
@@ -33,6 +33,7 @@ export default function RevenueBreakdown() {
         subscription: (item.subscription / total) * 100,
         municipal_api: (item.municipal_api / total) * 100,
         corporate_data: (item.corporate_data / total) * 100,
+        uco_supply_chain: (item.uco_supply_chain / total) * 100,
         rawTotal: total
       };
     }
@@ -101,7 +102,8 @@ export default function RevenueBreakdown() {
             <Bar dataKey="hardware" name="Hardware Sale" stackId="a" fill="#1D9E75" radius={[0, 0, 0, 0]} />
             <Bar dataKey="subscription" name="Subscription" stackId="a" fill="#FBBF24" radius={[0, 0, 0, 0]} />
             <Bar dataKey="municipal_api" name="Municipal API" stackId="a" fill="#3B82F6" radius={[0, 0, 0, 0]} />
-            <Bar dataKey="corporate_data" name="Corporate Data" stackId="a" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="corporate_data" name="Corporate Data" stackId="a" fill="#8B5CF6" radius={[0, 0, 0, 0]} />
+            <Bar dataKey="uco_supply_chain" name="UCO Supply Chain" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -109,11 +111,11 @@ export default function RevenueBreakdown() {
       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-8">
         <div>
           <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1">Estimated Y5 Total</span>
-          <span className="text-xl font-black text-white">{formatCurrency(16100000)}</span>
+          <span className="text-xl font-black text-white">{formatCurrency(18200000)}</span>
         </div>
         <div>
           <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1">Growth Factor</span>
-          <span className="text-xl font-black text-emerald-500">52.8x</span>
+          <span className="text-xl font-black text-emerald-500">58.1x</span>
         </div>
         <div className="col-span-2">
           <p className="text-[11px] text-gray-400 italic leading-relaxed">

@@ -58,6 +58,7 @@ import WhySCARABPage from './pages/WhySCARABPage';
 import InstitutionalSummaryPage from './pages/InstitutionalSummaryPage';
 import AgriSentinelPage from './pages/AgriSentinelPage';
 import FarmDashboard from './pages/FarmDashboard';
+import UCOPage from './pages/UCOPage';
 
 const Documentation = lazy(() => import('./components/Documentation'));
 
@@ -359,6 +360,7 @@ function App() {
                                         <Route path="/methodology" element={<CarbonMethodology />} />
                                         <Route path="/ecosystem" element={<EcosystemPage />} />
                                         <Route path="/agrisentinel" element={<AgriSentinelPage />} />
+                                        <Route path="/uco" element={<UCOPage />} />
                                         <Route path="/dashboard/farm" element={
                                             <FarmerRoute>
                                                 <FarmDashboard />

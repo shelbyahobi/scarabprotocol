@@ -23,6 +23,7 @@ const municipalityRoutes = require('./routes/municipality');
 const farmerRoutes = require('./routes/farmer');
 const designReviewRoute = require('./routes/designReview');
 const farmRoutes = require('./routes/farm');
+const ucoRoutes = require('./routes/ucoSubmission');
 
 app.use('/api', clusterWaitlist);
 app.use('/api/data', dataAccess);
@@ -32,6 +33,7 @@ app.use('/api/farmer', farmerRoutes);
 app.use('/api/device', farmerRoutes); // device/activate lives in farmer.js
 app.use('/api/internal/design-review', designReviewRoute);
 app.use('/api/farm', farmRoutes);
+app.use('/api/uco', ucoRoutes);
 
 // Jurisdiction config endpoint for frontend
 app.get('/api/jurisdiction', serveJurisdictionConfig);
