@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCARAB Protocol — Bokashi Prototype Demo</title>
+    <style>
+        :root {
+            --bg-dark: #050A05;
+            --bg-card: #0A140A;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #E8E8E8;
+            --text-muted: #888888;
+            --accent-teal: #1D9E75;
+            --accent-green: #3DDB5A;
+            --accent-red: #EF4444;
+            --font-main: system-ui, -apple-system, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-w-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: var(--accent-teal);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .clock {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.25rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .metric-status {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+
+        .text-green { color: var(--accent-green); }
+        .text-red { color: var(--accent-red); }
+        .text-teal { color: var(--accent-teal); }
+
+        /* Central Status Panel */
+        .status-panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-active {
+            background-color: rgba(61, 219, 90, 0.05);
+            border-color: rgba(61, 219, 90, 0.3);
+        }
+
+        .status-stalled {
+            background-color: rgba(239, 68, 68, 0.05);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .status-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .status-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Feed & Blockchain Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-variant-numeric: tabular-nums;
+        }
+
+        tr {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        a {
+            color: var(--accent-teal);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Blockchain Panel */
+        .tx-box {
+            background-color: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            word-break: break-all;
+            margin-bottom: 1rem;
+        }
+
+        .tx-link {
+            display: inline-block;
+            background-color: var(--accent-teal);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background 0.2s;
+        }
+
+        .tx-link:hover {
+            background-color: #15805e;
+            text-decoration: none;
+        }
+
+        .disclaimer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+        
+        .pulse {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .pulse-offline {
+            background-color: var(--accent-red);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(61, 219, 90, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(61, 219, 90, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(61, 219, 90, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">SCARAB Protocol <span style="font-weight: 400; color: var(--text-muted);">— Bokashi Prototype Demo</span></div>
+            <div class="badges">
+                <span id="device-status" class="clock"><span class="pulse"></span>Online</span>
+                <span class="badge">Stuttgart Pilot</span>
+                <span class="clock" id="live-clock">00:00:00</span>
+            </div>
+        </header>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Current Weight</div>
+                <div class="metric-value"><span id="val-weight">--</span><span class="metric-unit"> kg</span></div>
+                <div class="metric-status text-teal">HX711 Load Cell</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Internal Temperature</div>
+                <div class="metric-value"><span id="val-temp" class="text-green">--</span><span class="metric-unit"> °C</span></div>
+                <div class="metric-status" id="status-temp">Reading...</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">CO₂ Concentration</div>
+                <div class="metric-value"><span id="val-co2">--</span><span class="metric-unit"> ppm</span></div>
+                <div class="metric-status" id="status-co2">Reading...</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Fermentation Quality</div>
+                <div class="metric-value"><span id="val-quality" class="text-teal">--</span><span class="metric-unit"> / 100</span></div>
+                <div class="metric-status text-teal">Cryptographically Signed</div>
+            </div>
+        </div>
+
+        <div id="main-status-panel" class="status-panel">
+            <div id="main-status-icon" style="font-size: 3rem; margin-bottom: 1rem;">⚪</div>
+            <div id="main-status-title" class="status-title">WAITING FOR SENSOR DATA</div>
+            <div id="main-status-subtitle" class="status-subtitle">Connecting to oracle node...</div>
+        </div>
+
+        <div class="bottom-grid">
+            <div class="panel">
+                <div class="panel-title">
+                    Live Submission Feed
+                    <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);"><span class="pulse"></span> Listening for events...</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Event</th>
+                            <th>Weight</th>
+                            <th>Quality</th>
+                            <th>Reward</th>
+                            <th>Tx Hash</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feed-table-body">
+                        <!-- Populated by JS -->
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Waiting for telemetry...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel">
+                <div class="panel-title">Blockchain Proof</div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.6;">
+                    The ATECC608A cryptographic signature is anchored to the Binance Smart Chain Testnet. This creates an immutable ESG data trail.
+                </p>
+                <div class="tx-box" id="latest-tx">
+                    No transactions yet.
+                </div>
+                <a href="#" id="bscscan-link" target="_blank" class="tx-link" style="opacity: 0.5; pointer-events: none;">View on BSCScan &rarr;</a>
+                <div class="disclaimer">
+                    <svg style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    This record is permanent and cannot be altered.
+                </div>
+                
+                <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                    <div class="metric-label">Total Protocol Value Generated</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--accent-green);">&euro;<span id="total-reward">0.00</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').textContent = now.toLocaleTimeString();
+        }, 1000);
+
+        function truncateHash(hash) {
+            if (!hash) return 'N/A';
+            return hash.substring(0, 6) + '...' + hash.substring(hash.length - 4);
+        }
+
+        function formatTime(timestamp) {
+            const d = new Date(timestamp * 1000);
+            return d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+        }
+
+        let lastSeenId = null;
+
+        async function fetchData() {
+            try {
+                // Fetch Telemetry List
+                const res = await fetch('/api/dashboard');
+                const data = await res.json();
+                
+                if (data && data.length > 0) {
+                    const latest = data[0];
+                    
+                    // Update Metrics
+                    document.getElementById('val-weight').textContent = latest.weight_kg ? latest.weight_kg.toFixed(2) : '0.00';
+                    document.getElementById('val-temp').textContent = latest.temp_c ? latest.temp_c.toFixed(1) : '--';
+                    document.getElementById('val-co2').textContent = latest.co2_ppm || '--';
+                    document.getElementById('val-quality').textContent = latest.quality_score || '--';
+
+                    // Update Status Colors
+                    const tempEl = document.getElementById('val-temp');
+                    const tempStatus = document.getElementById('status-temp');
+                    if (latest.temp_c > 15 && latest.temp_c < 35) {
+                        tempEl.className = 'text-green';
+                        tempStatus.textContent = 'Optimal Range';
+                        tempStatus.className = 'metric-status text-green';
+                    } else {
+                        tempEl.className = 'text-red';
+                        tempStatus.textContent = 'Out of Range';
+                        tempStatus.className = 'metric-status text-red';
+                    }
+
+                    const co2Status = document.getElementById('status-co2');
+                    if (latest.co2_ppm > 1000) {
+                        co2Status.textContent = 'Fermentation Active';
+                        co2Status.className = 'metric-status text-green';
+                    } else {
+                        co2Status.textContent = 'Stalled';
+                        co2Status.className = 'metric-status text-red';
+                    }
+
+                    // Update Main Panel
+                    const mainPanel = document.getElementById('main-status-panel');
+                    const mainIcon = document.getElementById('main-status-icon');
+                    const mainTitle = document.getElementById('main-status-title');
+                    const mainSubtitle = document.getElementById('main-status-subtitle');
+
+                    if (latest.fermentation_valid) {
+                        mainPanel.className = 'status-panel status-active';
+                        mainIcon.textContent = '🟢';
+                        mainTitle.textContent = 'FERMENTATION ACTIVE';
+                        mainTitle.style.color = 'var(--accent-green)';
+                        mainSubtitle.textContent = 'Lactic acid pathway confirmed by dual-sensor consensus.';
+                    } else {
+                        mainPanel.className = 'status-panel status-stalled';
+                        mainIcon.textContent = '🔴';
+                        mainTitle.textContent = 'FERMENTATION STALLED';
+                        mainTitle.style.color = 'var(--accent-red)';
+                        mainSubtitle.textContent = 'Temperature or CO₂ levels are outside optimal anaerobic ranges.';
+                    }
+
+                    // Update Feed Table
+                    const tbody = document.getElementById('feed-table-body');
+                    // Only re-render if new data arrived (simple check on top item time)
+                    const currentTopTime = data[0].server_timestamp;
+                    
+                    if (lastSeenId !== currentTopTime) {
+                        tbody.innerHTML = '';
+                        // Show top 5
+                        const displayData = data.slice(0, 5);
+                        
+                        displayData.forEach(item => {
+                            const tr = document.createElement('tr');
+                            
+                            let eventName = "Telemetry";
+                            if (item.event_type === 'lid_open') eventName = "Lid Opened";
+                            if (item.event_type === 'lid_close') eventName = "Lid Closed";
+                            
+                            let weightStr = item.weight_kg ? item.weight_kg.toFixed(2) + ' kg' : '-';
+                            if (item.weight_delta_kg > 0) {
+                                weightStr = `<span class="text-green">+${item.weight_delta_kg.toFixed(2)} kg</span>`;
+                            }
+
+                            const txLink = item.tx_hash ? `<a href="https://testnet.bscscan.com/tx/${item.tx_hash}" target="_blank">${truncateHash(item.tx_hash)}</a>` : '-';
+
+                            tr.innerHTML = `
+                                <td>${formatTime(item.server_timestamp)}</td>
+                                <td>${eventName}</td>
+                                <td>${weightStr}</td>
+                                <td>${item.quality_score || '-'}</td>
+                                <td>&euro;${item.reward_eur ? item.reward_eur.toFixed(4) : '0.0000'}</td>
+                                <td>${txLink}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                        lastSeenId = currentTopTime;
+                    }
+                }
+
+                // Fetch Status
+                const statRes = await fetch('/api/status');
+                const statData = await statRes.json();
+                
+                document.getElementById('total-reward').textContent = statData.total_reward_eur ? statData.total_reward_eur.toFixed(2) : '0.00';
+                
+                const statusIndicator = document.getElementById('device-status');
+                if (statData.device_online) {
+                    statusIndicator.innerHTML = '<span class="pulse"></span>Online';
+                } else {
+                    statusIndicator.innerHTML = '<span class="pulse pulse-offline"></span>Offline';
+                }
+
+                if (statData.latest_tx_hash) {
+                    document.getElementById('latest-tx').textContent = statData.latest_tx_hash;
+                    const bscLink = document.getElementById('bscscan-link');
+                    bscLink.href = `https://testnet.bscscan.com/tx/${statData.latest_tx_hash}`;
+                    bscLink.style.opacity = '1';
+                    bscLink.style.pointerEvents = 'auto';
+                }
+
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
+        }
+
+        // Initial fetch and interval
+        fetchData();
+        setInterval(fetchData, 5000); // 5 seconds for snappier demo feel
+
+    </script>
+</body>
+</html>
